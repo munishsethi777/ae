@@ -1,2 +1,2 @@
-ALTER TABLE `users`
-  ADD `isenabled` tinyint;
+ALTER TABLE `users`
+  ADD `isenabled` tinyint;

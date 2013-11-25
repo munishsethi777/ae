@@ -1,3 +1,3 @@
-ALTER TABLE `games`
-  CHANGE `title` `name` varchar(200);
-
+ALTER TABLE `games`
+  CHANGE `title` `name` varchar(200);
+

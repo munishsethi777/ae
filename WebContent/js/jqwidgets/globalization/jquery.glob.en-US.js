@@ -1,4 +1,4 @@
-
+
 (function($) {
     var cultures = $.global.cultures,
         en = cultures.en,

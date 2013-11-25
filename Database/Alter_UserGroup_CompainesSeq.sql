@@ -1,2 +1,2 @@
-ALTER TABLE `usergroups`
-  CHANGE `companyseq` `projectseq` int;
+ALTER TABLE `usergroups`
+  CHANGE `companyseq` `projectseq` int;

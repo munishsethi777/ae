@@ -1,2 +1,2 @@
-ALTER TABLE `questions`
-  ADD `hint` nvarchar(1000);
+ALTER TABLE `questions`
+  ADD `hint` nvarchar(1000);

@@ -1,2 +1,2 @@
-ALTER TABLE `sets`
-  CHANGE `companyseq` `projectseq` int;
+ALTER TABLE `sets`
+  CHANGE `companyseq` `projectseq` int;

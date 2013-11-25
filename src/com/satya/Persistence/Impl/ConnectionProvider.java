@@ -1,5 +1,5 @@
-package com.satya.Persistence.Impl;
-
-public class ConnectionProvider {
-
-}
+package com.satya.Persistence.Impl;
+
+public class ConnectionProvider {
+
+}

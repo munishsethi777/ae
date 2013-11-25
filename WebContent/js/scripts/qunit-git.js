@@ -1,10 +1,10 @@
-/************************************************************************************************************
-This source is property of jQWidgets and/or its partners and is subject to jqWidgets License agreement.
-Copyright (c) 2011 jqWidgets.
-<Licensing info>
-http://jqwidgets.com/license/
-************************************************************************************************************/
-
+/************************************************************************************************************
+This source is property of jQWidgets and/or its partners and is subject to jqWidgets License agreement.
+Copyright (c) 2011 jqWidgets.
+<Licensing info>
+http://jqwidgets.com/license/
+************************************************************************************************************/
+
 /**
  * QUnit - A JavaScript Unit Testing Framework
  *

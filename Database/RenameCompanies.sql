@@ -1,1 +1,1 @@
-RENAME TABLE `companies` TO `projects`;
+RENAME TABLE `companies` TO `projects`;
