@@ -128,7 +128,7 @@ public class UserGroupDataStore implements UserGroupDataStoreI,RowMapper {
 	}
 	@Override
 	public UserGroup findByNameAndProject(String name,long seq){
-		Object [] params = new Object [] {name};
+		Object [] params = new Object [] {name,seq};
 		return (UserGroup) persistenceMgr.executeSingleObjectQuery(SELECT_BY_NAME_PROJECT, params, this);
 	}
 	

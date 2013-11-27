@@ -139,7 +139,7 @@ public class ProjectMgr implements ProjectMgrI {
 		String status = SUCCESS;
 		String message = USER_SAVED_SUCCESSFULLY;
 		Project dupeProject = PDS.findByNameAndAdmin(name,admin.getSeq());
-		if(dupeProject!=null){
+		if(dupeProject!=null && (dupeProject.getSeq() != project.getSeq())){
 			status = FAILD;
 			message = ERROR + "Duplicate Project is now allowed.";
 		}else{

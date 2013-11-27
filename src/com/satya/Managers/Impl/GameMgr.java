@@ -30,6 +30,8 @@ import com.satya.Persistence.GameDataStoreI;
 import com.satya.Persistence.GameTemplatesDataStoreI;
 import com.satya.Persistence.QuestionDataStoreI;
 import com.satya.Persistence.ResultsDataStoreI;
+import com.satya.Persistence.UserDataStoreI;
+import com.satya.Persistence.UserGroupDataStoreI;
 import com.satya.Utils.DateUtils;
 import com.satya.Utils.FileUtils;
 import com.satya.Utils.XstreamUtil;
@@ -314,6 +316,41 @@ public class GameMgr implements GameMgrI {
 		}
 		return json;
 	}
-
+	
+	@Override
+	public JSONObject delete(long gameSeq) throws Exception {
+		JSONObject json = new JSONObject();
+		String status = IConstants.SUCCESS;
+		String message = IConstants.msg_DeletedSuccessfully;
+		try{
+			GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
+			GDS.Delete(gameSeq);
+						
+		}catch (Exception e){
+			 status = IConstants.FAILURE;
+			 message = IConstants.ERROR + e.getMessage();
+		}
+		json.put(IConstants.STATUS, status);
+		json.put(IConstants.MESSAGE, message);
+		json.put(IConstants.SEQ, gameSeq);
+		return json;
+	}
+	@Override
+	public JSONArray deleteBulk(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException,
+			Exception {
+		JSONObject json = new JSONObject();
+		JSONArray jsonArr = new JSONArray();
+		String idsStr = request.getParameter("ids");
+		if(idsStr != null && !idsStr.equals("")){
+			String[] ids = idsStr.split(",");
+			for(String id : ids){
+				long gameSeq = Long.parseLong(id);
+				json = this.delete(gameSeq);
+				jsonArr.put(json);
+			}
+		}
+		return jsonArr;
+	}
 	
 }

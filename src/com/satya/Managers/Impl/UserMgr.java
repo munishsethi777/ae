@@ -43,7 +43,7 @@ public class UserMgr implements UserMgrI{
 	private static final String MESSAGE = "message";
 	private static final String STATUS = "status";
 	private static final String ERROR = "Error: ";
-	private static final String FAILD = "faild";
+	private static final String FAILD = "failed";
 	private static final String SUCCESS = "success";
 	private static final String CREATEDON = "createdOn";
 	private static final String PASSWORD = "password";
@@ -172,6 +172,8 @@ public class UserMgr implements UserMgrI{
 										 			throws ServletException, IOException,Exception{
 		JSONObject json = new JSONObject();
 		User user = new User();
+		String id = request.getParameter(ID);
+		user.setSeq(Long.valueOf(id));
 		String status = SUCCESS;
 		String message = USER_SAVED_SUCCESSFULLY;
 		try{
@@ -179,7 +181,7 @@ public class UserMgr implements UserMgrI{
 			String userName = request.getParameter(USERNAME);
 			Project project = ApplicationContext.getApplicationContext().getAdminWorkspaceProject(request);
 			User dupeUser = UDS.findByUserNameAndProject(userName,project.getSeq());
-			if(dupeUser != null){
+			if(dupeUser != null && (dupeUser.getSeq() != user.getSeq())){
 				status = FAILD;
 				message = ERROR + " User with username "+ userName + " already exists";
 			}else{
