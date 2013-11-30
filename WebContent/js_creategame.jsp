@@ -134,8 +134,8 @@ function getGameTemplateDiv(index,json){
 		content += '<h1>' + json.name + '</h1>';
 	   	content += '<div class="smallFonts" style="height:70px;">' + json.description + '</div>';
 	content += '<div style="margin-top:10px;">';
-	content += "<input value='Demo' type='button' id='demo"+json.seq+"'/>";
-	content += "<input value='Add Questions' type='button' id='addQuestionLink"+json.seq+"' class='marL10' style='display:none;margin-left:10px'/>";
+	content += "<input style='display:inline-table' value='Demo' type='button' id='demo"+json.seq+"'/>";
+	content += "<input style='display:inline-table;margin-left:10px;' value='Add Questions' type='button' id='addQuestionLink"+json.seq+"' class='marL10' style='display:none;margin-left:10px'/>";
 	content += '</div>';
 	content += "</div>";
    	content += "<br class='clr'>";
