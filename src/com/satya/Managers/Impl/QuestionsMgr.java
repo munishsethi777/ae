@@ -130,6 +130,7 @@ public class QuestionsMgr implements QuestionsMgrI {
 				correctAnswer = "4";
 			}
 			json.put("isAnswerCorrect",correctAnswer);
+			json.put(Questions.IMAGE_SEQ, question.getImageSeq());
 		}catch( Exception e){
 			
 		}
@@ -149,6 +150,7 @@ public class QuestionsMgr implements QuestionsMgrI {
 		String gameTemplateSeqStr = request.getParameter("gameTempSeq");
 		String gameSeqStr = request.getParameter("gameSeq");
 		String campaignSeqStr = request.getParameter("campaignSeq");
+		String hintStr = request.getParameter("hint");
 		
 		Questions questions = new Questions();
 		long questionsSeq = 0;
@@ -194,6 +196,7 @@ public class QuestionsMgr implements QuestionsMgrI {
 		questions.setMaxSecondsAllowed(maxSecondsAllowed);
 		questions.setCreatedOn(new Date());
 		questions.setLastModified(new Date());
+		questions.setHint(hintStr);
 		questions.setProject(ApplicationContext.getApplicationContext().getAdminWorkspaceProject(request));
 		QuestionAnswersMgrI questionAnswerMgr = ApplicationContext.getApplicationContext().getQuestionAnswersMgr();
 		List<QuestionAnswers> questionAnswers = questionAnswerMgr.getQuestionAnswersFromRequest(request, response,questions);

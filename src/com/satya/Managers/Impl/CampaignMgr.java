@@ -142,9 +142,9 @@ public class CampaignMgr implements CampaignMgrI{
 		String description = request.getParameter(IConstants.DESCRIPTION);	
 		String validityDays = request.getParameter(IConstants.VALIDITY_DAYS);		
 		String isEnableStr = request.getParameter(IConstants.IS_ENABLED);
-		String fromDateStr = request.getParameter("fromDate");	
-		String toDateStr = request.getParameter("toDate");
-		
+		String fromDateStr = request.getParameter("startDate");	
+		String toDateStr = request.getParameter("validTillDate");
+		String launchMessage = request.getParameter("launchMessage");
 		
 		Campaign campaign = new Campaign();
 		long campaignSeq = 0;
@@ -163,7 +163,9 @@ public class CampaignMgr implements CampaignMgrI{
 		campaign.setCreatedOn(new Date());
 		campaign.setLastModifiedDate(new Date());
 		campaign.setProject(ApplicationContext.getApplicationContext().getAdminWorkspaceProject(request));
-		
+		campaign.setStartDate(DateUtils.getDateFromString(fromDateStr));
+		campaign.setValidTillDate(DateUtils.getDateFromString(toDateStr));
+		campaign.setLaunchMessage(launchMessage);
 		CampaignDataStoreI CDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getCampaignDataStore();
 		String status = IConstants.SUCCESS;
 		String message = IConstants.SAVED_SUCCESSFULLY;

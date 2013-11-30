@@ -1,87 +1,8 @@
+<!--  all main methods are in "js_creategame.jsp". see this file, how template block generate and question related methods. -->
 <script type="text/javascript">
 //isCampaignUI variable used in importQuestion.jsp. for check if importQuestions is using from campaign ui 
 var isCampaignUI = true;
 //updateSelectedQuestionGrid is used in importQuestion.jsp for add the imported row in selectedQuestion grid.
-	
-function openAddQuestionsUI(gameSeq){
-	$("#addQuestionsWindow").jqxWindow('open');
-	loadSelectedQuestionsGrid(gameSeq);
-}
-function updateSelectedQuestionGrid(dataRowJson){
-	$("#selectedQuestionsGrid").jqxGrid('addrow', null, dataRowJson,null,true);
-}
-
-function getFormData(isImport){
-	var gameSeq = $("#gameSeq" + tempSeq).val();
-	dataRow = [];
-	
-	var obj = new Object();
-    if(gameSeq ==0){
-		var gameTemplateSeq = tempSeq;
-		obj.name = "gameTempSeq";
-		obj.value = gameTemplateSeq;
-	}else{
-		obj.name = "gameSeq";
-		obj.value = gameSeq;
-	}
-	var index = 0;
-	if(!isImport){
-		dataRow = $("#createQuestionForm").serializeArray();
-		index = dataRow.length;
-	}
-	
-	dataRow[index] = obj;
-	var obj2 = new Object();
-	var campaignSeq = $("#campaignSeq").val();
-	obj2.name = "campaignSeq";
-	obj2.value = campaignSeq;
-	dataRow[index + 1] = obj2;
-	return dataRow ;
-}
-
-function addGameFromImportQues(quesJson){
-	data = getFormData(true);
-	var quesSeqArr = [];
-	var i = 0
-	$.each(quesJson, function() {
-		quesSeqArr.push(quesJson[i]['seq']);
-		i =i+1;
-	})
-	var obj1 = new Object();
-	obj1.name = "quesSeqs";
-	obj1.value = quesSeqArr;
-	data[2] = obj1;
-	
-	dataRow = data;
-	var action = "AdminUser?action=addGameFromImportQuestion"
-	submitAction(action,dataRow);
-}
-
-function addQuestionAndGame(){		
-	dataRow = getFormData(false);
-	//submitAddRecord("selectedQuestionsGrid");
-	submitAction("AdminUser?action=addQuestions",dataRow);
-}
-
-function submitAction(action,dataRow){
-	$.getJSON(action,dataRow,function(json){
-		if(json['status'] == 'success'){
-			if(dataRow['seq'] == null || dataRow['seq'] == "" || dataRow['seq'] == "0"){		
-				dataRow['seq'] = json['seq'];
-				dataRowJson = {};
-				 $.each(dataRow, function() {
-						dataRowJson[this.name] = this.value || '';
-				 });
-				 if(json['gameSeq'] != 0){
-					$("#gameSeq" + tempSeq).val(json['gameSeq']);
-				 }
-				 
-				$("#selectedQuestionsGrid").jqxGrid('addrow', null, dataRowJson,null,true);
-			}$('#createQuestionForm')[0].reset();
-		}
-	});
-}
-
 $(document).ready(function () {
     $(".saveQuestionButton").attr("id", "saveQuestionButtonClick");
 	$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });

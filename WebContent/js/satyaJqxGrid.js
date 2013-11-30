@@ -100,16 +100,33 @@ function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,colu
 				$("#jqxCreateBeanWindow #rowIdInput").val(rowIndex);
 				$.each(dataFields,function(index,value){
 					if(value.name != "isEnabled"){
-						 $("#jqxCreateBeanWindow #"+ value.name +"Input").val(dataRow[value.name]);
+						 var rowColVal=dataRow[value.name];
+						 if (rowColVal==undefined){
+							 if (value.type="date"){
+								// rowColVal=new Date();
+							 }else{
+								 rowColVal="";
+							 }
+						 }
+						// if (value.type="date"){
+						//	 $("#jqxCreateBeanWindow #"+ value.name +"Input").jqxCalendar('setDate', rowColVal); 
+							 //$("#jqxCreateBeanWindow #"+ value.name +"Input").val(rowColVal);
+						// }else{
+							 $("#jqxCreateBeanWindow #"+ value.name +"Input").val(rowColVal);
+						// }
+						
 						 if(value.type=="bool"){
 							 if(dataRow[value.name] == true || dataRow[value.name] == "true"){						 
 								$("#" + value.name +"Input").prop('checked', true);
+								
 							 }else{
 								$("#" + value.name +"Input").prop('checked', false);
+								
 							 }
 						 }
 						 if(value.type=="radio"){
 							$("input[name='" + value.name + "'][value='" + dataRow[value.name] + "']").attr("checked", "checked");
+							 // to hanle null field case //$("input[name='" + value.name + "'][value='" + rowColVal + "']").attr("checked", "checked");
 						 }
 					}else{
 						if(dataRow[value.name] == true){
