@@ -142,6 +142,8 @@
 	<div id="jqxCreateBeanWindow">
 		<div class="title" style="height:30px;font-size:16px;line-height:25px;font-weight:bold">Create New Project</div>
 		<div id="jqxCreateBeanEditor">
+			<div class="editorErrorDiv"></div>
+			<div class="editorSuccessDiv"></div>
 			 <form id="createBeanForm" name="createBeanForm"/>
 				<input type="hidden" name="rowId" id="rowIdInput"/>
 				<input type="hidden" name="seq" id="seqInput"/>

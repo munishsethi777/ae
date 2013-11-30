@@ -16,11 +16,11 @@ function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,colu
 						datafields:dataFields,
 						updaterow: function (rowid, rowdata, commit) {
 							commit(true);
-							//$("#jqxCreateBeanWindow").jqxWindow('close');
+							$("#jqxCreateBeanWindow").jqxWindow('close');
 						},
 						addrow: function (rowid, rowdata, position, commit) {
 							commit(true);
-							//$("#jqxCreateBeanWindow").jqxWindow('close');
+							$("#jqxCreateBeanWindow").jqxWindow('close');
 						},
 						deleterow: function (selectedIndexes, commit) {
 							commit(true);
@@ -123,7 +123,8 @@ function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,colu
 				var y = ($(window).height() - $("#jqxCreateBeanWindow").jqxWindow('height')) / 2 + $(window).scrollTop();
 				$("#jqxCreateBeanWindow").jqxWindow({ position: { x: x, y: y} });
 				$('#jqxCreateBeanWindow').jqxWindow({ title: 'Edit '+ beanName }); 
-				$('#jqxCreateBeanWindow').jqxWindow('open'); 
+				$('#jqxCreateBeanWindow').jqxWindow('open');
+				clearErrorMessageDivs();
 			});//end double click method
 
 			var updatePageState = function (gridId) {
@@ -209,17 +210,16 @@ function submitAddRecord(gridId){
 			dataRow['lastmodifieddate'] = json['lastModified'];	
 			if(dataRow['seq'] == null || dataRow['seq'] == "" || dataRow['seq'] == "0"){		
 				dataRow['seq'] = json['seq'];				
-				
-				dataRow['createdOn'] = json['createdOn'];
-				var commit = $("#"+gridId).jqxGrid('addrow', null, dataRow,null,true);
-			}else{
-				var commit = $("#"+gridId).jqxGrid('updaterow', dataRow['rowId'], dataRow,true);
-			}
 				if(typeof isCampaignUI != 'undefined'){
 					if(isCampaignUI){
 						$("#campaignSeq").val(json['seq']);
 					}
 				}
+				dataRow['createdOn'] = json['createdOn'];
+				var commit = $("#"+gridId).jqxGrid('addrow', null, dataRow,null,true);
+			}else{
+				var commit = $("#"+gridId).jqxGrid('updaterow', dataRow['rowId'], dataRow,true);
+			}
 			$("#"+gridId).jqxGrid('ensurerowvisible', dataRow['rowId']);
 		}else{
 			displaySaveErrors(json['message']);
@@ -240,6 +240,11 @@ function showHideErrorMessageEditorDiv(bool){
 	}else{
 		$(".editorErrorDiv").hide();
 	}
+}
+function clearErrorMessageDivs(){
+	showHideErrorMessageEditorDiv(false);
+	$(".editorErrorDiv").text("");
+	
 }
 function submitDeleteRecord(gridId){
 	var selectedRowIndexes = $("#"+gridId).jqxGrid('selectedrowindexes');

@@ -26,28 +26,28 @@
 				{ name: 'lastmodifieddate', type: 'date'}];
 		
 			$(document).ready(function () {
-				
-				renderGrid("userGroupJqxGrid","userGroups",userGroupDataUrl,deleteUserGroupUrl,"","",userGroupcolumns,userGroupDataFields,false,"100%","72%");
+				var editorWidth= "80%";
+				var editorHeight = "80%";
+				renderGrid("userGroupJqxGrid","userGroups",userGroupDataUrl,deleteUserGroupUrl,"","",userGroupcolumns,userGroupDataFields,false,editorHeight,editorWidth);
 				$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 				
 				
 	            
 		});//end document ready	
 	
-		function addUserGroupFromEarlier(){
-			var selectedRowIndexes = $("#userGroupJqxGrid").jqxGrid('selectedrowindexes');
-			var ids = "";
-			var i = 0;
-			$.each(selectedRowIndexes, function(index , value){
-				var dataRow = $("#userGroupJqxGrid").jqxGrid('getrowdata', value);
-				ids = ids + dataRow.seq;
-			});
-			var campaignSeq = $("#campaignSeq").val();
-			$.getJSON("AdminUser?action=addCampaignUserGroup&userGroupSeq=" + ids + "&campaignSeq=" + campaignSeq ,function(json){
-				if(json['status'] == 'success'){
-					$("#userGroupJqxGrid").jqxGrid('clearselection');
-				}
-			});
+		function addFromEarlierUserGroup(dataRow){
+			var gridId = destinationGridId_;
+			if($("#isImportUsers").val()){
+				var gridId = "userGroupJqxGrid";
+			}
+			var allrows = $("#"+gridId).jqxGrid("getrows");
+			var allRowIds = new Array();
+			for(var i = 0;i<allrows.length;i++){
+				allRowIds.push(allrows[i].seq);
+			}
+			
+			dataRow['selectedChildrenRows'] = allRowIds.toString();
+			return dataRow;
 		}
     </script>
 	<div id="userGroupJqxGrid"></div>
