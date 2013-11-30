@@ -26,6 +26,11 @@ public class Campaign {
 	private Date lastModifiedDate;
 	private Date startDate;
 	private Date validTillDate;
+	private String launchMessage;
+	
+	public static final String LAUNCH_MESSAGE = "launchMessage";
+	public static final String START_DATE = "startDate";
+	public static final String VALID_TILL_DATE = "validTillDate";
 	
 	public Date getStartDate() {
 		return startDate;
@@ -106,6 +111,15 @@ public class Campaign {
 	public void setGames(List<Game> games) {
 		this.games = games;
 	}
+	
+	public String getLaunchMessage(){
+		return this.launchMessage;
+	}
+	
+	public void setLaunchMessage(String launchMessage){
+		this.launchMessage=launchMessage;
+	}
+	
 	public static JSONArray toJsonArray(List<Campaign> campaigns){
 		JSONArray jsonArr = new JSONArray();
 		for(Campaign campaign: campaigns){ 
@@ -123,6 +137,9 @@ public class Campaign {
 			json.put(IConstants.IS_ENABLED, campaign.isEnabled());
 			json.put(IConstants.CREATED_ON,  DateUtils.getGridDateFormat(campaign.getCreatedOn()));
 			json.put(IConstants.LAST_MODIFIED_DATE,  DateUtils.getGridDateFormat(campaign.getLastModifiedDate()));
+			json.put(START_DATE,  DateUtils.getGridDateFormat(campaign.getStartDate()));
+			json.put(VALID_TILL_DATE,  DateUtils.getGridDateFormat(campaign.getValidTillDate()));
+			json.put(LAUNCH_MESSAGE, campaign.getLaunchMessage());
 		}catch( Exception e){
 			
 		}

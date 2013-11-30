@@ -20,7 +20,7 @@
 								</div>
 								
 								<div style="display:inline-table;margin-left:20px;">To
-									<div id="endDateInput"/></div>
+									<div id="validTillDateInput"/></div>
 								</div>
 								
 							</td>

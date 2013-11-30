@@ -22,7 +22,10 @@
 				{ text: 'Validity Days', datafield: 'validityDays',editable:false,width:100,cellsalign: 'right',align: 'right'},
 				{ text: 'Created On', datafield: 'createdOn',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'},
 				{ text: 'Last Modified', datafield: 'lastmodifieddate',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'},
-				{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width:80}
+				{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width:80},
+				{ text: 'Launch Message', datafield: 'launchMessage',editable:false,width:80},
+				{ text: 'Start Date', datafield: 'startDate',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'},
+				{ text: 'End Date', datafield: 'validTilldDate',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'}
 				];
 
 		var dataFields = [
@@ -32,7 +35,10 @@
 				{ name: 'validityDays', type: 'string' },
 				{ name: 'isEnabled', type: 'bool' },
 				{ name: 'createdOn', type: 'date' },
-				{ name: 'lastmodifieddate', type: 'date'}
+				{ name: 'lastmodifieddate', type: 'date'},
+				{ name: 'launchMessage', type: 'string' }
+				//{ name: 'startDate', type: 'date' },
+				//{ name: 'validTillDate', type: 'date' }
 				];
 		var isShowButtons = true;
 
@@ -60,7 +66,7 @@
 				$("#nameInput").jqxInput({	placeHolder : "enter a campaign title", height : 25, width : 500, minLength : 1, maxLength : 256});
 				$("#descriptionInput").jqxInput({	placeHolder : "enter a campaign description", height : 25, width : 500, minLength : 1, maxLength : 256});
 				$("#startDateInput").jqxCalendar({width: 220, height: 220, theme: theme });
-				$("#endDateInput").jqxCalendar({width: 220, height: 220, theme: theme });
+				$("#validTillDateInput").jqxCalendar({width: 220, height: 220, theme: theme });
 				$("#launchMessageInput").jqxInput({	placeHolder : "enter a campaign launch message", height : 25, width : 500, minLength : 1, maxLength : 256});
 				//savebutton click
 				$("#saveCampaignButton").jqxButton({ width: 70, theme: theme });
@@ -243,6 +249,9 @@
 		</div>	
 	</div><!-- Ends createBeanWindow -->
 </div><!-- Ends jqxWidget main div -->
+
+<!--  including js scripting for game creation -->
+<%@ include file="js_creategame.jsp" %>
 
 <%@ include file="campaignQuestionsEditorInclude.jsp" %>
 

@@ -22,7 +22,8 @@
 				{ text: 'Chances', datafield: 'extraAttemptsAllowed',editable:false,width:80,cellsalign: 'right',align: 'right' },
 				{ text: 'Created On', datafield: 'createdOn',editable:false,width:150,cellsformat: 'dd-MM-yy hh.mm tt'},
 				{ text: 'Last Modified', datafield: 'lastmodifieddate',editable:false,width:150,cellsformat: 'dd-MM-yy hh.mm tt'},
-				{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width:60}
+				{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width:60},
+				{ text: 'Hint', datafield: 'hint' ,editable:false}
 				];
 
 		var dataFields = [
@@ -40,8 +41,8 @@
 				{ name: 'isAnswerCorrect', type: 'string' },
 				{ name: 'answer2', type: 'string'},
 				{ name: 'answer3', type: 'string'},
-				{ name: 'answer4', type: 'string'}
-				
+				{ name: 'answer4', type: 'string'},
+				{ name: 'hint', type: 'string'}
 				];
 
 		$(document).ready(function () {

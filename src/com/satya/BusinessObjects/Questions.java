@@ -18,6 +18,10 @@ public class Questions {
 	private int maxSecondsAllowed;
 	private int extraAttemptsAllowed;	
 	private String hint;
+	private long imageSeq;
+	
+	public static final String IMAGE_SEQ = "imageSeq";
+	
 	public String getHint() {
 		return hint;
 	}
@@ -105,4 +109,11 @@ public class Questions {
 		this.extraAttemptsAllowed = extraAttemptsAllowed;
 	}
 	
+	public long getImageSeq(){
+		return this.imageSeq;
+	}
+	
+	public void setImageSeq(long imageSeq){
+		this.imageSeq=imageSeq;
+	}
 }
