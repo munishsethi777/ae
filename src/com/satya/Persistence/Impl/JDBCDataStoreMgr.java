@@ -5,6 +5,7 @@ import com.satya.Persistence.CampaignDataStoreI;
 import com.satya.Persistence.DataStoreMgr;
 import com.satya.Persistence.GameDataStoreI;
 import com.satya.Persistence.GameTemplatesDataStoreI;
+import com.satya.Persistence.ImageDataStoreI;
 import com.satya.Persistence.ProjectDataStoreI;
 import com.satya.Persistence.QuestionAnswersDataStoreI;
 import com.satya.Persistence.QuestionDataStoreI;
@@ -12,7 +13,6 @@ import com.satya.Persistence.ResultsDataStoreI;
 import com.satya.Persistence.SetDataStoreI;
 import com.satya.Persistence.UserDataStoreI;
 import com.satya.Persistence.UserGroupDataStoreI;
-
 
 public class JDBCDataStoreMgr implements DataStoreMgr {
 
@@ -27,10 +27,9 @@ public class JDBCDataStoreMgr implements DataStoreMgr {
 	public GameTemplatesDataStoreI gameTemplateDataStore;
 	public QuestionAnswersDataStoreI questionAnswersDataStore;
 	public ResultsDataStoreI resultsDataStore;
-	
-	
+	public ImageDataStoreI imageDataStore;
 
-	public JDBCDataStoreMgr(PersistenceMgr persistenceMgr){
+	public JDBCDataStoreMgr(PersistenceMgr persistenceMgr) {
 		userDataStore = new UserDataStore(persistenceMgr);
 		projectDataStore = new ProjectDataStore(persistenceMgr);
 		setDataStore = new SetDataStore(persistenceMgr);
@@ -42,49 +41,56 @@ public class JDBCDataStoreMgr implements DataStoreMgr {
 		gameTemplateDataStore = new GameTemplateDataStore(persistenceMgr);
 		questionAnswersDataStore = new QuestionAnswersDataStore(persistenceMgr);
 		resultsDataStore = new ResultsDataStore(persistenceMgr);
+		imageDataStore = new ImageDataStore(persistenceMgr);
 	}
 
 	@Override
 	public UserDataStoreI getUserDataStore() {
 		return userDataStore;
 	}
+
 	@Override
 	public ProjectDataStoreI getProjectDataStore() {
 		return projectDataStore;
 	}
-	
+
 	@Override
 	public SetDataStoreI getSetDataStore() {
 		return setDataStore;
 	}
-	
+
 	@Override
 	public GameDataStoreI getGameDataStore() {
 		return gameDataStore;
 	}
-	
+
 	@Override
 	public UserGroupDataStoreI getUserGroupDataStore() {
 		return userGroupDataStore;
 	}
+
 	@Override
 	public AdminDataStoreI getAdminDataStore() {
 		return adminDataStore;
 	}
+
 	@Override
 	public CampaignDataStoreI getCampaignDataStore() {
 		return campaignDataStore;
 	}
+
 	@Override
-	public QuestionDataStoreI getQuestionDataStore(){
+	public QuestionDataStoreI getQuestionDataStore() {
 		return questionDataStore;
 	}
+
 	@Override
-	public GameTemplatesDataStoreI getGameTemplateDataStore(){
+	public GameTemplatesDataStoreI getGameTemplateDataStore() {
 		return gameTemplateDataStore;
 	}
+
 	@Override
-	public QuestionAnswersDataStoreI getQuestionAnswersDataStore(){
+	public QuestionAnswersDataStoreI getQuestionAnswersDataStore() {
 		return questionAnswersDataStore;
 	}
 
@@ -92,6 +98,10 @@ public class JDBCDataStoreMgr implements DataStoreMgr {
 	public ResultsDataStoreI getResultsDataStore() {
 		return resultsDataStore;
 	}
-	
+
+	@Override
+	public ImageDataStoreI getImageDataStore() {
+		return imageDataStore;
+	}
 
 }

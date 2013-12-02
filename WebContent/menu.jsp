@@ -27,6 +27,7 @@
                 <a id="dashboard" href="dashboard.jsp">Dashboard</a>
                 <a id="projects" href="projects.jsp">Projects</a>
                 <a id="users" href="users.jsp">Users</a>
+				<a id="images" href="uploadImage.jsp">Upload Image</a>
                 <a id="userGroups" href="usergroups.jsp">UserGroups</a>
                 <a id="questions" href="questions.jsp">Questions</a>
                 <a id="gameTemplates"href="gameTemplates.jsp">Game Templates</a>
