@@ -116,237 +116,6 @@ public class AdminUserServlet extends BaseServletClass {
 				errorMsgs.add(IConstants.err_pleaseLogin);
 				request.setAttribute(IConstants.errMessages, errorMsgs);
 
-				request.getRequestDispatcher(IConstants.admin_loginIndex).forward(request, response);}
-	 		else{
-				
-	 			UserMgrI userMgr = ApplicationContext.getApplicationContext().getUserMgr();
-				ProjectMgrI projectMgr = ApplicationContext.getApplicationContext().getProjectMgr();
-				SetMgrI setMgr = ApplicationContext.getApplicationContext().getSetMgr();
-				GameMgrI gameMgr = ApplicationContext.getApplicationContext().getGamesMgr();
-				CampaignMgrI campaignMgr = ApplicationContext.getApplicationContext().getCampaiMgr();
-				UserGroupMgrI userGroupMgr = ApplicationContext.getApplicationContext().getUserGroupMgr();
-				GameTemplatesMgrI gameTemplateMgr = ApplicationContext.getApplicationContext().getGameTemplateMgr();
-	 			QuestionsMgrI questionMgr = ApplicationContext.getApplicationContext().getQuestionMgr();
-	 			ResultsMgrI resultsMgr = ApplicationContext.getApplicationContext().getResultMgr();
-	 			AdminMgrI adminMgr = ApplicationContext.getApplicationContext().getAdminMgr();
-	 			{
-	 			if(action.equals("getAllUsers")) {	 				
-	 				JSONArray json = userMgr.getAllUserJson(request, response);
-	 				response.getWriter().write(json.toString());
-	 			}else if(action.equals(GET_USERS_AVAILABLE_ON_USERGROUP)){	 				
-					JSONArray jsonArr = userMgr.getAvailableUsersOnGroupJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals(GET_USERS_SELECTED_ON_USERGROUP)){	 				
-					JSONArray jsonArr = userMgr.getSelectedUsersOnGroupJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals(GET_USERSGROUPS_AVAILABLE_ON_CAMPAIGN)){	 				
-					JSONArray jsonArr = userGroupMgr.getAvailableOnCampaignJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals(GET_USERSGROUPS_SELECTED_ON_CAMPAIGN)){	 				
-					JSONArray jsonArr = userGroupMgr.getSelectedOnCampaignJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals(GET_SETS_AVAILABLE_ON_CAMPAIGN)){	 				
-					JSONArray jsonArr = setMgr.getAvailableOnCampaignJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals(GET_SETS_SELECTED_ON_CAMPAIGN)){	 				
-					JSONArray jsonArr = setMgr.getSelectedOnCampaignJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals(GET_QUESTIONS_AVAILABLE_ON_GAME)){	 				
-					JSONArray jsonArr = questionMgr.getAvailableOnGameJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals(GET_QUESTIONS_SELECTED_ON_GAME)){	 				
-					JSONArray jsonArr = questionMgr.getSelectedOnGameJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals(GET_GAMES_AVAILABLE_ON_SET)){	 				
-					JSONArray jsonArr = gameMgr.getAvailableOnSetJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals(GET_GAMES_SELECTED_ON_SET)){	 				
-					JSONArray jsonArr = gameMgr.getSelectedOnSetJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals("addUser")){
-	 			
- 					JSONObject json = userMgr.addUser(request, response);
- 					response.getWriter().write(json.toString());
-	 						
-	 			}else if(action.equals("deleteUser")){
-	 				
- 					JSONArray jsonArr = userMgr.deleteBulk(request, response);
- 					response.getWriter().write(jsonArr.toString());
-	 							
-	 			}else if(action.equals("getAllProjects")){	 				
- 					JSONArray jsonArr = projectMgr.getAllProjectsJson();
- 					response.getWriter().write(jsonArr.toString());	 				
-	 			}else if(action.equals("addProject")){
-	 				
- 					JSONObject json = projectMgr.addProject(request, response);
- 					response.getWriter().write(json.toString());
-	 						
-	 			}else if(action.equals("deleteProject")){
- 				
- 					JSONArray jsonArr = projectMgr.deleteBulk(request, response);
- 					response.getWriter().write(jsonArr.toString());
-	 							
-	 			}else if(action.equals("getAllSets")){	 				
-					JSONArray jsonArr = setMgr.getAllSetJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals("addSet")){
- 					JSONObject json = setMgr.addSet(request, response);
-					response.getWriter().write(json.toString());
- 						
-	 			}else if(action.equals("deleteSet")){ 				
-					JSONArray jsonArr = setMgr.deleteBulk(request, response);
-					response.getWriter().write(jsonArr.toString()); 							
-	 			
-	 			}else if(action.equals("addGame")){
- 					JSONObject json = gameMgr.addGames(request, response);
-					response.getWriter().write(json.toString());
-	 			}else if(action.equals("deleteGame")){
-	 				JSONArray jsonArr  = gameMgr.deleteBulk(request, response);
-					response.getWriter().write(jsonArr.toString());
-
-	 			}else if(action.equals("getAllGames")){	 				
-					JSONArray jsonArr = gameMgr.getAllGameJson(request,response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals("getAllCampaigns")){	 				
-					JSONArray jsonArr = campaignMgr.getAllCampaignsJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals("addCampaign")){ 				
-					JSONObject json = campaignMgr.addCampaign(request, response);
-					response.getWriter().write(json.toString()); 						
-	 			
-	 			}else if(action.equals("deleteCampaign")){ 				
-					JSONArray jsonArr = campaignMgr.deleteBulk(request, response);
-					response.getWriter().write(jsonArr.toString()); 							
-	 			
-	 			}else if(action.equals("getAllUserGroups")){	 				
-					JSONArray jsonArr = userGroupMgr.getAllUserGroupsJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals("addUserGroup")){ 				
-					JSONObject json = userGroupMgr.addUserGroup(request, response);
-					response.getWriter().write(json.toString()); 						
-	 			
-	 			}else if(action.equals("addCampaignUserGroup")){ 				
-					JSONObject json = campaignMgr.saveCampaignUserGroups(request, response);
-					response.getWriter().write(json.toString()); 						
-	 			
-	 			}else if(action.equals("deleteUserGroup")){ 				
-					JSONArray jsonArr = userGroupMgr.deleteBulk(request, response);
-					response.getWriter().write(jsonArr.toString()); 							
-	 			
-	 			}else if(action.equals(GET_ALL_GAME_TEMPLATES_JSON)){ 				
-					JSONArray jsonArr = gameTemplateMgr.getAllGameTemplateJson(request);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals("getAllQuestions")){	 				
-					JSONArray jsonArr = questionMgr.getAllQuestionsJson(request, response);
-					response.getWriter().write(jsonArr.toString());	 				
-	 			
-	 			}else if(action.equals("deleteQuestions")){ 				
-					JSONArray jsonArr = questionMgr.deleteBulk(request, response);
-					response.getWriter().write(jsonArr.toString());
-	 			}
-	 			else if(action.equals("addQuestions")){ 				
-					JSONObject json = questionMgr.addQuestions(request, response);
-					response.getWriter().write(json.toString()); 						
-	 			
-	 			}else if(action.equals(GET_REGISRATION_URL)){
-	 				Project project = ApplicationContext.getApplicationContext().getAdminWorkspaceProject(request);
-	 				response.getWriter().write(project.getRegistrationURL());		
-	 			}
-	 			//-----------RESULTS ADVANCE SEARCH PARAMS JSONS STARTS ----------------
-	 			else if(action.equals(GET_ASSESSEMENTSETS_BY_CAMPAIGN)){ 				
-	 				JSONArray jsonArr = setMgr.getSelectedOnCampaignJson(request, response);
-	 				response.getWriter().write(jsonArr.toString()); 						
-	 			
-	 			}
-	 			else if(action.equals(GET_USERGROUPS_BY_CAMPAIGN)){ 				
-	 				JSONArray jsonArr = userGroupMgr.getSelectedOnCampaignJson(request, response);
-	 				response.getWriter().write(jsonArr.toString()); 						
-	 			
-	 			}
-	 			else if(action.equals(GET_GAMES_BY_ASSESSMENTSET)){ 				
-	 				JSONArray jsonArr = gameMgr.getSelectedOnSetJson(request, response);
-	 				response.getWriter().write(jsonArr.toString()); 						
-	 			
-	 			}
-	 			else if(action.equals(GET_RESULTS_FOR_GRID)){ 				
-	 				JSONArray jsonArr = resultsMgr.getGamesJSONByCampaign(request, response);
-	 				response.getWriter().write(jsonArr.toString()); 						
-	 			
-	 			}else if(action.equals(ADD_GAME_FROM_IMPORT_QUESTIONS)){ 				
-	 				JSONObject jsonArr = gameMgr.addGameFromImportQuestion(request, response);
-	 				response.getWriter().write(jsonArr.toString()); 
-	 			}
-	 			//PROJECTS DROPDOWN CHANGE
-	 			else if(action.equals(CHANGE_WORKSPACE_PROJECT)){
-	 				JSONObject json = adminMgr.changeWorkspaceProject(request, response);
-	 				response.getWriter().write(json.toString()); 
-	 			}else if(action.equals(ADD_USER_GROUP_FROM_CAMPAIGN)){
-	 				JSONObject json = userGroupMgr.addUserGroupFromCampaign(request, response);
-	 				response.getWriter().write(json.toString()); 
-	 			}else if(action.equals(GET_SELECTED_USERGROUPS_BY_CAMPAIGN)){
-	 				JSONArray json = userGroupMgr.getSelectedUsersOnCampaignJson(request, response);
-	 				response.getWriter().write(json.toString()); 
-	 			}
-	 			
-	 			//LOGOUT BUTTON HIT ACTION
-	 			else if(action.equals(LOGOUT)){
-	 				adminMgr.logout(request, response);
-					request.getRequestDispatcher(IConstants.admin_loginIndex).forward(request,response);
-	 			}else if(action.equals("downloadFailedRows")){
-	 				ApplicationContext.getApplicationContext().getAdminMgr().downloadFailedRows(request, response);
-	 			}
-
-	 		}
-	 		
-	 	  }
-	 	}catch(Exception e){
-	 		log.error("Error During action : " + action, e);	
-	 	}
-	 }
-			
-		/**
-		 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-		 */
-		protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-			// LOGIN METHOD
-			String action = (String) request.getParameter("action");
-			log.debug("Post Action on User Servlet called:" + action);
-			if (action != null) {
-				if (action.equals(SIGNUP)) {
-					ApplicationContext.getApplicationContext().getAdminMgr().signup(request, response);
-				
-				}else if(action.equals(LOGIN)) {
-					ApplicationContext.getApplicationContext().getAdminMgr().login(request, response);
-				
-				}else if(action.equals(CHANGEPASSWORD)) {
-					ApplicationContext.getApplicationContext().getAdminMgr().changePassword(request, response);
-				
-				}else if(action.equals(UPDATE_ACCOUNT)){ 				
-					ApplicationContext.getApplicationContext().getAdminMgr().updateAccount(request, response);			
-	 			
-	 			}else if(action.equals(IMPORT_USERS)){
-	 				JSONObject json = ApplicationContext.getApplicationContext().getAdminMgr().importUsersFromXls(request, response);
-	 				response.getWriter().write(json.toString()); 
-	 			}else if(action.equals(IMPORT_QUESTIONS)){
-	 				JSONObject json = ApplicationContext.getApplicationContext().getAdminMgr().importQuestionsFromXls(request, response);
-	 				response.getWriter().write(json.toString()); 
-	 			}
-=======
 				request.getRequestDispatcher(IConstants.admin_loginIndex)
 						.forward(request, response);
 			} else {
@@ -473,8 +242,12 @@ public class AdminUserServlet extends BaseServletClass {
 					} else if (action.equals("addGame")) {
 						JSONObject json = gameMgr.addGames(request, response);
 						response.getWriter().write(json.toString());
+					} else if (action.equals("deleteGame")) {
+						JSONArray jsonArr = gameMgr.deleteBulk(request,
+								response);
+						response.getWriter().write(jsonArr.toString());
 
-					} else if (action.equals(GET_ALL_GAMES)) {
+					} else if (action.equals("getAllGames")) {
 						JSONArray jsonArr = gameMgr.getAllGameJson(request,
 								response);
 						response.getWriter().write(jsonArr.toString());
@@ -601,7 +374,6 @@ public class AdminUserServlet extends BaseServletClass {
 
 				}
 
-
 			}
 		} catch (Exception e) {
 			log.error("Error During action : " + action, e);
@@ -648,7 +420,7 @@ public class AdminUserServlet extends BaseServletClass {
 						.uploadImage(request, response);
 			}
 		}
-
 	}
+
 
 }
