@@ -213,8 +213,10 @@ public class AdminUserServlet extends BaseServletClass {
 	 			}else if(action.equals("addGame")){
  					JSONObject json = gameMgr.addGames(request, response);
 					response.getWriter().write(json.toString());
- 						
-	 			
+	 			}else if(action.equals("deleteGame")){
+	 				JSONArray jsonArr  = gameMgr.deleteBulk(request, response);
+					response.getWriter().write(jsonArr.toString());
+
 	 			}else if(action.equals("getAllGames")){	 				
 					JSONArray jsonArr = gameMgr.getAllGameJson(request,response);
 					response.getWriter().write(jsonArr.toString());	 				

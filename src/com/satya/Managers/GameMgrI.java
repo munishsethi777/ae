@@ -17,7 +17,8 @@ public interface GameMgrI {
 	public List<Game> getAllGames(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
 	public JSONArray getAllGameJson (HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
 	public JSONObject addGames(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException,Exception;
-	
+	public JSONObject delete(long gameSeq)throws Exception;
+	public JSONArray deleteBulk(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException,Exception;
 	public JSONArray getAvailableOnSetJson (HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
 	public JSONArray getSelectedOnSetJson (HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
 	public JSONObject addGameFromImportQuestion(HttpServletRequest request, HttpServletResponse response)

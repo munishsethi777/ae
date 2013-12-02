@@ -32,10 +32,10 @@ public class QuestionDataStore implements QuestionDataStoreI,RowMapper {
 	private final static String SELECT_BY_PROJECT_SEQ = SELECT + "where projectseq = ?";
 	
 	private final static String SAVE = "insert into questions(title, description, points, " +
-			"projectseq,isenabled,lastmodified,negativepoints,maxsecondsallowed,extraattemptsallowed,hint,createdon) " +
-			"values (?,?,?,?,?,?,?,?,?,?,?)";
+			"projectseq,isenabled,lastmodified,negativepoints,maxsecondsallowed,extraattemptsallowed,hint,imageseq,createdon) " +
+			"values (?,?,?,?,?,?,?,?,?,?,?,?)";
 	private final static String UPDATE = "update questions set title=?, description=?, points=?, " +
-			" projectseq=? ,isenabled=?,lastmodified=?,negativepoints=?,maxsecondsallowed=?,extraattemptsallowed=?, hint=? where seq=?";
+			" projectseq=? ,isenabled=?,lastmodified=?,negativepoints=?,maxsecondsallowed=?,extraattemptsallowed=?, hint=? , imageseq=? where seq=?";
 	private final static String DELETE = "delete from questions where seq = ?";
 	
 	private final static String FIND_QUESTIONS_SELECTED_IN_GAME = "select questions.* from questions left join gamequestions on " +
@@ -74,7 +74,7 @@ public class QuestionDataStore implements QuestionDataStoreI,RowMapper {
 			if(questions.getProject()!= null){
 				projectSeq = questions.getProject().getSeq();
 			}
-			Object[] params  = new Object[11];
+			Object[] params  = new Object[12];
 			
 					params[0]= questions.getTitle();
 					params[1] = questions.getDescription();
@@ -86,10 +86,11 @@ public class QuestionDataStore implements QuestionDataStoreI,RowMapper {
 					params[7] = questions.getMaxSecondsAllowed();
 					params[8] = questions.getExtraAttemptsAllowed();
 					params[9] = questions.getHint();
+					params[10]= questions.getImageSeq();
 					if(questions.getSeq() != 0){
-						params[10] =  questions.getSeq();
+						params[11] =  questions.getSeq();
 					}else{
-						params[10] = questions.getCreatedOn();
+						params[11] = questions.getCreatedOn();
 					}
 		
 			persistenceMgr.excecuteUpdate(SQL, params);
@@ -178,6 +179,7 @@ public class QuestionDataStore implements QuestionDataStoreI,RowMapper {
 			Date lastModifiedDate = rs.getDate("lastmodified");
 			Date createdOn = rs.getDate("createdon");
 			String hint = rs.getString("hint");
+			long imageSeq=rs.getLong("imageseq");
 			List<QuestionAnswers> qanswers = new ArrayList<QuestionAnswers>();
 			try{
 				long answerseq = rs.getLong("answerSeq");
@@ -206,6 +208,7 @@ public class QuestionDataStore implements QuestionDataStoreI,RowMapper {
 			questions.setExtraAttemptsAllowed(extraAttemptsAllowed);
 			questions.setMaxSecondsAllowed(maxSecondsAllowed);
 			questions.setHint(hint);
+			questions.setImageSeq(imageSeq);
 			Project project = null;
 			if(projectSeq != 0 ){
 				ProjectMgrI projectMgr = ApplicationContext.getApplicationContext().getProjectMgr();

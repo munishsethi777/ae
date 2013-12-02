@@ -209,7 +209,7 @@ public class UserGroupMgr implements UserGroupMgrI {
 		String status = SUCCESS;
 		String message = SAVED_SUCCESSFULLY;
 		UserGroup dupeUserGroup = UGDS.findByNameAndProject(name,userGroup.getProject().getSeq());
-		if(dupeUserGroup != null){
+		if(dupeUserGroup != null && (dupeUserGroup.getSeq() != userGroup.getSeq())){
 			status = FAILD;
 			message = ERROR + " Duplicate Usergroup not allowed";
 		}else{

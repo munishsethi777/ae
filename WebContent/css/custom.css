@@ -1,13 +1,14 @@
 /*general styles*/
+.jqxCampaignWizard>.content{display:block;min-height:35em;overflow-y: auto;position:relative}
 body{
     font: 12px "Trebuchet MS", sans-serif; 
     background-color:white; 
     margin:0px;
 }
 
-h1{
+h1, .selectGameTemplatesBlock h1{
 	margin:2px 0px 2px 0px;
-	font-size:22px;	
+	font-size:22px;
 }
 h2{
 	font-weight:normal;

@@ -30,10 +30,10 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 	private final static String SELECT_BY_SEQ = SELECT + "where campaigns.seq = ?";
 	private final static String SELECT_BY_PROJECT_SEQ = SELECT + "where campaigns.projectseq = ?";
 	private final static String SAVE = "insert into campaigns(projectseq,name,description,validitydays " + 
-		",isenabled,lastmodifieddate,startdate,validtilldate,createdon) " +
-		"values (?,?,?,?,?,?,?,?,?)";
+		",isenabled,lastmodifieddate,startdate,validtilldate,launchMessage,createdon) " +
+		"values (?,?,?,?,?,?,?,?,?,?)";
 	private final static String UPDATE = "update campaigns set projectseq=?, " +
-		"name=?,description=?, validitydays=?, isenabled=? ,lastmodifieddate=?, startdate=?,validtilldate=? where seq=?";
+		"name=?,description=?, validitydays=?, isenabled=? ,lastmodifieddate=?, startdate=?,validtilldate=?,launchMessage=? where seq=?";
 	private final static String DELETE = "delete from campaigns where seq = ?";
 	
 	private final static String SAVE_USERGROUPS = "insert into campaignusergroups(campaignseq, usergroupseq) values (?,?)";
@@ -63,7 +63,7 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 			if(campaign.getProject()!= null){
 				projectSeq = campaign.getProject().getSeq();
 			}
-			Object[] params  = new Object[9];
+			Object[] params  = new Object[10];
 			
 					params[0]= projectSeq;
 					params[1] = campaign.getName();
@@ -73,10 +73,11 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 					params[5] = campaign.getLastModifiedDate();
 					params[6] = campaign.getStartDate();
 					params[7] = campaign.getValidTillDate();
+					params[8]=campaign.getLaunchMessage();
 					if(campaign.getSeq() != 0){
-						params[8] =  campaign.getSeq();
+						params[9] =  campaign.getSeq();
 					}else{
-						params[8] = campaign.getCreatedOn();
+						params[9] = campaign.getCreatedOn();
 					}
 		
 			persistenceMgr.excecuteUpdate(SQL, params);
@@ -225,6 +226,7 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 			Date lastModifiedDate = rs.getDate("lastmodifieddate");
 			Date startDate = rs.getDate("startdate");
 			Date validTillDate = rs.getDate("validtilldate");
+			String launchMessage=rs.getString("launchMessage");
 			
 			campaign = new Campaign();
 			campaign.setSeq(seq);
@@ -235,6 +237,7 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 			campaign.setEnabled(isEnable);
 			campaign.setStartDate(startDate);
 			campaign.setValidTillDate(validTillDate);
+			campaign.setLaunchMessage(launchMessage);
 			Project project = null;
 			campaign.setLastModifiedDate(lastModifiedDate);
 			if(projectSeq != 0 ){

@@ -1,6 +1,5 @@
 	<link rel="stylesheet" href="js/jqwidgets/styles/jqx.base.css" type="text/css" />
     <link rel="stylesheet" href="js/jqwidgets/styles/jqx.fresh.css" type="text/css" />
-    <script type="text/javascript" src="js/scripts/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="js/jqwidgets/jqxcore.js"></script>
     <script type="text/javascript" src="js/jqwidgets/jqxdata.js"></script>
     <script type="text/javascript" src="js/jqwidgets/jqxbuttons.js"></script>
