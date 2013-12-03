@@ -65,7 +65,7 @@
 	    }
 		
 		$(document).ready(function () {
-		var userVlidatorRules = [
+			var userVlidatorRules = [
 				{ input: '#NameUserInput', message: 'Name is required!', action: 'keyup, blur', rule:'required' }];
 				
 			$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
@@ -92,39 +92,36 @@
             	$(".registrationURLDiv").html("<p><a href='"+ response +"'>"+ response +"</a></p>");
             	
             });
-		$("#saveUserButton").click(function (event) {
-			var validationResult = function (isValid) {
-				if (isValid) {
-					addUsersGroupFromEditor();
+			$("#saveUserButton").click(function (event) {
+				var validationResult = function (isValid) {
+					if (isValid) {
+						addUsersGroupFromEditor();
+					}
 				}
-			}
-			$('#createUserForm').jqxValidator('validate', validationResult);
-		});
-		$('#createUserForm').jqxValidator({
-					animationDuration:5,
-					rules: userVlidatorRules
-		});
-			
-			//savebutton click			
-		$("#createUserForm").on('validationSuccess', function () {
-			$("#createUserForm-iframe").fadeIn('fast');
-		});
-		$("#closeButton").click(function () {
-			$('#jqxCreateBeanWindow').jqxWindow('close'); 
-		});
+				$('#createUserForm').jqxValidator('validate', validationResult);
+			});
+			$('#createUserForm').jqxValidator({
+						animationDuration:5,
+						rules: userVlidatorRules
+			});
+				
+				//savebutton click			
+			$("#createUserForm").on('validationSuccess', function () {
+				$("#createUserForm-iframe").fadeIn('fast');
+			});
+			$("#closeButton").click(function () {
+				$('#jqxCreateBeanWindow').jqxWindow('close'); 
+			});
 		
-	
-		
-		
-	    $('#mainUserSplitter').jqxSplitter({ width: "100%", height: "100%", orientation: 'horizontal', theme: theme });
-	    $(".userEditorArea").jqxPanel({ width:"100%", height: "100%", theme: theme });
+		    $('#mainUserSplitter').jqxSplitter({ width: "100%", height: "100%", orientation: 'horizontal', theme: theme });
+		    $(".userEditorArea").jqxPanel({ width:"100%", height: "100%", theme: theme });
 	    
 		
 	});//end document ready	
 </script>
 
 	
-<div id="addusersWindow" style="width:100%;height:100%">	
+<div id="addusersWindow" style="width:100%;height:600px">	
 		  <div id="jqxCreateBeanEditor" style="height:100%;">
   		   	<div id="mainUserSplitter" style="width:100%;height:100%">
 				<div class="splitter-panel">

@@ -205,7 +205,7 @@
 					<button style="padding:4px 16px;" id="isCreateNewUserGroup">Create new UserGroup</button>
 					<button style="padding:4px 16px;" id="isUseEarlierUserGroup">Use earlier UserGroup</button>
 				</div>
-				<div id="createNewUserGroupDiv" style="width:100%;height:100%">
+				<div id="createNewUserGroupDiv">
 					<%@ include file="campaignUsersEditor.jsp"%>
 				</div>
 				<div id="useEarlierUserGroupDiv" style="display:none">

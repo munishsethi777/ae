@@ -88,6 +88,7 @@ function loadGameTemplates(campaignSeq){
 		$.each(JSON, function(index,val){
 			content = getGameTemplateDiv(index,val);
 			$(content).appendTo(".selectGameTemplatesBlock");
+			
 			$("#templateSeqRadio"+val.seq).jqxCheckBox({ width: 20, height: 25, theme: theme });
 			$("#templateSeqRadio"+val.seq).on('change', function(event) {
 				var checked = event.args.checked;
@@ -135,7 +136,7 @@ function getGameTemplateDiv(index,json){
 	   	content += '<div class="smallFonts" style="height:70px;">' + json.description + '</div>';
 	content += '<div style="margin-top:10px;">';
 	content += "<input style='display:inline-table' value='Demo' type='button' id='demo"+json.seq+"'/>";
-	content += "<input style='display:inline-table;margin-left:10px;' value='Add Questions' type='button' id='addQuestionLink"+json.seq+"' class='marL10' style='display:none;margin-left:10px'/>";
+	content += "<input value='Add Questions' type='button' id='addQuestionLink"+json.seq+"' class='marL10' style='display:none;margin-left:10px;float:right'/>";
 	content += '</div>';
 	content += "</div>";
    	content += "<br class='clr'>";
