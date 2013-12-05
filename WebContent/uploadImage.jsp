@@ -50,15 +50,20 @@
 		<%@ include file="imageGrid.jsp"%>
 		<script type="text/javascript">
 			var validatorRules = [
-							{ input: '#attachement', message: 'select Image file to upload', action: 'keyup, focus', rule: function (input, commit) {
-                        // call commit with false, when you are doing server validation and you want to display a validation error on this field. 
+							{ input: '#attachement', message: 'select jpg file to upload', action: 'keyup, focus', rule: function (input, commit) {
+                        // call commit with false, when you are doing server validation and you want to display a validation error on this field.
+						var file = $('#attachement').val();						
                         if ($('#attachement').val() != "") {
-                            return true;
+							var extension = file.substr( (file.lastIndexOf('.') +1) );
+							extension = extension.toLowerCase();
+							if(extension == "jpg" || extension == "jpeg"){
+								return true;
+							}
                         }
                         return false;
                     }
 					}]
-			$("#btnSub").click(function () {
+				$("#btnSub").click(function () {
 					alert( $("#attachement").val());
 					var validationResult = function (isValid) {
 						if (isValid) {
