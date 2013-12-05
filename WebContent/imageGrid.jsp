@@ -4,6 +4,7 @@
 		                return '<img style="margin-left: 5px;" height="80" width="100" src="images/userImages/' + value + '"/>';
 						}
 		var imgdataUrl = "AdminUser?action=getAllImages";
+		var deleteUrl = "AdminUser?action=deleteImage";
 		var imgColumns = [				
 				{ text: 'Title', datafield: 'imageTitle' ,editable:false},
 				{ text: 'Image', datafield: 'imagePath' ,editable:false,cellsrenderer: imagerenderer},
@@ -24,9 +25,9 @@
 				var editorWidth= "85%";
 				var editorHeight = "90%";
 				
-				renderGrid("imageJqxGrid","Image",imgdataUrl,"","","",imgColumns,imgDataFields,false,"90%","85%");
-				$('#imageJqxGrid').jqxGrid({ rowsheight: 70}); 
+				renderGrid("jqxGrid","Image",imgdataUrl,deleteUrl,"","",imgColumns,imgDataFields,true,"90%","85%");
+				$('#jqxGrid').jqxGrid({ rowsheight: 70}); 
 				
 		});
 </script>
-<div id="imageJqxGrid"></div>
+<div id="jqxGrid"></div>
