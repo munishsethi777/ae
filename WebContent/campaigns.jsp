@@ -56,9 +56,11 @@
 				$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 				$('#jqxCreateBeanWindow').on('open', function (event) { 
 					$('#jqxCreateBeanWindow').jqxWindow({ position: 'center',resizable: false }); 
-					//$("#jqxCampaignWizard").jqxScrollView('changePage', 0);//first slide always
-					var editingParentSeq = $("#createCampaignForm #seqInput").val();
-					loadGameTemplates(editingParentSeq);
+					$("#jqxCampaignWizard").jqxScrollView('changePage', 0);//first slide always
+					dataUserUrl = "AdminUser?action=getSelectedUserGroupsByCampaign&campaignSeq=" + $("#seqInput").val() 	
+					addUserUrl = "AdminUser?action=addUserGroupFromCampaign&campaignSeq=" + $("#seqInput").val();	
+					renderGrid("userJqxGrid",beanUserName,dataUserUrl,deleteUserUrl,addUserUrl,userValidatorRules,userColumns,userDataFields,true,"100%","80%");
+					loadGameTemplates($("#seqInput").val())
 				});
 				$("#addQuestionsWindow").jqxWindow({ 
     				isModal: true, modalOpacity: 0.8,
@@ -193,7 +195,7 @@
 					<%@ include file="campaignSelectGameTemplateBlock.jsp" %>
 				</div>
 				<div id="useEarlierGameDiv" style="display:none">
-					<%@ include file="campaignUseEarlierGames.jsp" %>
+					<%@ include file="gameGridInclude.jsp" %>
 				</div>
 				
 			</section>
@@ -207,7 +209,7 @@
 					<%@ include file="campaignUsersEditor.jsp"%>
 				</div>
 				<div id="useEarlierUserGroupDiv" style="display:none">
-					<%-- <%@ include file="useEarlierUserGroup.jsp"%> --%>
+					<%@ include file="userGroupGridInclude.jsp"%>
 				</div>
 				
 			</section>
