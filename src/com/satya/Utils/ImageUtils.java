@@ -5,23 +5,18 @@ import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.MediaTracker;
-import java.awt.Panel;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-
 
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
@@ -29,6 +24,19 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 public class ImageUtils {
 	private final static String USER_FOLDER_PREFIX = "user";
+	public final static String THUMNAIL_100 = "_thumb100";
+	public final static String THUMNAIL_300 = "__thumb300";
+
+	public static String getThumPathBySuffix(String mainImagepath, String suffix) {
+		if (mainImagepath.contains(suffix))
+			return mainImagepath;
+		int decimalLocation = mainImagepath.lastIndexOf(".");
+		mainImagepath = mainImagepath.substring(0, decimalLocation)
+				+ suffix
+				+ mainImagepath.substring(decimalLocation,
+						mainImagepath.length());
+		return mainImagepath;
+	}
 
 	private static String getSmallImagePathFromMainImagePath(
 			String mainImagepath) {
@@ -71,9 +79,6 @@ public class ImageUtils {
 		return newUri;
 	}
 
-
-
-
 	public static String getImagesDirectoryForUser(Long userSeq) {
 		/*
 		 * String imgPath =
@@ -87,7 +92,7 @@ public class ImageUtils {
 	}
 
 	public static String getImageNameFromPath(String imgPath) {
-		int lastSlash = imgPath.lastIndexOf("/");
+		int lastSlash = imgPath.lastIndexOf("\\");
 		String imageName = imgPath.substring(lastSlash + 1, imgPath.length());
 		return imageName;
 	}
@@ -108,7 +113,14 @@ public class ImageUtils {
 
 	}
 
-	
+	public static String renameImageIfAlReadyExists(String imagePath) {
+		int counter = 1;
+		while (imagePathAlreadyExists(imagePath)) {
+			imagePath = appendCounterToImagePath(imagePath, counter);
+			counter++;
+		}
+		return imagePath;
+	}
 
 	private static String appendCounterToImagePath(String imgPath, int counter) {
 		int lastDotIndex = imgPath.lastIndexOf(".");
@@ -125,8 +137,6 @@ public class ImageUtils {
 
 		return appendedImgPath;
 	}
-
-	
 
 	public static String getSmallURL(String anyURL) {
 		// if its an ebay image or is already a _small image from AL return the
@@ -172,12 +182,14 @@ public class ImageUtils {
 		String imagePathWithoutExt = path.substring(0, path.lastIndexOf('.'));
 		return imagePathWithoutExt + "_small." + ext;
 	}
-	public static String getThumbURLBySuffix(File thumbFile,String Suffix){
+
+	public static String getThumbURLBySuffix(File thumbFile, String Suffix) {
 		String path = thumbFile.getAbsolutePath();
 		String ext = path.substring(path.lastIndexOf('.') + 1, path.length());
 		String imagePathWithoutExt = path.substring(0, path.lastIndexOf('.'));
 		return imagePathWithoutExt + "_" + Suffix + "." + ext;
 	}
+
 	/**
 	 * Checks if passed in image size exceeds user's quota of image space.
 	 * Returns true if image quota is exceeded, false otherwise.
@@ -187,7 +199,6 @@ public class ImageUtils {
 	 * @param user
 	 * @return
 	 */
-	
 
 	private static boolean imagePathAlreadyExists(String path) {
 		File file = new File(path);
@@ -346,17 +357,17 @@ public class ImageUtils {
 		}
 		return ""; // success
 	}
-	
+
 	public static void createThumbnail(String imagePath, int thumbWidth,
 			int thumbHeight, String newImgName) throws Exception {
-//		String ext = newImgName.substring(imagePath.lastIndexOf('.') + 1,
-//				newImgName.length());
+		// String ext = newImgName.substring(imagePath.lastIndexOf('.') + 1,
+		// newImgName.length());
 		String fullImageFileName = imagePath;
-	    File f = new File(fullImageFileName);
-		File parentDir = f.getParentFile();		
-//		String imagePathWithoutExt = imagePath.substring(0,
-//				imagePath.lastIndexOf('.'));
-		String paretnDirPath = parentDir.getPath();		
+		File f = new File(fullImageFileName);
+		File parentDir = f.getParentFile();
+		// String imagePathWithoutExt = imagePath.substring(0,
+		// imagePath.lastIndexOf('.'));
+		String paretnDirPath = parentDir.getPath();
 		String imageThumnailPath = paretnDirPath + "\\" + newImgName;
 		Image image = Toolkit.getDefaultToolkit().getImage(imagePath);
 		MediaTracker mediaTracker = new MediaTracker(new Container());
@@ -389,5 +400,4 @@ public class ImageUtils {
 		out.close();
 	}
 
-	
 }

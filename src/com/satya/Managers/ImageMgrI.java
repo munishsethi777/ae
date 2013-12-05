@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.satya.Image;
 
@@ -20,4 +21,10 @@ public interface ImageMgrI {
 
 	public List<Image> getAllImages(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException;
+
+	public JSONObject delete(long gameSeq) throws Exception;
+
+	public JSONArray deleteBulk(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException,
+			Exception;
 }

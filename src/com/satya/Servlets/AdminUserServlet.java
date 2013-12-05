@@ -247,6 +247,11 @@ public class AdminUserServlet extends BaseServletClass {
 								response);
 						response.getWriter().write(jsonArr.toString());
 
+					} else if (action.equals("deleteImage")) {
+						JSONArray jsonArr = imageMgr.deleteBulk(request,
+								response);
+						response.getWriter().write(jsonArr.toString());
+
 					} else if (action.equals("getAllGames")) {
 						JSONArray jsonArr = gameMgr.getAllGameJson(request,
 								response);
@@ -421,6 +426,5 @@ public class AdminUserServlet extends BaseServletClass {
 			}
 		}
 	}
-
 
 }

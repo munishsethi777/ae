@@ -13,7 +13,7 @@ public class Image {
 	private static final String IMAGE_SIZE = "imageSize";
 	private static final String IMAGE_PATH = "imagePath";
 	private static final String IMAGE_TITLE = "imageTitle";
-	private static final String ID = "id";
+	private static final String ID = "seq";
 	private long seq;
 	private String imageTitle;
 	private String imagePath;

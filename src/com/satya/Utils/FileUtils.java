@@ -78,4 +78,13 @@ public class FileUtils {
 		}
 		return content.toString();
 	}
+
+	public static boolean deleteFile(String filePath) {
+		File file = new File(filePath);
+		if (file.exists()) {
+			return file.delete();
+		}
+		return false;
+	}
+
 }

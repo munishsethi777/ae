@@ -72,9 +72,24 @@ public class ImageDataStore implements ImageDataStoreI, RowMapper {
 	}
 
 	@Override
-	public void delete(long Seq) {
-		Object[] params = new Object[] { Seq };
+	public void delete(long seq) {
+		Image image = findBySeq(seq);
+		deleteFileContent(image);
+		Object[] params = new Object[] { seq };
 		persistenceMgr.excecuteUpdate(DELETE, params);
+	}
+
+	private void deleteFileContent(Image image) {
+		String fullImagePath = "C:\\Users\\arvinder singh\\Desktop\\ae\\WebContent\\images\\userImages\\"
+				+ image.getImagePath();
+		String thum100Path = ImageUtils.getThumPathBySuffix(fullImagePath,
+				ImageUtils.THUMNAIL_100);
+		FileUtils.deleteFile(thum100Path);
+		String thumb300Path = ImageUtils.getThumPathBySuffix(fullImagePath,
+				ImageUtils.THUMNAIL_300);
+		FileUtils.deleteFile(thumb300Path);
+		FileUtils.deleteFile(fullImagePath);
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -114,23 +129,29 @@ public class ImageDataStore implements ImageDataStoreI, RowMapper {
 	}
 
 	private void saveFileContent(Image image) throws Exception {
-		String fullImageFileName = "C:\\Users\\arvinder singh\\Desktop\\ae\\WebContent\\images\\userImages\\"
+		String fullImagePath = "C:\\Users\\arvinder singh\\Desktop\\ae\\WebContent\\images\\userImages\\"
 				+ image.getImagePath();
-		File f = new File(fullImageFileName);
+		File f = new File(fullImagePath);
 		File parentDir = f.getParentFile();
 		if (!parentDir.exists()) {
 			parentDir.mkdir();
 		}
-		String nameWithoutExt = ImageUtils.getImageFileNameWithoutExtn(image
-				.getImagePath());
-		String extention = ImageUtils.getImageExtension(image.getImagePath());
-		FileUtils.writeFile(fullImageFileName, image.getImageBytes());
+		fullImagePath = ImageUtils.renameImageIfAlReadyExists(fullImagePath);
+		String imageNameFromPath = ImageUtils
+				.getImageNameFromPath(fullImagePath);
+		String nameWithoutExt = ImageUtils
+				.getImageFileNameWithoutExtn(imageNameFromPath);
+		String extention = ImageUtils.getImageExtension(imageNameFromPath);
+		FileUtils.writeFile(fullImagePath, image.getImageBytes());
 
-		String newImageName = nameWithoutExt + "_thumb100" + "." + extention;
-		ImageUtils.createThumbnail(fullImageFileName, 100, 100, newImageName);
+		String newImageName = nameWithoutExt + ImageUtils.THUMNAIL_100 + "."
+				+ extention;
+		ImageUtils.createThumbnail(fullImagePath, 100, 100, newImageName);
 
-		newImageName = nameWithoutExt + "_thumb300" + "." + extention;
-		ImageUtils.createThumbnail(fullImageFileName, 300, 300, newImageName);
+		newImageName = nameWithoutExt + ImageUtils.THUMNAIL_300 + "."
+				+ extention;
+		ImageUtils.createThumbnail(fullImagePath, 300, 300, newImageName);
+		image.setImagePath(imageNameFromPath);
 	}
 
 	protected Object populateObjectFromResultSet(ResultSet rs)

@@ -116,4 +116,43 @@ public class ImageMgr implements ImageMgrI {
 		return images;
 	}
 
+	@Override
+	public JSONObject delete(long imageSeq) throws Exception {
+		JSONObject json = new JSONObject();
+		String status = IConstants.SUCCESS;
+		String message = IConstants.msg_DeletedSuccessfully;
+		try {
+			ImageDataStoreI imageDataStore = ApplicationContext
+					.getApplicationContext().getDataStoreMgr()
+					.getImageDataStore();
+			imageDataStore.delete(imageSeq);
+
+		} catch (Exception e) {
+			status = IConstants.FAILURE;
+			message = IConstants.ERROR + e.getMessage();
+		}
+		json.put(IConstants.STATUS, status);
+		json.put(IConstants.MESSAGE, message);
+		json.put(IConstants.SEQ, imageSeq);
+		return json;
+	}
+
+	@Override
+	public JSONArray deleteBulk(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException,
+			Exception {
+		JSONObject json = new JSONObject();
+		JSONArray jsonArr = new JSONArray();
+		String idsStr = request.getParameter("ids");
+		if (idsStr != null && !idsStr.equals("")) {
+			String[] ids = idsStr.split(",");
+			for (String id : ids) {
+				long imageSeq = Long.parseLong(id);
+				json = this.delete(imageSeq);
+				jsonArr.put(json);
+			}
+		}
+		return jsonArr;
+	}
+
 }
