@@ -31,7 +31,7 @@ function getFormData(isImport){
 	
 	dataRow[index] = obj;
 	var obj2 = new Object();
-	var campaignSeq = $("#campaignSeq").val();
+	var campaignSeq = $("#createCampaignForm #seqInput").val();
 	obj2.name = "campaignSeq";
 	obj2.value = campaignSeq;
 	dataRow[index + 1] = obj2;
@@ -84,6 +84,7 @@ function submitAction(action,dataRow){
 
 function loadGameTemplates(campaignSeq){
 	var getTemplatesUrl = "AdminUser?action=getAllGameTemplates&campaignSeq="+campaignSeq;
+	$(".selectGameTemplatesBlock").html("");
 	$.getJSON(getTemplatesUrl,function(JSON){
 		$.each(JSON, function(index,val){
 			content = getGameTemplateDiv(index,val);
@@ -120,6 +121,7 @@ function loadGameTemplates(campaignSeq){
 			$("#deleteBeanConfirmation").jqxWindow({ resizable: true, theme: theme, autoOpen: false, width: 450, height: 200, showCloseButton: true });
 		});
 	});
+	loadEarlierGames(campaignSeq);
 }
 
 function getGameTemplateDiv(index,json){

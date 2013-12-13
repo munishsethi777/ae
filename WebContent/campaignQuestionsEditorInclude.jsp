@@ -69,7 +69,7 @@ $(document).ready(function () {
   		   			<div class="splitter-panel editorArea" style="height:100%"><!-- Editor Area -->
 				   		<div class="saveOptions" style="clear:both;margin-bottom:40px;margin-top:10px;">
 							<div id='isCreateQuestion' style="float:left">Create new question</div>
-							<div id='isSelectQuestion' style="float:left">Select questions</div>
+							<!-- <div id='isSelectQuestion' style="float:left">Select questions</div> -->
 							<div id='isImportQuestions' style="float:left">Import from xls</div>
 						</div>
 				   		<div class="tabContent1">
