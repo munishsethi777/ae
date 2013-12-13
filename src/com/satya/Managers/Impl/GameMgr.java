@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import com.satya.ApplicationContext;
 import com.satya.IConstants;
+import com.satya.BusinessObjects.Campaign;
 import com.satya.BusinessObjects.Game;
 import com.satya.BusinessObjects.GameTemplates;
 import com.satya.BusinessObjects.Project;
@@ -89,30 +90,38 @@ public class GameMgr implements GameMgrI {
 		return games;
 	}
 
-	public JSONArray getAllGameJson (HttpServletRequest request, HttpServletResponse response,boolean isPublished)throws ServletException, IOException {
-		List<Game> games = getAllGames(request,response);
+	public JSONArray getAllGameJson(HttpServletRequest request,
+			HttpServletResponse response, boolean isPublished)
+			throws ServletException, IOException {
+		List<Game> games = getAllGames(request, response);
 		List<Game> campaignGames = null;
-		if(request.getParameter("campaignSeq")!= null){
-			CampaignDataStoreI CDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getCampaignDataStore();
-			Campaign campaign = CDS.findBySeq(Long.parseLong(request.getParameter("campaignSeq")));
+		if (request.getParameter("campaignSeq") != null) {
+			CampaignDataStoreI CDS = ApplicationContext.getApplicationContext()
+					.getDataStoreMgr().getCampaignDataStore();
+			Campaign campaign = CDS.findBySeq(Long.parseLong(request
+					.getParameter("campaignSeq")));
 			campaignGames = campaign.getGames();
 		}
 		JSONArray jsonArr = new JSONArray();
 		JSONObject mainJsonObject = new JSONObject();
-		try{
-			for(Game game: games){
-				if(game.isPublished() == isPublished){
+		try {
+			for (Game game : games) {
+				if (game.isPublished() == isPublished) {
 					JSONObject jsonObject = toJson(game);
-					for(Game campaignGame: campaignGames){
-						if(campaignGame.getSeq() == game.getSeq()){
-							jsonObject.put("isSelectedOnCampaign" , "true");
+					for (Game campaignGame : campaignGames) {
+						if (campaignGame.getSeq() == game.getSeq()) {
+							jsonObject.put("isSelectedOnCampaign", "true");
 							continue;
 						}
 					}
 					jsonArr.put(jsonObject);
 				}
 			}
+		} catch (Exception e) {
 
+		}
+		return jsonArr;
+	}
 
 	@Override
 	public void loadPlayer(HttpServletRequest request,
