@@ -16,6 +16,7 @@ public class Game {
 	private List<Questions> questions;
 	private Result gameResult; //for showing played games in Set
 	private int maxSecondsAllowed;
+	private boolean isPublished;
 	
 	public int getMaxSecondsAllowed() {
 		return maxSecondsAllowed;
@@ -95,5 +96,11 @@ public class Game {
 	public String getQuestionsXMLPath(){
 		String str = "questionXmls\\"+ this.getSeq();
 		return str;
+	}
+	public boolean isPublished() {
+		return isPublished;
+	}
+	public void setPublished(boolean isPublished) {
+		this.isPublished = isPublished;
 	}
 }

@@ -222,6 +222,15 @@ public class QuestionsMgr implements QuestionsMgrI {
 				game.setQuestions(questionsList);
 				GDS.Save(game);
 				json.put("gameSeq", game.getSeq());
+					
+				//saving game campaign relation here
+				if( campaignSeqStr != null && !campaignSeqStr.equals("")){
+					CampaignMgrI campaignMgr = ApplicationContext.getApplicationContext().getCampaiMgr();
+					Long campaignSeq = Long.parseLong(campaignSeqStr);
+					List<Game>games = new ArrayList<Game>();
+					games.add(game);
+					campaignMgr.saveCampaignGames(campaignSeq,games);
+				}
 			}else if(gameSeqStr != null && !gameSeqStr.equals("")){
 				game = GDS.findBySeqWithQuesAnswers(Long.parseLong(gameSeqStr));
 				List<Questions>questionsList = game.getQuestions();
@@ -230,13 +239,7 @@ public class QuestionsMgr implements QuestionsMgrI {
 				GDS.Save(game);
 				json.put("gameSeq", game.getSeq());
 			}	
-			if(campaignSeqStr != null && !campaignSeqStr.equals("")){
-				CampaignMgrI campaignMgr = ApplicationContext.getApplicationContext().getCampaiMgr();
-				Long campaignSeq = Long.parseLong(campaignSeqStr);
-				List<Game>games = new ArrayList<Game>();
-				games.add(game);
-				campaignMgr.saveCampaignGames(campaignSeq,games);
-			}
+			
 			json.put(IConstants.LAST_MODIFIED,  DateUtils.getGridDateFormat(questions.getLastModified()));
 			json.put(IConstants.CREATED_ON,  DateUtils.getGridDateFormat(questions.getCreatedOn()));
 		}catch(Exception  e){

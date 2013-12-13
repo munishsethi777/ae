@@ -28,10 +28,10 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 	private final static String SELECT_BY_PROJECT_SEQ = "select * from games where projectseq = ?";
 
 	private final static String SAVE = "insert into games(title, description, gametemplateseq, "
-			+ "projectseq,isenabled,lastmodifieddate,maxsecondsallowed,createdon) "
-			+ "values (?,?,?,?,?,?,?,?)";
+			+ "projectseq,isenabled,lastmodifieddate,maxsecondsallowed,createdon,ispublished) "
+			+ "values (?,?,?,?,?,?,?,?,?)";
 	private final static String UPDATE = "update games set title=?, description=?, gametemplateseq=?, "
-			+ " projectseq=?, isenabled=?,lastmodifieddate=?,maxsecondsallowed=? where seq=?";
+			+ " projectseq=?, isenabled=?,lastmodifieddate=?,maxsecondsallowed=?,ispublished=? where seq=?";
 
 	private final static String SAVE_QUESTIONS = "insert into gamequestions(gameseq, questionseq) values (?,?)";
 
@@ -91,7 +91,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 				templateSeq = game.getGameTemplate().getSeq();
 			}
 
-			Object[] params = new Object[8];
+			Object[] params = new Object[9];
 
 			params[0] = game.getTitle();
 			params[1] = game.getDescription();
@@ -100,10 +100,11 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			params[4] = game.isEnable();
 			params[5] = game.getLastModifiedDate();
 			params[6] = game.getMaxSecondsAllowed();
+			params[7] = game.isPublished();
 			if (game.getSeq() != 0) {
-				params[7] = game.getSeq();
+				params[8] = game.getSeq();
 			} else {
-				params[7] = game.getCreatedOn();
+				params[8] = game.getCreatedOn();
 			}
 
 			persistenceMgr.excecuteUpdate(SQL, params);
@@ -250,6 +251,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			boolean isEnable = rs.getBoolean("isenabled");
 			Date lastModifiedDate = rs.getDate("lastmodifieddate");
 			int maxSecondsAllowed = rs.getInt("maxsecondsallowed");
+			boolean isPublished = rs.getBoolean("ispublished");
 			
 			game = new Game();
 			game.setSeq(seq);
@@ -258,6 +260,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			game.setEnable(isEnable);
 			game.setLastModifiedDate(lastModifiedDate);
 			game.setMaxSecondsAllowed(maxSecondsAllowed);
+			game.setPublished(isPublished);
 			GameTemplates gameTemplates = null;
 			//Capture Game Template
 			try {

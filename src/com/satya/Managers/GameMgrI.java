@@ -15,7 +15,7 @@ import com.satya.BusinessObjects.Game;
 
 public interface GameMgrI {
 	public List<Game> getAllGames(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
-	public JSONArray getAllGameJson (HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
+	public JSONArray getAllGameJson (HttpServletRequest request, HttpServletResponse response,boolean isPublished)throws ServletException, IOException;
 	public JSONObject addGames(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException,Exception;
 	public JSONObject delete(long gameSeq)throws Exception;
 	public JSONArray deleteBulk(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException,Exception;

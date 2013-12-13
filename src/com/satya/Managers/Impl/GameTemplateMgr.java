@@ -52,7 +52,7 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 				templateObject.put("gameSeq", 0);
 				if(campaignGames != null){
 					for(Game game : campaignGames){
-						if(game.getGameTemplate().getSeq() == gameTemplate.getSeq()){
+						if(game.getGameTemplate().getSeq() == gameTemplate.getSeq() && game.isPublished()==false){
 							templateObject.put(IConstants.NAME,game.getTitle());
 							templateObject.put("gameSeq", game.getSeq());
 						}

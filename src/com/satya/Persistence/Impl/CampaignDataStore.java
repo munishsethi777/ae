@@ -24,7 +24,7 @@ import com.satya.Persistence.RowMapper;
 public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 	Logger logger = Logger.getLogger(CampaignDataStore.class);
 	private final static String SELECT = "select campaigns.*, games.seq as gameSeq, games.title as gameTitle, games.description as gameDescription," +
-			" games.projectseq as gameProjectSeq, games.lastmodifieddate as gameLastModifiedDate, games.isenabled as gameIsEnabled from campaigns" +
+			" games.projectseq as gameProjectSeq, games.lastmodifieddate as gameLastModifiedDate, games.isenabled as gameIsEnabled,games.ispublished as ispublished from campaigns" +
 			" left join campaigngames on campaigngames.campaignseq = campaigns.seq left join games on games.seq = campaigngames.gameseq ";
 	
 	private final static String SELECT_BY_SEQ = SELECT + "where campaigns.seq = ?";

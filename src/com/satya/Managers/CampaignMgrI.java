@@ -39,6 +39,9 @@ public interface CampaignMgrI {
 
 	public void saveCampaignGames(Long campaignSeq, List<Game> games)
 			throws Exception;
+	public void saveCampaignGames(HttpServletRequest request)throws ServletException, IOException,
+	Exception;
+	
 	//USERGROUPS METHODS
 	public void saveCampaignUserGroups(Long campaignSeq,
 			List<UserGroup> userGroups) throws Exception;

@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import com.satya.ApplicationContext;
 import com.satya.IConstants;
+import com.satya.BusinessObjects.Game;
 import com.satya.BusinessObjects.Project;
 import com.satya.Managers.AdminMgrI;
 import com.satya.Managers.CampaignMgrI;
@@ -74,10 +75,11 @@ public class AdminUserServlet extends BaseServletClass {
 	private static final String ADD_GAME_FROM_IMPORT_QUESTIONS = "addGameFromImportQuestion";
 	private static final String ADD_USER_GROUP_FROM_CAMPAIGN = "addUserGroupFromCampaign";
 	private static final String GET_SELECTED_USERGROUPS_BY_CAMPAIGN = "getSelectedUserGroupsByCampaign";
-
+	private static final String SET_GAMES_ON_CAMPAIGN = "setGamesOnCampaign";
+	
 	// Users UI
 	private static final String GET_REGISRATION_URL = "getRegistrationUrl";
-
+	
 	Logger log = Logger.getLogger(UserServlet.class.getName());
 
 	public AdminUserServlet() {
@@ -254,7 +256,7 @@ public class AdminUserServlet extends BaseServletClass {
 
 					} else if (action.equals("getAllGames")) {
 						JSONArray jsonArr = gameMgr.getAllGameJson(request,
-								response);
+								response,true);
 						response.getWriter().write(jsonArr.toString());
 
 					} else if (action.equals("getAllCampaigns")) {
@@ -371,12 +373,16 @@ public class AdminUserServlet extends BaseServletClass {
 						request.getRequestDispatcher(
 								IConstants.admin_loginIndex).forward(request,
 								response);
-					} else if (action.equals("downloadFailedRows")) {
+					}else if (action.equals("downloadFailedRows")) {
 						ApplicationContext.getApplicationContext()
 								.getAdminMgr()
 								.downloadFailedRows(request, response);
 					}
 
+					//campaign UI methods
+					else if(action.equals(SET_GAMES_ON_CAMPAIGN)){
+						campaignMgr.saveCampaignGames(request);
+					}
 				}
 
 			}

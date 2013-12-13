@@ -88,14 +88,29 @@ public class GameMgr implements GameMgrI {
 		games = GDS.FindByProject(currentProject.getSeq());
 		return games;		
 	}
-	public JSONArray getAllGameJson (HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+	public JSONArray getAllGameJson (HttpServletRequest request, HttpServletResponse response,boolean isPublished)throws ServletException, IOException {
 		List<Game> games = getAllGames(request,response);
+		List<Game> campaignGames = null;
+		if(request.getParameter("campaignSeq")!= null){
+			CampaignDataStoreI CDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getCampaignDataStore();
+			Campaign campaign = CDS.findBySeq(Long.parseLong(request.getParameter("campaignSeq")));
+			campaignGames = campaign.getGames();
+		}
 		JSONArray jsonArr = new JSONArray();
 		JSONObject mainJsonObject = new JSONObject();
-		for(Game game: games){ 
-			jsonArr.put(toJson(game));
-		}
 		try{
+			for(Game game: games){
+				if(game.isPublished() == isPublished){
+					JSONObject jsonObject = toJson(game);
+					for(Game campaignGame: campaignGames){
+						if(campaignGame.getSeq() == game.getSeq()){
+							jsonObject.put("isSelectedOnCampaign" , "true");
+							continue;
+						}
+					}
+					jsonArr.put(jsonObject);
+				}
+			}
 			mainJsonObject.put("jsonArr", jsonArr);
 		}catch(Exception e){
 			
@@ -305,6 +320,7 @@ public class GameMgr implements GameMgrI {
 			json.put(IConstants.GAME_TITLE, game.getTitle());
 			json.put(IConstants.GAME_DESCRIPTION, game.getDescription());
 			json.put(IConstants.IS_ENABLED, game.isEnable());
+			json.put("isPublished", game.isPublished());
 			json.put("gameMaxSecondsAllowed", game.getMaxSecondsAllowed());
 			json.put(IConstants.CREATED_ON,  DateUtils.getGridDateFormat(game.getCreatedOn()));
 			json.put(IConstants.LAST_MODIFIED_DATE, DateUtils.getGridDateFormat(game.getLastModifiedDate()));

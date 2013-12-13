@@ -89,9 +89,9 @@ public class UserGroupDataStore implements UserGroupDataStoreI,RowMapper {
 	}
 
 	private void saveUserGroupUsers(UserGroup userGroup){
-		Object[] deleteParams  = new Object[1];
-		deleteParams[0]= userGroup.getSeq();
-		persistenceMgr.excecuteUpdate(DELETE_USERGROUPUSERS, deleteParams);
+//		Object[] deleteParams  = new Object[1];
+//		deleteParams[0]= userGroup.getSeq();
+//		persistenceMgr.excecuteUpdate(DELETE_USERGROUPUSERS, deleteParams);
 		
 		for(User user:userGroup.getUsers()){
 			Object[] params  = new Object[2];
