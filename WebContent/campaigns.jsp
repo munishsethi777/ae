@@ -106,6 +106,8 @@
 			    		saveCampaignDetails();
 			    	}else if(newIndex == 2){
 			    		saveCampaignGames();
+			    	}else if(newIndex ==3){
+			    		saveCampaignUserGroup();
 			    	}
 			    	return true; 
 			    },
@@ -113,7 +115,12 @@
 			    onFinishing: function (event, currentIndex) { return true; }, 
 			    onFinished: function (event, currentIndex) { },
 			});
-			
+			function saveCampaignUserGroup(){
+				var userGroupSelectedIndex = $('#createSelectUserGroupRadios').jqxButtonGroup('getSelection');
+				if(userGroupSelectedIndex == 1){
+					addUserGroupFromEarlier();		
+				}
+			}
 			function saveCampaignDetails(){
 				saveCampaignDetailsAction("jqxGrid");
 				/* var validationResultCampaign = function (isValidCampaign) {

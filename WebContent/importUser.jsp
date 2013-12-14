@@ -42,6 +42,7 @@
 			$("#responseLbl").text("");
 			$("#failedlbl").text("");
 			$(".loadingGif").hide();
+			$('#submitImportButton').unbind();
 				$('#submitImportButton').on('click', function () {
 					$("#downloadLink").hide();
 					$("#responseLbl").text("");

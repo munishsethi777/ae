@@ -36,6 +36,7 @@
 			$("#downloadQuestionLink").hide();
 			$("#quslbl").text("")
 			$("#Questionfailedlbl").text("")
+			$('#submitImportButton').unbind();
 				$('#submitQuestionButton').on('click', function () {
 					$("#downloadQuestionLink").hide();
 					$("#quslbl").text("");

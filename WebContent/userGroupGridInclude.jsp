@@ -35,19 +35,20 @@
 	            
 		});//end document ready	
 	
-		function addFromEarlierUserGroup(dataRow){
-			var gridId = destinationGridId_;
-			if($("#isImportUsers").val()){
-				var gridId = "userGroupJqxGrid";
-			}
-			var allrows = $("#"+gridId).jqxGrid("getrows");
-			var allRowIds = new Array();
-			for(var i = 0;i<allrows.length;i++){
-				allRowIds.push(allrows[i].seq);
-			}
-			
-			dataRow['selectedChildrenRows'] = allRowIds.toString();
-			return dataRow;
+		function addUserGroupFromEarlier(){
+			var selectedRowIndexes = $("#userGroupJqxGrid").jqxGrid('selectedrowindexes');
+			var ids = "";
+			var i = 0;
+			$.each(selectedRowIndexes, function(index , value){
+				var dataRow = $("#userGroupJqxGrid").jqxGrid('getrowdata', value);
+				ids = ids + dataRow.seq;
+			});
+			var campaignSeq = $("#campaignSeq").val();
+			$.getJSON("AdminUser?action=addCampaignUserGroup&userGroupSeq=" + ids + "&campaignSeq=" + campaignSeq ,function(json){
+				if(json['status'] == 'success'){
+					$("#userGroupJqxGrid").jqxGrid('clearselection');
+				}
+			});
 		}
     </script>
 	<div id="userGroupJqxGrid"></div>
