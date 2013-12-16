@@ -185,9 +185,9 @@
 					id="userGroupDescriptionInput" /></td>
 			</tr>
 		</table>
-		<div id="mainUserSplitter" style="width: 100%; height: 100%">
+		<div id="mainUserSplitter" style="width: 100%; height:100%">
 			<div class="splitter-panel">
-				<div style="padding: 5px;overflow:scroll;height:100px;">
+				<div style="padding: 5px">
 					<%@include file="campaignSelectedUsersGridInclude.jsp"%>
 				</div>
 			</div>
