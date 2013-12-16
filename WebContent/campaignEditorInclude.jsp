@@ -33,9 +33,9 @@
 							<td>Enabled</td>
 							<td><div id="isEnabledInput"></div></td>
 						</tr>
-						<tr>
+						<!-- <tr>
 							<td><input type="button" style='margin-top: 15px; margin-left: 50px; float: left;' value="Save" id="saveCampaignButton" /></td>
 							<td><input type="button" style='margin-left: 5px; margin-top: 15px; float: left;' value="Close" id="closeButton" /></td>
-						</tr>
+						</tr> -->
 					</table>
 				</form>

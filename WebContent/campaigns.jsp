@@ -50,12 +50,12 @@
 		var isShowButtons = true;
 
 		$(document).ready(function () {
-				var editorWidth= "80%";
-				var editorHeight = "100%";
+				var editorWidth= "85%";
+				var editorHeight = "80%";
 				renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
 				$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 				$('#jqxCreateBeanWindow').on('open', function (event) { 
-					$('#jqxCreateBeanWindow').jqxWindow({ position: 'center',resizable: false }); 
+					$('#jqxCreateBeanWindow').jqxWindow({resizable: false,position: { x: 0, y: 0 } }); 
 					$("#jqxCampaignWizard").jqxScrollView('changePage', 0);//first slide always
 					//now rendering the usergroup usrs grid on campaign open window.
 					renderUserGrid();
@@ -66,7 +66,7 @@
 				$("#addQuestionsWindow").jqxWindow({ 
     				isModal: true, modalOpacity: 0.8,
     				resizable: true, theme: theme, autoOpen: false, 
-    				maxWidth:'80%', maxHeight:'90%',width:'80%', height:'90%', showCloseButton: true 
+    				maxWidth:'90%', maxHeight:'90%',width:'90%', height:'90%', showCloseButton: true 
     			});
 				
 				
@@ -99,7 +99,7 @@
 				enableFinishButton: true,
 				enablePagination: true,
 				enableAllSteps: true,
-				height:"800px",
+				height:"300px",
 				/* Events */
 			    onStepChanging: function (event, currentIndex, newIndex) { 
 			    	if(newIndex == 1){
@@ -226,13 +226,6 @@
     <div id="jqxGrid"></div>
 	<div id="jqxCreateBeanWindow">
 		<div class="title" style="font-weight:bold">Create New Campaign</div>
-		<!-- <span style="float:right;margin:10px;" id="campaignWizardButtons">
-			<label>Step 1 of 3</label>
-			<input type="button" value="previous" id="movePreviousCampaignWizard" />
-			<input type="button" value="next" id="moveNextCampaignWizard" />
-			<input type="button" value="close" id="closeCampaignWizard" />
-		</span>
-		 -->
 		<div id="jqxCampaignWizard" class="jqxCreateBeanEditor">
 		   	<h2>Campaign Information</h2>
 		   	<section><!-- Slide 1 -->
@@ -244,7 +237,7 @@
 					<button style="padding:4px 16px;" id="isCreateNewGame">Create new Games</button>
 					<button style="padding:4px 16px;" id="isUseEarlierGame">Use earlier Games</button>
 				</div>
-				<div id="createNewGameDiv">
+				<div id="createNewGameDiv" style="height:400px;overflow:scroll">
 					<%@ include file="campaignSelectGameTemplateBlock.jsp" %>
 				</div>
 				<div id="useEarlierGameDiv" style="display:none">
@@ -253,7 +246,7 @@
 				
 			</section>
 			<h2>Campaign Trainees</h2>
-			<section style="width:99%;height:100%"><!-- Slide 3 -->
+			<section><!-- Slide 3 -->
 				<div id="createSelectUserGroupRadios" style="clear:both;margin-bottom:6px;">
 					<button style="padding:4px 16px;" id="isCreateNewUserGroup">Create new UserGroup</button>
 					<button style="padding:4px 16px;" id="isUseEarlierUserGroup">Use earlier UserGroup</button>
