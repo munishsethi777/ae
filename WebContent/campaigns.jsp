@@ -106,6 +106,8 @@
 			    		saveCampaignDetails();
 			    	}else if(newIndex == 2){
 			    		saveCampaignGames();
+			    	}else if(newIndex == 3){
+			    		previewCampaign();
 			    	}
 			    	return true; 
 			    },
@@ -149,7 +151,7 @@
 					dataRow["campaignSeq"] = campaignSeq;
 					dataRow["gamesSeqs"] = gameSeqs.toString();
 					$.getJSON("AdminUser?action=setGamesOnCampaign",dataRow,function(json){
-						alert("done");
+						alert(json);
 					});
 				//}
 			}
@@ -261,7 +263,7 @@
 			</section>
 			<h2>Preview Campaign</h2>
 			<section><!-- Slide 4 -->
-				Preview Window
+				<%@ include file="campaignPreview.jsp"%>
 			</section>
 		</div>	
 	</div><!-- Ends createBeanWindow -->

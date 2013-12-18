@@ -403,4 +403,21 @@ public class GameMgr implements GameMgrI {
 		return jsonArr;
 	}
 
+	@Override
+	public List<Game> getGames(Long[] gameSeqs) {
+		GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
+		List<Game> games = GDS.findBySeqs(true, gameSeqs);
+		return games;
+	}
+
+	@Override
+	public JSONArray getJSONArray(List<Game> games) {
+		JSONArray jsonArray = new JSONArray();
+		for(Game game: games){
+			JSONObject json = toJson(game);
+			jsonArray.put(json);
+		}
+		return jsonArray;
+	}
+
 }

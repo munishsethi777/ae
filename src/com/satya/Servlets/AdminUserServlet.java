@@ -381,7 +381,9 @@ public class AdminUserServlet extends BaseServletClass {
 
 					//campaign UI methods
 					else if(action.equals(SET_GAMES_ON_CAMPAIGN)){
-						campaignMgr.saveCampaignGames(request);
+						List<Game> games = campaignMgr.saveCampaignGames(request);
+						JSONArray jsonArr = gameMgr.getJSONArray(games);
+						response.getWriter().write(jsonArr.toString());
 					}
 				}
 
