@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import com.satya.ApplicationContext;
 import com.satya.IConstants;
+import com.satya.BusinessObjects.Game;
 import com.satya.BusinessObjects.Project;
 import com.satya.Managers.AdminMgrI;
 import com.satya.Managers.CampaignMgrI;
@@ -378,9 +379,10 @@ public class AdminUserServlet extends BaseServletClass {
 								.downloadFailedRows(request, response);
 					}
 
-//campaign UI methods
-					else if(action.equals(SET_GAMES_ON_CAMPAIGN)){
-						List<Game> games = campaignMgr.saveCampaignGames(request);
+					// campaign UI methods
+					else if (action.equals(SET_GAMES_ON_CAMPAIGN)) {
+						List<Game> games = campaignMgr
+								.saveCampaignGames(request);
 						JSONArray jsonArr = gameMgr.getJSONArray(games);
 						response.getWriter().write(jsonArr.toString());
 
