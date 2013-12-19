@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import com.satya.ApplicationContext;
 import com.satya.IConstants;
+import com.satya.BusinessObjects.Game;
 import com.satya.BusinessObjects.Project;
 import com.satya.Managers.AdminMgrI;
 import com.satya.Managers.CampaignMgrI;
