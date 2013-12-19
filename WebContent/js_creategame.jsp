@@ -1,7 +1,5 @@
 <script>
 
-
-<!-- call onready of Campaigns.jsp -->
 function openAddQuestionsUI(gameSeq){
 	$("#addQuestionsWindow").jqxWindow('open');
 	loadSelectedQuestionsGrid(gameSeq);
@@ -76,11 +74,22 @@ function submitAction(action,dataRow){
 				 }
 				 
 				$("#selectedQuestionsGrid").jqxGrid('addrow', null, dataRowJson,null,true);
+				newQuestionAdded(tempSeq);
 			}$('#createQuestionForm')[0].reset();
 		}
 	});
 }
-
+function newQuestionAdded(templateSeq){
+	var questionCount = $("#selectedTemplateDivId"+templateSeq +" #gameTemplateTotalQuestions").val();
+	if(questionCount == ""){
+		questionCount = 0;
+	}
+	questionCount = parseInt(questionCount,10);
+	questionCount = questionCount + 1;
+	alert(questionCount);
+	$("#quesCount" + templateSeq).html("Count : " + questionCount);
+	$("#selectedTemplateDivId"+templateSeq +" #gameTemplateTotalQuestions").val(questionCount);
+}
 
 function loadGameTemplates(campaignSeq){
 	var getTemplatesUrl = "AdminUser?action=getAllGameTemplates&campaignSeq="+campaignSeq;
@@ -115,8 +124,7 @@ function loadGameTemplates(campaignSeq){
 				tempSeq = event.currentTarget.id;
 				tempSeq = tempSeq.replace("addQuestionLink" , "");
 				gameSeq = $("#gameSeq"+tempSeq).val();
-				openAddQuestionsUI(gameSeq)
-				$("#addQuestionsWindow").jqxWindow('open');							
+				openAddQuestionsUI(gameSeq);							
 			});
 			$("#deleteBeanConfirmation").jqxWindow({ resizable: true, theme: theme, autoOpen: false, width: 450, height: 200, showCloseButton: true });
 		});
@@ -127,12 +135,14 @@ function loadGameTemplates(campaignSeq){
 function getGameTemplateDiv(index,json){
 	var content= "";
 	content += "<div class='selectGameTemplatesDiv' id='selectedTemplateDivId"+json.seq+"'>";
+	content += "<input type='hidden' id='gameTemplateTotalQuestions'/>";
 	content += "<input type='hidden' id='gameTemplateSeq' value='" + json.seq + "'/>";
 	content += "<input type='hidden' id='gameSeq"+json.seq +"' value='"+json.gameSeq +"'/>";
 		content += "<div class='gameIcon'>";
 			content += "<img src='" + json.imagePath +"'/>";
 		content += "</div>";
 		content += "<div class='gameTemplateDetailsDiv'>";
+		content += "<label id='quesCount" + json.seq + "'></label>";		
 		content += "<div style='float:right' id='templateSeqRadio"+ json.seq +"'></div>";
 		content += '<label style="font-size:20px;">' + json.name + '</label> <label style="font-size:12px;">('+ json.maxQuestions +' Questions)</label>';
 	   	content += '<div class="smallFonts" style="height:70px;">' + json.description + '</div>';
@@ -186,6 +196,11 @@ function loadSelectedQuestionsGrid(gameSeq){
 			];
 	renderGrid("selectedQuestionsGrid",beanName,selQuesdataUrl,deleteUrl,addUrl,validatorRules,
 			columns,dataFields,true,selectedQuestionsEditorHeight,selectedQuestionsEditorWidth);
+	//unbinding close button of add question form to prevent it from closing the main screen
+	$("#closeButton").unbind();
+	$("#closeButton").click(function () {
+		$("#addQuestionsWindow").jqxWindow('close');
+	});
 	
 }
 </script>

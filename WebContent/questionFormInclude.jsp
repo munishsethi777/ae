@@ -130,7 +130,8 @@
 	</tr>
 	<tr>
 		<td></td>
-		<td><input type="button" class="saveQuestionButton"
+		<td>
+			<input type="button" class="saveQuestionButton"
 			style='margin-top: 15px; margin-left: 50px; float: left;'
 			value="Save"/> 
 			

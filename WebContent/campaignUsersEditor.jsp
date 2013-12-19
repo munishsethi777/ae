@@ -59,6 +59,15 @@
 		dataRow = getUserFormData(false)
 		submitAddUsers(dataRow);
 	}
+	function updateUserGroup(){
+		dataRow = getUserFormData(true);
+		$.getJSON("AdminUser?action=updateUserGroup", dataRow,	function(json) {
+			if (json['status'] == 'success'){
+				
+			}
+			
+		});
+	}
 	function submitAddUsers(dataRow) {
 		$.getJSON("AdminUser?action=addUserGroupFromCampaign", dataRow,
 				function(json) {

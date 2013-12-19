@@ -7,17 +7,21 @@ $(document).ready(function () {
     $(".saveQuestionButton").attr("id", "saveQuestionButtonClick");
 	$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 	$(".saveQuestionButton").jqxButton({ width: 70, theme: theme });
-	$(".closeQuestionButton").jqxButton({ width: 70, theme: theme });
-		
+	//generate add Question jqxWindow
+	$("#addQuestionsWindow").jqxWindow({ 
+				resizable: true, theme: theme, autoOpen: false,  showCloseButton: true,
+				resizable: true,animationType: 'fade',isModal: true,modalOpacity: 0.8});
+	
 	
 	var validatorRules = [
 				{ input: '#quesTitleInput', message: 'Question is required!', action: 'keyup, blur', rule: 'required' }];
+	
 	$("#saveQuestionButtonClick").click(function (event) {
 		var validationResult = function (isValid) {
-		if (isValid) {
-			addQuestionAndGame();
-		}
-	}
+			if (isValid) {
+				addQuestionAndGame();
+			}
+		};
 		$('#createQuestionForm').jqxValidator('validate', validationResult);
 	});
 	$('#createQuestionForm').jqxValidator({
@@ -29,9 +33,7 @@ $(document).ready(function () {
 	$("#createQuestionForm").on('validationSuccess', function () {
 		$("#createQuestionForm-iframe").fadeIn('fast');
 	});
-	$("#closeButton").click(function () {
-		$('#jqxCreateBeanWindow').jqxWindow('close'); 
-	});
+	
 	
 	$("#isCreateQuestion").jqxRadioButton({groupName:'saveOptions', width: 180, height: 25, checked: true, theme: theme });
 	$("#isSelectQuestion").jqxRadioButton({groupName:'saveOptions', width: 180, height: 25, theme: theme });
@@ -51,7 +53,6 @@ $(document).ready(function () {
     	$(".tabContent2").hide();
     	$(".tabContent3").show();
    });
-    //$("#selectedQuestionsExpander").jqxExpander({ width: '100%', theme: theme });
     $('#mainSplitter').jqxSplitter({ width: "100%", height: "100%", orientation: 'horizontal', theme: theme, panels: [{ size: 200 }, { size: 300}] });
     $(".editorArea").jqxPanel({ width:"100%", theme: theme });
      

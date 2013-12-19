@@ -13,7 +13,6 @@
         <script src="js/jquery.steps.js"></script>
     
 	<script type="text/javascript">
-		var gamesSavedJSON = null;
 		var pageName = "campaigns";
 		var tempSeq = 0;
 		var beanName = "Campaign";
@@ -103,15 +102,17 @@
 				height:"300px",
 				/* Events */
 			    onStepChanging: function (event, currentIndex, newIndex) { 
-			    	if(newIndex == 1){
+			    	//when a slide loses focus
+			    	if(currentIndex == 0){
 			    		saveCampaignDetails();
-			    	}else if(newIndex == 2){
+			    	}else if(currentIndex == 1){
 			    		saveCampaignGames();
-
-			    	}else if(newIndex ==3){
+			    	}else if(currentIndex == 2){
 			    		saveCampaignUserGroup();
+			    	}
+			    	// when preview slide gets focus
+			    	if(newIndex == 3){
 			    		previewCampaign();
-
 			    	}
 			    	return true; 
 			    },
@@ -119,10 +120,14 @@
 			    onFinishing: function (event, currentIndex) { return true; }, 
 			    onFinished: function (event, currentIndex) { },
 			});
+		}
+			
 			function saveCampaignUserGroup(){
 				var userGroupSelectedIndex = $('#createSelectUserGroupRadios').jqxButtonGroup('getSelection');
 				if(userGroupSelectedIndex == 1){
 					addUserGroupFromEarlier();		
+				}else{
+					updateUserGroup();
 				}
 			}
 			function saveCampaignDetails(){
@@ -135,39 +140,41 @@
 				};
 				$('#createCampaignForm').jqxValidator('validate', validationResultCampaign); */
 			}
+			function getAllSelectedGamesSeqs(){
+				var $allPublishedGamesRadios = $( "input[name^='earlierGameSeqRadio']" );
+				var gameSeqs = new Array();
+				$($allPublishedGamesRadios).each(function() {
+					if(this.value == "true"){
+						inputName = this.name;
+						gameSeq = this.name.substr(19);
+						gameSeqs.push(gameSeq);
+					}
+				});
+				var $allUnpublishedGamesRadios = $( "input[name^='templateSeqRadio']" );
+				$($allUnpublishedGamesRadios).each(function() {
+					if(this.value == "true"){
+						inputName = this.name;
+						gameSeq = this.name.substr(16);
+						gameSeqs.push(gameSeq);
+					}
+				});
+				return gameSeqs;
+			}
 			function saveCampaignGames(){
-				//var gameRadioSelectedIndex = $('#createSelectGameRadios').jqxButtonGroup('getSelection');
-				//if(gameRadioSelectedIndex == 1){
-					var $allPublishedGamesRadios = $( "input[name^='earlierGameSeqRadio']" );
-					var gameSeqs = new Array();
-					$($allPublishedGamesRadios).each(function() {
-						if(this.value == "true"){
-							inputName = this.name;
-							gameSeq = this.name.substr(19);
-							gameSeqs.push(gameSeq);
-						}
-					});
-					var $allUnpublishedGamesRadios = $( "input[name^='templateSeqRadio']" );
-					$($allUnpublishedGamesRadios).each(function() {
-						if(this.value == "true"){
-							inputName = this.name;
-							gameSeq = this.name.substr(16);
-							gameSeqs.push(gameSeq);
-						}
-					});
-					var campaignSeq = $("#createCampaignForm #seqInput").val();
+					gameSeqs = getAllSelectedGamesSeqs();
+					var campaignSeq = getCampaignSeqFromForm();
 					var dataRow = {};
 					dataRow["campaignSeq"] = campaignSeq;
 					dataRow["gamesSeqs"] = gameSeqs.toString();
 					$.getJSON("AdminUser?action=setGamesOnCampaign",dataRow,function(json){
-						gamesSavedJSON = json;
+						//games saved put validations if any
 					});
-				//}
 			}
+		function getCampaignSeqFromForm(){
+			var campaignSeq = $("#createCampaignForm #seqInput").val();
+			return campaignSeq;
 		}
-		function getGamesSavedJSON(){
-			return gamesSavedJSON;
-		}
+
 		function saveCampaignDetailsAction(gridId){
 			dataRow = {};
 			dataRow['rowId'] = $("#createCampaignForm #rowIdInput").val();
@@ -231,7 +238,7 @@
 <body class='default'>
 <%@ include file="menu.jsp" %>
 <%@ include file="grid.jsp" %>
-<div id='jqxWidget'>
+<div id='jqxWidget1'>
 	<!-- <label style="font-family:verdana;font-size: 16px;color:black;font-weight:bold">Campaigns Information</label><br>
 	<label style="font-family:verdana;font-size: 12px;color:grey">View, Create, Edit, Bulk Delete or Find through various users available in the database.</label>
  -->
