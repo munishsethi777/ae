@@ -23,6 +23,7 @@ import com.satya.BusinessObjects.User;
 import com.satya.BusinessObjects.UserGroup;
 import com.satya.Managers.CampaignMgrI;
 import com.satya.Managers.GameMgrI;
+import com.satya.Managers.UserGroupMgrI;
 import com.satya.Managers.UserMgrI;
 import com.satya.Persistence.CampaignDataStoreI;
 import com.satya.Persistence.UserGroupDataStoreI;
@@ -343,7 +344,7 @@ public class CampaignMgr implements CampaignMgrI {
 	}
 
 	@Override
-	public List<Game> saveCampaignGames(HttpServletRequest request)
+	public void saveCampaignGames(HttpServletRequest request)
 			throws ServletException, IOException, Exception {
 		String campaignSeqStr = request.getParameter("campaignSeq");
 		String gamesStr = request.getParameter("gamesSeqs");
@@ -361,11 +362,31 @@ public class CampaignMgr implements CampaignMgrI {
 			}
 		}
 		saveCampaignGames(campaignSeq, games);
-		Long[] gameArr = new Long[games.size()];
-		gameSeqList.toArray(gameArr);
+	}
+
+	@Override
+	public JSONObject getFullJSON(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException,
+			Exception {
 		GameMgrI gameMgr = ApplicationContext.getApplicationContext().getGamesMgr();
-		List<Game> gamesSaved = gameMgr.getGames(gameArr);
-		return gamesSaved;
+		UserGroupMgrI userGroupMgr = ApplicationContext.getApplicationContext().getUserGroupMgr();
+		CampaignDataStoreI CDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getCampaignDataStore();
+		
+		
+		String campaignSeqStr = request.getParameter("campaignSeq");
+		long campaignSeq = 0;
+		if(!campaignSeqStr.equals("")){
+			campaignSeq = Long.parseLong(campaignSeqStr);
+		}
+		Campaign campaign = CDS.findBySeq(campaignSeq);
+		List<Game> games = campaign.getGames();
+		JSONArray gamesJsonArr = gameMgr.getJSONArray(games);
+		JSONObject json = new JSONObject();
+		json.put("games", gamesJsonArr);
+		
+		JSONArray userGroupsJsonArr = userGroupMgr.getSelectedOnCampaignJSON(campaignSeq);
+		json.put("userGroup", userGroupsJsonArr.get(0));
+		return json;
 	}
 	
 

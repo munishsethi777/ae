@@ -23,9 +23,10 @@ public interface GameMgrI {
 	public JSONArray getSelectedOnSetJson (HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
 	public JSONObject addGameFromImportQuestion(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException,Exception;
+			
 	//USER METHODS
 	public void loadPlayer(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
-	public List<Game> getGames(Long[] gameSeqs);
+	public List<Game> getGames(HttpServletRequest request);
 	public JSONArray getJSONArray(List<Game> games);
 
 }

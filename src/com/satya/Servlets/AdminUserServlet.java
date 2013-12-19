@@ -366,6 +366,9 @@ public class AdminUserServlet extends BaseServletClass {
 						JSONArray json = imageMgr.getAllImagesJson(request,
 								response);
 						response.getWriter().write(json.toString());
+					}else if (action.equals("updateUserGroup")) {
+						JSONObject json = userGroupMgr.updateUserGroup(request, response);
+						response.getWriter().write(json.toString());
 					}
 					// LOGOUT BUTTON HIT ACTION
 					else if (action.equals(LOGOUT)) {
@@ -381,10 +384,17 @@ public class AdminUserServlet extends BaseServletClass {
 
 //campaign UI methods
 					else if(action.equals(SET_GAMES_ON_CAMPAIGN)){
-						List<Game> games = campaignMgr.saveCampaignGames(request);
+						campaignMgr.saveCampaignGames(request);
+
+					}
+					else if(action.equals("getGamesBySeqs")){
+						List<Game> games = gameMgr.getGames(request);	
 						JSONArray jsonArr = gameMgr.getJSONArray(games);
 						response.getWriter().write(jsonArr.toString());
-
+					}
+					else if(action.equals("getCampaignForPreview")){
+						JSONObject json = campaignMgr.getFullJSON(request, response);
+						response.getWriter().write(json.toString());
 					}
 				}
 

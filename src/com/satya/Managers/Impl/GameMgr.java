@@ -404,9 +404,15 @@ public class GameMgr implements GameMgrI {
 	}
 
 	@Override
-	public List<Game> getGames(Long[] gameSeqs) {
+	public List<Game> getGames(HttpServletRequest request) {
+		String gameSeqsStr = request.getParameter("gameSeqs");
+		String[] gameSeqsStrArr = gameSeqsStr.split(",");
+		Long[] gameSeqsArr = new Long[gameSeqsStrArr.length];
+		for(int i=0;i<gameSeqsStrArr.length; i++){
+			gameSeqsArr[i] = Long.parseLong(gameSeqsStrArr[i]);
+		}
 		GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
-		List<Game> games = GDS.findBySeqs(true, gameSeqs);
+		List<Game> games = GDS.findBySeqs(true, gameSeqsArr);
 		return games;
 	}
 
@@ -419,5 +425,6 @@ public class GameMgr implements GameMgrI {
 		}
 		return jsonArray;
 	}
+
 
 }
