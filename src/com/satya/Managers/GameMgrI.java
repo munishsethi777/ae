@@ -25,4 +25,7 @@ public interface GameMgrI {
 	throws ServletException, IOException,Exception;
 	//USER METHODS
 	public void loadPlayer(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
+	public List<Game> getGames(Long[] gameSeqs);
+	public JSONArray getJSONArray(List<Game> games);
+
 }

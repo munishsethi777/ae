@@ -155,14 +155,15 @@
 							$('#jqxCreateBeanWindow').jqxWindow('close');
 						});
 
-						$('#mainUserSplitter').jqxSplitter({
-							width : "100%",
+ 						$('#mainUserSplitter').jqxSplitter({
+							width : "96%",
 							height : "100%",
 							orientation : 'horizontal',
-							theme : theme
+							theme : theme,
+							panels: [{ size: '50%'}, {size: '50%'}]
 						});
 						$(".userEditorArea").jqxPanel({
-							width : "100%",
+							width : "90%",
 							height : "100%",
 							theme : theme
 						});
@@ -171,7 +172,7 @@
 </script>
 
 
-<div id="addusersWindow" style="width: 100%; height: 600px">
+<div id="addusersWindow" style="width: 100%; height:480px">
 	<div id="jqxCreateBeanEditor" style="height: 100%;">
 		<table style="overflow: hidden; margin: 10px;">
 			<tr>
@@ -184,14 +185,13 @@
 					id="userGroupDescriptionInput" /></td>
 			</tr>
 		</table>
-		<div id="mainUserSplitter" style="width: 100%; height: 100%">
+		<div id="mainUserSplitter" style="width: 100%; height:100%">
 			<div class="splitter-panel">
-				<div style="padding: 5px;">
+				<div style="padding: 5px">
 					<%@include file="campaignSelectedUsersGridInclude.jsp"%>
 				</div>
 			</div>
-			<div class="splitter-panel userEditorArea"
-				style="height: 100%; width: 100%">
+			<div class="splitter-panel userEditorArea"	style="height: 100%; width: 100%; padding:6px;">
 				<div class="optionRadios" style="clear: both; margin-bottom: 40px;">
 					<div id='isCreateNewUser' style="float: left">Create new User</div>
 					<div id='isImportUsers' style="float: left">Import Users from
@@ -208,35 +208,33 @@
 						<tr>
 							<td>Name</td>
 							<td><input name="name" type="text" id="NameUserInput" /></td>
-						</tr>
-						<tr>
+						
 							<td>Mobile</td>
 							<td><input name="mobile" type="text" id="mobileInput" /></td>
 						</tr>
 						<tr>
 							<td>E-Mail</td>
 							<td><input name="email" type="text" id="emailInput" /></td>
-						</tr>
-						<tr>
+						
 							<td>Location</td>
 							<td><input name="location" type="text" id="locationInput" /></td>
 						</tr>
 						<tr>
 							<td>Username</td>
 							<td><input name="username" type="text" id="usernameInput" /></td>
-						</tr>
-						<tr>
+						
 							<td>Password</td>
 							<td><input name="password" type="text" id="passwordInput" /></td>
 						</tr>
 						<tr>
 							<td>Enabled</td>
 							<td><div id="isEnabledInput"></div></td>
-						</tr>
-						<tr>
+						
 							<td><input type="button"
 								style='margin-top: 15px; margin-left: 50px; float: left;'
-								value="Save User" id="addUserButton" /></td>
+								value="Save User" id="addUserButton" />
+							</td>
+							<td></td>
 						</tr>
 					</table>
 					</form>

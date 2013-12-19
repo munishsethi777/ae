@@ -378,9 +378,12 @@ public class AdminUserServlet extends BaseServletClass {
 								.downloadFailedRows(request, response);
 					}
 
-					// campaign UI methods
-					else if (action.equals(SET_GAMES_ON_CAMPAIGN)) {
-						campaignMgr.saveCampaignGames(request);
+//campaign UI methods
+					else if(action.equals(SET_GAMES_ON_CAMPAIGN)){
+						List<Game> games = campaignMgr.saveCampaignGames(request);
+						JSONArray jsonArr = gameMgr.getJSONArray(games);
+						response.getWriter().write(jsonArr.toString());
+
 					}
 				}
 

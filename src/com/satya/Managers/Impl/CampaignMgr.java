@@ -22,6 +22,7 @@ import com.satya.BusinessObjects.Set;
 import com.satya.BusinessObjects.User;
 import com.satya.BusinessObjects.UserGroup;
 import com.satya.Managers.CampaignMgrI;
+import com.satya.Managers.GameMgrI;
 import com.satya.Managers.UserMgrI;
 import com.satya.Persistence.CampaignDataStoreI;
 import com.satya.Persistence.UserGroupDataStoreI;
@@ -342,22 +343,32 @@ public class CampaignMgr implements CampaignMgrI {
 	}
 
 	@Override
-	public void saveCampaignGames(HttpServletRequest request)
+	public List<Game> saveCampaignGames(HttpServletRequest request)
 			throws ServletException, IOException, Exception {
 		String campaignSeqStr = request.getParameter("campaignSeq");
 		String gamesStr = request.getParameter("gamesSeqs");
 		Long campaignSeq = Long.parseLong(campaignSeqStr);
 		List<Game> games = new ArrayList<Game>();
+		List<Long> gameSeqList = new ArrayList();
+		
 		if(!gamesStr.equals("")){
 			String[] gamesStrArr = gamesStr.split(",");
 			for (String gameStr : gamesStrArr) {
 				Game game = new Game();
 				game.setSeq(Long.parseLong(gameStr));
+				gameSeqList.add(game.getSeq());
 				games.add(game);
 			}
 		}
 		saveCampaignGames(campaignSeq, games);
+		Long[] gameArr = new Long[games.size()];
+		gameSeqList.toArray(gameArr);
+		GameMgrI gameMgr = ApplicationContext.getApplicationContext().getGamesMgr();
+		List<Game> gamesSaved = gameMgr.getGames(gameArr);
+		return gamesSaved;
 	}
+	
+
 
 }
 

@@ -14,6 +14,7 @@ public interface GameDataStoreI {
 	public List<Game>FindByProject(long projectSeq);
 	public void Delete(long gameSeq);
 	public Game findBySeq(long seq);
+	public List<Game> findBySeqs(boolean isEnable,Long[] gameSeqs);
 	public Game findBySeqWithQuesAnswers(long seq);
 	
 	public List<Game> findAvailableForSet(long setSeq);

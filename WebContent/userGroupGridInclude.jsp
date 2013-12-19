@@ -43,7 +43,7 @@
 				var dataRow = $("#userGroupJqxGrid").jqxGrid('getrowdata', value);
 				ids = ids + dataRow.seq;
 			});
-			var campaignSeq = $("#campaignSeq").val();
+			var campaignSeq = $("#createCampaignForm #seqInput").val();
 			$.getJSON("AdminUser?action=addCampaignUserGroup&userGroupSeq=" + ids + "&campaignSeq=" + campaignSeq ,function(json){
 				if(json['status'] == 'success'){
 					$("#userGroupJqxGrid").jqxGrid('clearselection');

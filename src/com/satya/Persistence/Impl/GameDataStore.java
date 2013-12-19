@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.util.StringUtil;
 
+import com.mysql.jdbc.StringUtils;
 import com.satya.BusinessObjects.Campaign;
 import com.satya.BusinessObjects.Game;
 import com.satya.BusinessObjects.GameTemplates;
@@ -74,6 +76,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 	private static String FIND_GAMES_BY_CAMPAIGN = 
 			"select games.* from games left join campaigngames on campaigngames.gameseq = games.seq "+
 			"where campaigngames.campaignseq = ?";
+	
 	
 	public GameDataStore(PersistenceMgr psmgr) {
 		this.persistenceMgr = psmgr;
@@ -333,6 +336,22 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 		}
 		return game;
 
+	}
+
+	@Override
+	public List<Game> findBySeqs(boolean isEnable, Long[] gameSeqs) {
+		StringBuilder seqsStr = new StringBuilder();
+		for(int i = 0 ; i<gameSeqs.length ; i++){
+			seqsStr.append(gameSeqs[i]);
+			if(i < (gameSeqs.length-1)){
+				seqsStr.append(",");
+			}
+		}
+		String sql = "select * from games where isenabled = 1 and seq in ("+ seqsStr +")";
+		if(isEnable){
+			sql = "select * from games where isenabled = 1 and seq in ("+ seqsStr +")";
+		}
+		return (List<Game>) persistenceMgr.executePSQuery(sql, this);
 	}
 
 }
