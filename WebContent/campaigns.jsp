@@ -13,6 +13,7 @@
         <script src="js/jquery.steps.js"></script>
     
 	<script type="text/javascript">
+		var gamesSavedJSON = null;
 		var pageName = "campaigns";
 		var tempSeq = 0;
 		var beanName = "Campaign";
@@ -151,12 +152,13 @@
 					dataRow["campaignSeq"] = campaignSeq;
 					dataRow["gamesSeqs"] = gameSeqs.toString();
 					$.getJSON("AdminUser?action=setGamesOnCampaign",dataRow,function(json){
-						alert(json);
+						gamesSavedJSON = json;
 					});
 				//}
 			}
-			
-			
+		}
+		function getGamesSavedJSON(){
+			return gamesSavedJSON;
 		}
 		function saveCampaignDetailsAction(gridId){
 			dataRow = {};

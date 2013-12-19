@@ -21,6 +21,7 @@ import com.satya.Persistence.GameTemplatesDataStoreI;
 public class GameTemplateMgr implements GameTemplatesMgrI {
 	private static final String IMAGE_PATH = "imagePath";
 	private static final String PATH = "path";
+	private static final String MAX_QUESTIONS="maxQuestions";
 
 	public List<GameTemplates> getAllGameTemplates()throws ServletException, IOException{
 		List<GameTemplates> gameTemplates = null;
@@ -74,7 +75,8 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 			json.put(IConstants.NAME, gameTemplate.getName());
 			json.put(PATH, gameTemplate.getPath());
 			json.put(IMAGE_PATH, gameTemplate.getImagePath());
-			json.put(IConstants.DESCRIPTION, gameTemplate.getDescription());			
+			json.put(IConstants.DESCRIPTION, gameTemplate.getDescription());
+			json.put(MAX_QUESTIONS, gameTemplate.getMaxQuestions());
 		}catch( Exception e){
 			
 		}

@@ -134,7 +134,7 @@ function getGameTemplateDiv(index,json){
 		content += "</div>";
 		content += "<div class='gameTemplateDetailsDiv'>";
 		content += "<div style='float:right' id='templateSeqRadio"+ json.seq +"'></div>";
-		content += '<h1>' + json.name + '</h1>';
+		content += '<label style="font-size:20px;">' + json.name + '</label> <label style="font-size:12px;">('+ json.maxQuestions +' Questions)</label>';
 	   	content += '<div class="smallFonts" style="height:70px;">' + json.description + '</div>';
 	content += '<div style="margin-top:10px;">';
 	content += "<input style='display:inline-table' value='Demo' type='button' id='demo"+json.seq+"'/>";

@@ -38,13 +38,15 @@ public class GameTemplateDataStore implements GameTemplatesDataStoreI,RowMapper 
 			String name = rs.getString("name");
 			String path = rs.getString("path");
 			String  imagePath = rs.getString("imagepath");			
-			String description = rs.getString("description");		
+			String description = rs.getString("description");
+			int maxQuestions = rs.getInt("maxquestions");
 			gameTemplates = new GameTemplates();
 			gameTemplates.setSeq(seq);
 			gameTemplates.setPath(path);
 			gameTemplates.setName(name);
 			gameTemplates.setImagePath(imagePath);
 			gameTemplates.setDescription(description);
+			gameTemplates.setMaxQuestions(maxQuestions);
 		}catch(Exception e){
 			logger.error("GamTemplatesDataStore populate method error",e);
 		}
