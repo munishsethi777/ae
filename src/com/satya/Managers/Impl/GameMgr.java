@@ -19,6 +19,7 @@ import com.satya.BusinessObjects.Campaign;
 import com.satya.BusinessObjects.Game;
 import com.satya.BusinessObjects.GameTemplates;
 import com.satya.BusinessObjects.Project;
+import com.satya.BusinessObjects.QuestionAnswers;
 import com.satya.BusinessObjects.Questions;
 import com.satya.BusinessObjects.Result;
 import com.satya.BusinessObjects.User;
@@ -424,6 +425,38 @@ public class GameMgr implements GameMgrI {
 			jsonArray.put(json);
 		}
 		return jsonArray;
+	}
+
+	@Override
+	public JSONArray getGameQuestionAnswersJSONByGameSeq(
+			HttpServletRequest request) {
+		String gameSeqStr = request.getParameter("gameSeq");
+		JSONArray mainJsonarr = new JSONArray();
+		try{
+			long gameSeq = Long.parseLong(gameSeqStr);
+			GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
+			Game game = GDS.findBySeqWithQuesAnswers(gameSeq);
+			
+			for(Questions question : game.getQuestions()){
+				JSONObject json = new JSONObject();
+				json.put("title", question.getTitle());
+				json.put("description", question.getDescription());
+				StringBuilder answersString = new StringBuilder();
+				for(QuestionAnswers answer : question.getQuestionAnswers()){
+					if(question.getAnswerId() == answer.getSeq()){
+						answersString.append("<span style='color:green'>"+ answer.getAnswerTitle() +"</span><br>");
+					}else{
+						answersString.append("<span style='color:red'>"+ answer.getAnswerTitle() +"</span><br>");
+					}
+					
+				}
+				json.put("answers", answersString.toString());
+				mainJsonarr.put(json);
+			}
+		}catch(Exception e){
+			logger.error("error while getGameQuestionAnswrsCall",e);
+		}
+		return mainJsonarr;
 	}
 
 

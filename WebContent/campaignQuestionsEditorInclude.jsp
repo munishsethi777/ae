@@ -55,7 +55,9 @@ $(document).ready(function () {
    });
     $('#mainSplitter').jqxSplitter({ width: "100%", height: "100%", orientation: 'horizontal', theme: theme, panels: [{ size: 200 }, { size: 300}] });
     $(".editorArea").jqxPanel({ width:"100%", theme: theme });
-     
+    
+
+	
 });//end document ready
 
 </script>
