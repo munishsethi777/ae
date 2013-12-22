@@ -165,14 +165,14 @@
 						});
 
  						$('#mainUserSplitter').jqxSplitter({
-							width : "96%",
+							width : "98%",
 							height : "100%",
 							orientation : 'horizontal',
 							theme : theme,
-							panels: [{ size: '50%'}, {size: '50%'}]
+							panels: [{ size: '55%'}, {size: '45%'}]
 						});
 						$(".userEditorArea").jqxPanel({
-							width : "90%",
+							width : "100%",
 							height : "100%",
 							theme : theme
 						});
@@ -182,7 +182,7 @@
 
 
 <div id="addusersWindow" style="width: 100%; height:480px">
-	<div id="jqxCreateBeanEditor" style="height: 100%;">
+	<div id="jqxCreateBeanEditor" style="height: 95%;">
 		<table style="overflow: hidden; margin: 10px;">
 			<tr>
 				<td>User Group Name</td>
@@ -196,11 +196,11 @@
 		</table>
 		<div id="mainUserSplitter" style="width: 100%; height:100%">
 			<div class="splitter-panel">
-				<div style="padding: 5px">
+				<div style="padding: 5px;height:300px">
 					<%@include file="campaignSelectedUsersGridInclude.jsp"%>
 				</div>
 			</div>
-			<div class="splitter-panel userEditorArea"	style="height: 100%; width: 100%; padding:6px;">
+			<div class="splitter-panel userEditorArea"	style="padding:6px;">
 				<div class="optionRadios" style="clear: both; margin-bottom: 40px;">
 					<div id='isCreateNewUser' style="float: left">Create new User</div>
 					<div id='isImportUsers' style="float: left">Import Users from
