@@ -20,8 +20,7 @@
 		var deleteUrl = "AdminUser?action=deleteCampaign";
 		var addUrl = "AdminUser?action=addCampaign";
 	
-		var validatorRules = [
-				{ input: '#nameInput', message: 'Name is required!', action: 'keyup, blur', rule: 'required' }];
+		
 				
 		var columns = [
 				{ text: 'Name', datafield: 'name',editable:false,width:190  },
@@ -52,7 +51,7 @@
 		$(document).ready(function () {
 				var editorWidth= "85%";
 				var editorHeight = "80%";
-				renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
+				renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,"",columns,dataFields,true,editorHeight,editorWidth);
 				$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 				$('#jqxCreateBeanWindow').on('open', function (event) { 
 					$('#jqxCreateBeanWindow').jqxWindow({resizable: false,position: { x: 0, y: 0 } }); 
@@ -76,15 +75,10 @@
 				$("#validTillDateInput").jqxCalendar({width: 220, height: 220, theme: theme });
 				$("#launchMessageInput").jqxInput({	placeHolder : "enter a campaign launch message", height : 25, width : 500, minLength : 1, maxLength : 256});
 				//savebutton click
+			
 				$("#saveCampaignButton").jqxButton({ width: 70, theme: theme });
 	
-				$('#createCampaignForm').jqxValidator({
-					animationDuration:5,
-					rules: validatorRules
-				});		
-				$("#createCampaignForm").on('validationSuccess', function () {
-					$("#createCampaignForm-iframe").fadeIn('fast');
-				});
+				
 				
 				createWizardLayout();
 				createNewEarlierRadios();	
@@ -104,7 +98,7 @@
 			    onStepChanging: function (event, currentIndex, newIndex) { 
 			    	//when a slide loses focus
 			    	if(currentIndex == 0){
-			    		saveCampaignDetails();
+			    		return saveCampaignDetails();
 			    	}else if(currentIndex == 1){
 			    		saveCampaignGames();
 			    	}else if(currentIndex == 2){
@@ -130,16 +124,20 @@
 					updateUserGroup();
 				}
 			}
+			
+			
 			function saveCampaignDetails(){
-				saveCampaignDetailsAction("jqxGrid");
-				/* var validationResultCampaign = function (isValidCampaign) {
-					if (isValidCampaign) {
-						alert("sae camp");
+				var isStepChange = false;
+				var validationCampResult = function (isValid) {
+					if (isValid) {
 						saveCampaignDetailsAction("jqxGrid");
+						isStepChange = isValid;
 					}
-				};
-				$('#createCampaignForm').jqxValidator('validate', validationResultCampaign); */
+				}
+				$('#createCampaignForm').jqxValidator('validate', validationCampResult);
+				return isStepChange;
 			}
+			
 			function getAllSelectedGamesSeqs(){
 				var $allPublishedGamesRadios = $( "input[name^='earlierGameSeqRadio']" );
 				var gameSeqs = new Array();

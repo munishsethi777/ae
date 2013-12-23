@@ -155,7 +155,24 @@ function getGameTemplateDiv(index,json){
 		content += '</div>';
 		return content;
 }
-	
+	var questionsDataFields = [
+               			{ name: 'seq', type: 'integer' },
+               			{ name: 'quesTitle', type: 'string' },
+               			{ name: 'description', type: 'string' },
+               			{ name: 'points', type: 'string' },
+               			{ name: 'negativePoints', type: 'string' },
+               			{ name: 'maxSecondsAllowed', type: 'string' },
+               			{ name: 'extraAttemptsAllowed', type: 'string' },
+               			{ name: 'isEnabled', type: 'bool' },
+               			{ name: 'createdOn', type: 'date' },
+               			{ name: 'lastmodifieddate', type: 'date'},
+               			{ name: 'answer1', type: 'string'},
+               			{ name: 'isAnswerCorrect', type: 'string' },
+               			{ name: 'answer2', type: 'string'},
+               			{ name: 'answer3', type: 'string'},
+               			{ name: 'answer4', type: 'string'}
+               			
+          ];
 function loadSelectedQuestionsGrid(gameSeq){
 
 	var selectedQuestionsEditorWidth= "70%";
@@ -176,26 +193,9 @@ function loadSelectedQuestionsGrid(gameSeq){
 			{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width:60}
 			];
 
-	var dataFields = [
-			{ name: 'seq', type: 'integer' },
-			{ name: 'quesTitle', type: 'string' },
-			{ name: 'description', type: 'string' },
-			{ name: 'points', type: 'string' },
-			{ name: 'negativePoints', type: 'string' },
-			{ name: 'maxSecondsAllowed', type: 'string' },
-			{ name: 'extraAttemptsAllowed', type: 'string' },
-			{ name: 'isEnabled', type: 'bool' },
-			{ name: 'createdOn', type: 'date' },
-			{ name: 'lastmodifieddate', type: 'date'},
-			{ name: 'answer1', type: 'string'},
-			{ name: 'isAnswerCorrect', type: 'string' },
-			{ name: 'answer2', type: 'string'},
-			{ name: 'answer3', type: 'string'},
-			{ name: 'answer4', type: 'string'}
-			
-			];
+	
 	renderGrid("selectedQuestionsGrid",beanName,selQuesdataUrl,deleteUrl,addUrl,validatorRules,
-			columns,dataFields,true,selectedQuestionsEditorHeight,selectedQuestionsEditorWidth);
+			columns,questionsDataFields,true,selectedQuestionsEditorHeight,selectedQuestionsEditorWidth);
 	//unbinding close button of add question form to prevent it from closing the main screen
 	$("#closeButton").unbind();
 	$("#closeButton").click(function () {
@@ -203,4 +203,5 @@ function loadSelectedQuestionsGrid(gameSeq){
 	});
 	
 }
+
 </script>
