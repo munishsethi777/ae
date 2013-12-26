@@ -39,7 +39,7 @@ public interface CampaignMgrI {
 
 	public void saveCampaignGames(Long campaignSeq, List<Game> games)
 			throws Exception;
-	public List<Game> saveCampaignGames(HttpServletRequest request)throws ServletException, IOException,
+	public void saveCampaignGames(HttpServletRequest request)throws ServletException, IOException,
 	Exception;
 	
 	//USERGROUPS METHODS
@@ -47,6 +47,11 @@ public interface CampaignMgrI {
 			List<UserGroup> userGroups) throws Exception;
 
 	public JSONObject saveCampaignUserGroups(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException,
+			Exception;
+	
+	//Preview Methods
+	public JSONObject getFullJSON(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException,
 			Exception;
 }

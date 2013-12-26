@@ -1,4 +1,4 @@
-<form id="createCampaignForm" name="createCampaignForm" style="padding:10px"/>
+<form id="createCampaignForm" name="createCampaignForm" method="POST" style="padding:10px"/>
 					<input type="hidden" name="rowId" id="rowIdInput"/>
 					<input type="hidden" name="seq" id="seqInput"/>
 					<input type="hidden" name="campaignSeq" id="campaignSeq"/>
@@ -39,3 +39,17 @@
 						</tr> -->
 					</table>
 				</form>
+<script type="text/javascript">
+$(document).ready(function () {
+	var campValidatorRules = [{ input: '#launchMessageInput', message: 'Launch Message is required!', action: 'keyup, blur', rule: 'required' }];
+	$("#saveCampaignButton").jqxButton({ width: 70, theme: theme });
+	
+	$('#createCampaignForm').jqxValidator({
+		animationDuration:5,
+		rules: campValidatorRules
+	});		
+	$("#createCampaignForm").on('validationSuccess', function () {
+		$("#createCampaignForm-iframe").fadeIn('fast');
+	});
+});
+</script>

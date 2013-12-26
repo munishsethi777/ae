@@ -1,7 +1,5 @@
 <script>
 
-
-<!-- call onready of Campaigns.jsp -->
 function openAddQuestionsUI(gameSeq){
 	$("#addQuestionsWindow").jqxWindow('open');
 	loadSelectedQuestionsGrid(gameSeq);
@@ -76,11 +74,22 @@ function submitAction(action,dataRow){
 				 }
 				 
 				$("#selectedQuestionsGrid").jqxGrid('addrow', null, dataRowJson,null,true);
+				newQuestionAdded(tempSeq);
 			}$('#createQuestionForm')[0].reset();
 		}
 	});
 }
-
+function newQuestionAdded(templateSeq){
+	var questionCount = $("#selectedTemplateDivId"+templateSeq +" #gameTemplateTotalQuestions").val();
+	if(questionCount == ""){
+		questionCount = 0;
+	}
+	questionCount = parseInt(questionCount,10);
+	questionCount = questionCount + 1;
+	alert(questionCount);
+	$("#quesCount" + templateSeq).html("Count : " + questionCount);
+	$("#selectedTemplateDivId"+templateSeq +" #gameTemplateTotalQuestions").val(questionCount);
+}
 
 function loadGameTemplates(campaignSeq){
 	var getTemplatesUrl = "AdminUser?action=getAllGameTemplates&campaignSeq="+campaignSeq;
@@ -115,8 +124,7 @@ function loadGameTemplates(campaignSeq){
 				tempSeq = event.currentTarget.id;
 				tempSeq = tempSeq.replace("addQuestionLink" , "");
 				gameSeq = $("#gameSeq"+tempSeq).val();
-				openAddQuestionsUI(gameSeq)
-				$("#addQuestionsWindow").jqxWindow('open');							
+				openAddQuestionsUI(gameSeq);							
 			});
 			$("#deleteBeanConfirmation").jqxWindow({ resizable: true, theme: theme, autoOpen: false, width: 450, height: 200, showCloseButton: true });
 		});
@@ -127,12 +135,14 @@ function loadGameTemplates(campaignSeq){
 function getGameTemplateDiv(index,json){
 	var content= "";
 	content += "<div class='selectGameTemplatesDiv' id='selectedTemplateDivId"+json.seq+"'>";
+	content += "<input type='hidden' id='gameTemplateTotalQuestions'/>";
 	content += "<input type='hidden' id='gameTemplateSeq' value='" + json.seq + "'/>";
 	content += "<input type='hidden' id='gameSeq"+json.seq +"' value='"+json.gameSeq +"'/>";
 		content += "<div class='gameIcon'>";
 			content += "<img src='" + json.imagePath +"'/>";
 		content += "</div>";
 		content += "<div class='gameTemplateDetailsDiv'>";
+		content += "<label id='quesCount" + json.seq + "'></label>";		
 		content += "<div style='float:right' id='templateSeqRadio"+ json.seq +"'></div>";
 		content += '<label style="font-size:20px;">' + json.name + '</label> <label style="font-size:12px;">('+ json.maxQuestions +' Questions)</label>';
 	   	content += '<div class="smallFonts" style="height:70px;">' + json.description + '</div>';
@@ -145,7 +155,24 @@ function getGameTemplateDiv(index,json){
 		content += '</div>';
 		return content;
 }
-	
+	var questionsDataFields = [
+               			{ name: 'seq', type: 'integer' },
+               			{ name: 'quesTitle', type: 'string' },
+               			{ name: 'description', type: 'string' },
+               			{ name: 'points', type: 'string' },
+               			{ name: 'negativePoints', type: 'string' },
+               			{ name: 'maxSecondsAllowed', type: 'string' },
+               			{ name: 'extraAttemptsAllowed', type: 'string' },
+               			{ name: 'isEnabled', type: 'bool' },
+               			{ name: 'createdOn', type: 'date' },
+               			{ name: 'lastmodifieddate', type: 'date'},
+               			{ name: 'answer1', type: 'string'},
+               			{ name: 'isAnswerCorrect', type: 'string' },
+               			{ name: 'answer2', type: 'string'},
+               			{ name: 'answer3', type: 'string'},
+               			{ name: 'answer4', type: 'string'}
+               			
+          ];
 function loadSelectedQuestionsGrid(gameSeq){
 
 	var selectedQuestionsEditorWidth= "70%";
@@ -166,26 +193,15 @@ function loadSelectedQuestionsGrid(gameSeq){
 			{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width:60}
 			];
 
-	var dataFields = [
-			{ name: 'seq', type: 'integer' },
-			{ name: 'quesTitle', type: 'string' },
-			{ name: 'description', type: 'string' },
-			{ name: 'points', type: 'string' },
-			{ name: 'negativePoints', type: 'string' },
-			{ name: 'maxSecondsAllowed', type: 'string' },
-			{ name: 'extraAttemptsAllowed', type: 'string' },
-			{ name: 'isEnabled', type: 'bool' },
-			{ name: 'createdOn', type: 'date' },
-			{ name: 'lastmodifieddate', type: 'date'},
-			{ name: 'answer1', type: 'string'},
-			{ name: 'isAnswerCorrect', type: 'string' },
-			{ name: 'answer2', type: 'string'},
-			{ name: 'answer3', type: 'string'},
-			{ name: 'answer4', type: 'string'}
-			
-			];
+	
 	renderGrid("selectedQuestionsGrid",beanName,selQuesdataUrl,deleteUrl,addUrl,validatorRules,
-			columns,dataFields,true,selectedQuestionsEditorHeight,selectedQuestionsEditorWidth);
+			columns,questionsDataFields,true,selectedQuestionsEditorHeight,selectedQuestionsEditorWidth);
+	//unbinding close button of add question form to prevent it from closing the main screen
+	$("#closeButton").unbind();
+	$("#closeButton").click(function () {
+		$("#addQuestionsWindow").jqxWindow('close');
+	});
 	
 }
+
 </script>

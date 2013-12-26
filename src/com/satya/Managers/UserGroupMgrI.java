@@ -22,9 +22,13 @@ public interface UserGroupMgrI {
 
 	public JSONArray getAvailableOnCampaignJson (HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
 	public JSONArray getSelectedOnCampaignJson (HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
+	public JSONArray getSelectedOnCampaignJSON(long campaignSeq);
 	public JSONObject addUserGroupFromCampaign(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException,
 			Exception;
 	public JSONArray getSelectedUsersOnCampaignJson(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, Exception ;
+	public JSONObject updateUserGroup(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException,
+			Exception ;
 }

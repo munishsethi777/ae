@@ -1,0 +1,135 @@
+package com.satya;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.satya.BusinessObjects.Game;
+import com.satya.BusinessObjects.User;
+import com.satya.Managers.CampaignMgrI;
+import com.satya.Managers.GameMgrI;
+import com.satya.Managers.ProjectMgrI;
+import com.satya.Managers.SetMgrI;
+import com.satya.Managers.UserGroupMgrI;
+import com.satya.Managers.UserMgrI;
+import com.satya.Managers.Impl.ProjectMgr;
+import com.satya.Managers.Impl.UserMgr;
+import com.satya.Persistence.DataStoreMgr;
+
+
+
+public class ApplicationContext {
+
+	private static ApplicationContext applicationContext;
+	private static DataStoreMgr dataStoreMgr;
+	private UserMgrI userMgr;
+	private ProjectMgrI projectMgr;
+	private SetMgrI setMgr;
+	private GameMgrI gamesMgr; 
+	private CampaignMgrI campaignMgr;
+	private UserGroupMgrI userGroupMgr;
+
+	
+	public static ApplicationContext getApplicationContext(){
+    	if(applicationContext == null){
+    		throw new RuntimeException("No Application Context was initialized");
+        }else{
+        	return applicationContext;
+        }        
+    }
+	
+	public static void setApplicationContext(ApplicationContext ac){
+		applicationContext = ac;
+	}
+
+	public DataStoreMgr getDataStoreMgr() {
+		return dataStoreMgr;
+	}
+
+	public void setDataStoreMgr(DataStoreMgr dataStoreMgr) {
+		ApplicationContext.dataStoreMgr = dataStoreMgr;
+	}
+	
+	public User getLoggedinUser(HttpServletRequest request){
+		User user = (User) request.getSession().getAttribute(IConstants.loggedInUser);
+		return user;
+	}
+//
+//	public static GameResultMgr getGameResultsMgr() {
+//		return gameResultsMgr;
+//	}
+//
+//	public static void setGameResultsMgr(GameResultMgr gameResultsMgr) {
+//		ApplicationContext.gameResultsMgr = gameResultsMgr;
+//	}
+//
+	public UserMgrI getUserMgr() {
+		return userMgr;
+	}
+	public  void setUserMgr(UserMgrI userMgr) {
+		this.userMgr = userMgr;	
+		
+	}
+	
+	public ProjectMgrI getProjectMgr() {
+		return projectMgr;
+	}
+	public void setProjectMgr(ProjectMgrI projectMgr) {
+		this.projectMgr = projectMgr;	
+	}
+	
+	public SetMgrI getSetMgr() {
+		return setMgr;
+	}
+	public void setSetMgr(SetMgrI setMgr) {
+		this.setMgr = setMgr;	
+	}
+
+//	public static ApplicationMgr getApplicationMgr() {
+//		return applicationMgr;
+//	}
+//
+//	public static void setApplicationMgr(ApplicationMgr applicationMgr) {
+//		ApplicationContext.applicationMgr = applicationMgr;
+//	}
+//
+	public GameMgrI getGamesMgr() {
+		return gamesMgr;
+	}
+
+	public void setGameMgr(GameMgrI gamesMgr) {
+		this.gamesMgr = gamesMgr;
+	}
+	
+	
+	public CampaignMgrI getCampaiMgr() {
+		return campaignMgr;
+	}
+
+	public void setCampaignMgr(CampaignMgrI campaignMgr) {
+		this.campaignMgr = campaignMgr;
+	}
+
+	public UserGroupMgrI getUserGroupMgr() {
+		return userGroupMgr;
+	}
+
+	public void setUserGroupMgr(UserGroupMgrI userGroupMgr) {
+		this.userGroupMgr = userGroupMgr;
+	}
+
+//	public static OrganizationMgr getOrganizationMgr() {
+//		return organizationMgr;
+//	}
+//
+//	public static void setOrganizationMgr(OrganizationMgr organizationMgr) {
+//		ApplicationContext.organizationMgr = organizationMgr;
+//	}
+//
+//	public static BadgeMgr getBadgeMgr() {
+//		return badgeMgr;
+//	}
+//
+//	public static void setBadgeMgr(BadgeMgr badgeMgr) {
+//		ApplicationContext.badgeMgr = badgeMgr;
+//	}
+	
+}

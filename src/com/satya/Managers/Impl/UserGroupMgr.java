@@ -72,26 +72,11 @@ public class UserGroupMgr implements UserGroupMgrI {
 	public JSONArray getSelectedOnCampaignJson(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String campaignSeqStr = request.getParameter("campaignSeq");
-		UserGroupDataStoreI UGDS = ApplicationContext.getApplicationContext()
-				.getDataStoreMgr().getUserGroupDataStore();
-		List<UserGroup> userGroups = null;
-		if (campaignSeqStr.equals("")) {
-			userGroups = UGDS.findAll();
-		} else {
-			userGroups = UGDS.findSelectedForCampaign(Long.parseLong(campaignSeqStr));
+		long campaignSeq = 0;
+		if(!campaignSeqStr.equals("")){
+			campaignSeq = Long.parseLong(campaignSeqStr);
 		}
-
-		JSONArray jsonArr = new JSONArray();
-		JSONObject mainJsonObject = new JSONObject();
-		for (UserGroup userGroup : userGroups) {
-			jsonArr.put(toJson(userGroup));
-		}
-		try {
-			mainJsonObject.put("jsonArr", jsonArr);
-		} catch (Exception e) {
-
-		}
-		return jsonArr;
+		return getSelectedOnCampaignJSON(campaignSeq);
 	}
 	
 	@Override
@@ -319,6 +304,46 @@ public class UserGroupMgr implements UserGroupMgrI {
 		return json;
 	}
 	
+	@Override
+	public JSONObject updateUserGroup(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException,
+			Exception {
+		JSONObject json = new JSONObject();
+		String name = request.getParameter("userGroupName");
+		String description = request.getParameter("userGroupDescription");
+		String UsersGroupSeqString = request.getParameter("userGroupSeq");
+		String status = SUCCESS;
+		String message = SAVED_SUCCESSFULLY;
+		UserGroupDataStoreI UGDS = ApplicationContext.getApplicationContext()
+										.getDataStoreMgr().getUserGroupDataStore();
+		UserGroup userGroup = new UserGroup();
+		if(UsersGroupSeqString != null && !UsersGroupSeqString.equals("")){
+			int userGroupSeq = Integer.valueOf(UsersGroupSeqString);
+			userGroup = UGDS.findBySeq(userGroupSeq);
+		}else{
+			throw new RuntimeException("UserGroup Seq null");
+		}
+			userGroup.setName(name);
+			userGroup.setDescription(description);
+			userGroup.setCreatedOn(new Date());			
+			userGroup.setProject(ApplicationContext.getApplicationContext()
+					.getAdminWorkspaceProject(request));
+	
+		userGroup.setLastModifiedDate(new Date());
+		try {
+			UGDS.Save(userGroup);
+		} catch (Exception e) {
+			status = FAILD;
+			message = ERROR + e.getMessage();
+		}
+		json.put(STATUS, status);
+		json.put(MESSAGE, message);
+		json.put("userGroupSeq", userGroup.getSeq());
+		return json;
+	}
+	
+	
+	
 	
 	public JSONObject delete(long userGroupSeq) throws Exception {
 		JSONObject json = new JSONObject();
@@ -352,6 +377,30 @@ public class UserGroupMgr implements UserGroupMgrI {
 				json = this.delete(userGroupSeq);
 				jsonArr.put(json);
 			}
+		}
+		return jsonArr;
+	}
+
+	@Override
+	public JSONArray getSelectedOnCampaignJSON(long campaignSeq) {
+		UserGroupDataStoreI UGDS = ApplicationContext.getApplicationContext()
+				.getDataStoreMgr().getUserGroupDataStore();
+		List<UserGroup> userGroups = null;
+		if (campaignSeq == 0) {
+			userGroups = UGDS.findAll();
+		} else {
+			userGroups = UGDS.findSelectedForCampaign(campaignSeq);
+		}
+
+		JSONArray jsonArr = new JSONArray();
+		JSONObject mainJsonObject = new JSONObject();
+		for (UserGroup userGroup : userGroups) {
+			jsonArr.put(toJson(userGroup));
+		}
+		try {
+			mainJsonObject.put("jsonArr", jsonArr);
+		} catch (Exception e) {
+
 		}
 		return jsonArr;
 	}
