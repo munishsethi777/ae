@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,7 +23,7 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 	private static final String IMAGE_PATH = "imagePath";
 	private static final String PATH = "path";
 	private static final String MAX_QUESTIONS="maxQuestions";
-
+	Logger logger = Logger.getLogger(GameTemplateMgr.class);
 	public List<GameTemplates> getAllGameTemplates()throws ServletException, IOException{
 		List<GameTemplates> gameTemplates = null;
 		GameTemplatesDataStoreI GTDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameTemplateDataStore();
@@ -56,6 +57,10 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 						if(game.getGameTemplate().getSeq() == gameTemplate.getSeq() && game.isPublished()==false){
 							templateObject.put(IConstants.NAME,game.getTitle());
 							templateObject.put("gameSeq", game.getSeq());
+							if(game.getQuestions()!=null){
+								templateObject.put("totalQuestions", game.getQuestions().size());
+							}
+							
 						}
 					}
 				}
@@ -64,7 +69,7 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 		
 			mainJsonObject.put("jsonArr", jsonArr);
 		}catch(Exception e){
-			
+			logger.error("Error occured fetching templates for campaigns",e);
 		}
 		return jsonArr;
 	}

@@ -279,7 +279,7 @@ public class CampaignMgr implements CampaignMgrI {
 	}
 
 	@Override
-	public void saveCampaignGames(Long campaignSeq, List<Game> games)
+	public void saveCampaignGames(Long campaignSeq, List<Game> games, boolean isDeleteEarlierCampaignGames)
 			throws Exception {
 		Campaign campaign = new Campaign();
 		campaign.setSeq(campaignSeq);
@@ -291,7 +291,7 @@ public class CampaignMgr implements CampaignMgrI {
 		campaign.setGames(games);
 		CampaignDataStoreI CDS = ApplicationContext.getApplicationContext()
 				.getDataStoreMgr().getCampaignDataStore();
-		CDS.saveGames(campaign);
+		CDS.saveGames(campaign,isDeleteEarlierCampaignGames);
 	}
 
 	public JSONObject saveCampaignUserGroups(HttpServletRequest request,
@@ -361,7 +361,7 @@ public class CampaignMgr implements CampaignMgrI {
 				games.add(game);
 			}
 		}
-		saveCampaignGames(campaignSeq, games);
+		saveCampaignGames(campaignSeq, games,true);
 	}
 
 	@Override

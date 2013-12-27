@@ -111,11 +111,12 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 	}
 	
 	@Override
-	public void saveGames(Campaign campaign){
-		Object[] deleteParams  = new Object[1];
-		deleteParams[0]= campaign.getSeq();
-		persistenceMgr.excecuteUpdate(DELETE_GAMES, deleteParams);
-		
+	public void saveGames(Campaign campaign, boolean isDeleteEarlierFirst){
+		if(isDeleteEarlierFirst){
+			Object[] deleteParams  = new Object[1];
+			deleteParams[0]= campaign.getSeq();
+			persistenceMgr.excecuteUpdate(DELETE_GAMES, deleteParams);
+		}
 		for(Game game : campaign.getGames()){
 			Object[] params  = new Object[2];
 			params[0]= campaign.getSeq();

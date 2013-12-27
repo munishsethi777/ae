@@ -17,6 +17,7 @@ public class Game {
 	private Result gameResult; //for showing played games in Set
 	private int maxSecondsAllowed;
 	private boolean isPublished;
+	private int maxQuestions;
 	
 	public int getMaxSecondsAllowed() {
 		return maxSecondsAllowed;
@@ -102,5 +103,11 @@ public class Game {
 	}
 	public void setPublished(boolean isPublished) {
 		this.isPublished = isPublished;
+	}
+	public int getMaxQuestions() {
+		return maxQuestions;
+	}
+	public void setMaxQuestions(int maxQuestions) {
+		this.maxQuestions = maxQuestions;
 	}
 }

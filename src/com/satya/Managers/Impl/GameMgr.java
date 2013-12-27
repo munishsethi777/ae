@@ -212,6 +212,7 @@ public class GameMgr implements GameMgrI {
 			GameTemplates gameTemplate = new GameTemplates();
 			gameTemplate.setSeq(gameTemplateSeq);
 			game.setGameTemplate(gameTemplate);
+			game.setMaxQuestions(gameTemplate.getMaxQuestions());
 		}
 		String selectedQuestionsString = request
 				.getParameter(IConstants.SELECTED_CHILDREN_ROWS);
@@ -323,7 +324,7 @@ public class GameMgr implements GameMgrI {
 				Long campaignSeq = Long.parseLong(campaignSeqStr);
 				List<Game> games = new ArrayList<Game>();
 				games.add(game);
-				campaignMgr.saveCampaignGames(campaignSeq, games);
+				campaignMgr.saveCampaignGames(campaignSeq, games,false);
 			}
 
 		} catch (Exception e) {

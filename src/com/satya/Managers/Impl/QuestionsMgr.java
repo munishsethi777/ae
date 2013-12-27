@@ -252,7 +252,7 @@ public class QuestionsMgr implements QuestionsMgrI {
 					Long campaignSeq = Long.parseLong(campaignSeqStr);
 					List<Game> games = new ArrayList<Game>();
 					games.add(game);
-					campaignMgr.saveCampaignGames(campaignSeq, games);
+					campaignMgr.saveCampaignGames(campaignSeq, games,false);
 				}
 			} else if (gameSeqStr != null && !gameSeqStr.equals("")) {
 				game = GDS.findBySeqWithQuesAnswers(Long.parseLong(gameSeqStr));

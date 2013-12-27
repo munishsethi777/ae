@@ -13,6 +13,6 @@ public interface CampaignDataStoreI {
 	//User Methods
 	public List<Campaign> findByUserSeq(long seq);
 	public int getCampaignSetSeq(long campaignSeq, long setSeq);
-	public void saveGames(Campaign campaign);
+	public void saveGames(Campaign campaign, boolean isDeleteEarlierFirst);
 	public void saveUserGroups(Campaign campaign);
 }

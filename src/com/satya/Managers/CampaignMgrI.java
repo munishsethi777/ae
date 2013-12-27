@@ -37,7 +37,7 @@ public interface CampaignMgrI {
 
 	public JSONArray getCampaignsForUserJSON(long userSeq) throws Exception;
 
-	public void saveCampaignGames(Long campaignSeq, List<Game> games)
+	public void saveCampaignGames(Long campaignSeq, List<Game> games, boolean isDeleteEarlierCampaignGames)
 			throws Exception;
 	public void saveCampaignGames(HttpServletRequest request)throws ServletException, IOException,
 	Exception;

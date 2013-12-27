@@ -30,10 +30,10 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 	private final static String SELECT_BY_PROJECT_SEQ = "select * from games where projectseq = ?";
 
 	private final static String SAVE = "insert into games(title, description, gametemplateseq, "
-			+ "projectseq,isenabled,lastmodifieddate,maxsecondsallowed,createdon,ispublished) "
-			+ "values (?,?,?,?,?,?,?,?,?)";
+			+ "projectseq,isenabled,lastmodifieddate,maxsecondsallowed,createdon,ispublished,maxquestions) "
+			+ "values (?,?,?,?,?,?,?,?,?,?)";
 	private final static String UPDATE = "update games set title=?, description=?, gametemplateseq=?, "
-			+ " projectseq=?, isenabled=?,lastmodifieddate=?,maxsecondsallowed=?,ispublished=? where seq=?";
+			+ " projectseq=?, isenabled=?,lastmodifieddate=?,maxsecondsallowed=?,ispublished=?,maxquestions=? where seq=?";
 
 	private final static String SAVE_QUESTIONS = "insert into gamequestions(gameseq, questionseq) values (?,?)";
 
@@ -62,19 +62,27 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			+ "left join users on users.seq = usergroupusers.userseq "
 			+ "where campaigns.seq = ? and sets.seq = ? and games.seq = ? and users.seq = ? ";
 	//particularly used for XML generation
+	private static String FIND_GAME_WITH_QUESTION_ANSWERS_COMMON = 
+					"select distinct games.*, "+
+					"questions.seq as questionseq,questions.title as questiontitle, questions.description as questiondescription,questions.negativepoints, "+
+					"questions.maxsecondsallowed as questionmaxsecondsallowed, "+
+					"questionanswers.seq as answerseq, questionanswers.title as answertitle, questionanswers.iscorrect "+
+					"from games "+
+					"left join gamequestions on gamequestions.gameseq = games.seq "+
+					"left join questions on questions.seq = gamequestions.questionseq "+
+					"left join questionanswers on questionanswers.questionseq = gamequestions.questionseq ";
+					
+	
 	private static String FIND_GAME_WITH_QUESTION_ANSWERS =
+			FIND_GAME_WITH_QUESTION_ANSWERS_COMMON + 	"where games.seq = ?";
+	
+	private static String FIND_GAMES_BY_CAMPAIGN = 
 			"select distinct games.*, "+
-			"questions.seq as questionseq,questions.title as questiontitle, questions.description as questiondescription,questions.negativepoints, "+
-			"questions.maxsecondsallowed as questionmaxsecondsallowed, "+
-			"questionanswers.seq as answerseq, questionanswers.title as answertitle, questionanswers.iscorrect "+
+			"questions.seq as questionseq "+
 			"from games "+
 			"left join gamequestions on gamequestions.gameseq = games.seq "+
 			"left join questions on questions.seq = gamequestions.questionseq "+
-			"left join questionanswers on questionanswers.questionseq = gamequestions.questionseq "+
-			"where games.seq = ?";
-	
-	private static String FIND_GAMES_BY_CAMPAIGN = 
-			"select games.* from games left join campaigngames on campaigngames.gameseq = games.seq "+
+			"left join campaigngames on campaigngames.gameseq = games.seq "+
 			"where campaigngames.campaignseq = ?";
 	
 	
@@ -94,7 +102,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 				templateSeq = game.getGameTemplate().getSeq();
 			}
 
-			Object[] params = new Object[9];
+			Object[] params = new Object[10];
 
 			params[0] = game.getTitle();
 			params[1] = game.getDescription();
@@ -104,10 +112,11 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			params[5] = game.getLastModifiedDate();
 			params[6] = game.getMaxSecondsAllowed();
 			params[7] = game.isPublished();
+			params[8] = game.getMaxQuestions();
 			if (game.getSeq() != 0) {
-				params[8] = game.getSeq();
+				params[9] = game.getSeq();
 			} else {
-				params[8] = game.getCreatedOn();
+				params[9] = game.getCreatedOn();
 			}
 
 			persistenceMgr.excecuteUpdate(SQL, params);
@@ -255,7 +264,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			Date lastModifiedDate = rs.getDate("lastmodifieddate");
 			int maxSecondsAllowed = rs.getInt("maxsecondsallowed");
 			boolean isPublished = rs.getBoolean("ispublished");
-			
+			int maxQuestions = rs.getInt("maxquestions");
 			game = new Game();
 			game.setSeq(seq);
 			game.setTitle(title);
@@ -264,6 +273,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			game.setLastModifiedDate(lastModifiedDate);
 			game.setMaxSecondsAllowed(maxSecondsAllowed);
 			game.setPublished(isPublished);
+			game.setMaxQuestions(maxQuestions);
 			GameTemplates gameTemplates = null;
 			//Capture Game Template
 			try {
