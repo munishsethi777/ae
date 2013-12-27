@@ -86,7 +86,6 @@ function newQuestionAdded(templateSeq){
 	}
 	questionCount = parseInt(questionCount,10);
 	questionCount = questionCount + 1;
-	alert(questionCount);
 	$("#quesCount" + templateSeq).html("Count : " + questionCount);
 	$("#selectedTemplateDivId"+templateSeq +" #gameTemplateTotalQuestions").val(questionCount);
 }
@@ -142,9 +141,15 @@ function getGameTemplateDiv(index,json){
 			content += "<img src='" + json.imagePath +"'/>";
 		content += "</div>";
 		content += "<div class='gameTemplateDetailsDiv'>";
-		content += "<label id='quesCount" + json.seq + "'></label>";		
+			
 		content += "<div style='float:right' id='templateSeqRadio"+ json.seq +"'></div>";
-		content += '<label style="font-size:20px;">' + json.name + '</label> <label style="font-size:12px;">('+ json.maxQuestions +' Questions)</label>';
+		content += '<label style="font-size:20px;">' + json.name + '</label>';
+		var totQuest = 0;
+		if(json.totalQuestions != undefined){
+			totQuest = json.totalQuestions;
+		}
+		content += " <label id='quesCount" + json.seq + "'> "+ totQuest +" /</label>";
+		content += "<label>"+ json.maxQuestions +' Questions</label>';
 	   	content += '<div class="smallFonts" style="height:70px;">' + json.description + '</div>';
 	content += '<div style="margin-top:10px;">';
 	content += "<input style='display:inline-table' value='Demo' type='button' id='demo"+json.seq+"'/>";

@@ -152,7 +152,8 @@
 				$($allUnpublishedGamesRadios).each(function() {
 					if(this.value == "true"){
 						inputName = this.name;
-						gameSeq = this.name.substr(16);
+						gameTemplateSeq = this.name.substr(16);
+						gameSeq = $("#selectedTemplateDivId"+gameTemplateSeq +" #gameSeq"+ gameTemplateSeq).val();
 						gameSeqs.push(gameSeq);
 					}
 				});
