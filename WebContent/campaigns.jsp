@@ -8,231 +8,230 @@
 <link rel="stylesheet" href="css/steps/normalize.css">
 <link rel="stylesheet" href="css/steps/main.css">
 <link rel="stylesheet" href="css/steps/jquery.steps.css">
-        <script src="js/modernizr-2.6.2.min.js"></script>
-        <script src="js/jquery.cookie-1.3.1.js"></script>
-        <script src="js/jquery.steps.js"></script>
+<script src="js/modernizr-2.6.2.min.js"></script>
+<script src="js/jquery.cookie-1.3.1.js"></script>
+<script src="js/jquery.steps.js"></script>
     
-	<script type="text/javascript">
-		var pageName = "campaigns";
-		var tempSeq = 0;
-		var beanName = "Campaign";
-		var dataUrl = "AdminUser?action=getAllCampaigns";
-		var deleteUrl = "AdminUser?action=deleteCampaign";
-		var addUrl = "AdminUser?action=addCampaign";
+<script type="text/javascript">
+	var pageName = "campaigns";
+	var tempSeq = 0;
+	var beanName = "Campaign";
+	var dataUrl = "AdminUser?action=getAllCampaigns";
+	var deleteUrl = "AdminUser?action=deleteCampaign";
+	var addUrl = "AdminUser?action=addCampaign";
+
 	
-		
-				
-		var columns = [
-				{ text: 'Name', datafield: 'name',editable:false,width:190  },
-				{ text: 'Description', datafield: 'description',editable:false },
-				{ text: 'Validity Days', datafield: 'validityDays',editable:false,width:100,cellsalign: 'right',align: 'right'},
-				{ text: 'Created On', datafield: 'createdOn',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'},
-				{ text: 'Last Modified', datafield: 'lastmodifieddate',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'},
-				{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width:80},
-				{ text: 'Launch Message', datafield: 'launchMessage',editable:false,width:80},
-				{ text: 'Start Date', datafield: 'startDate',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'},
-				{ text: 'End Date', datafield: 'validTilldDate',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'}
-				];
-
-		var dataFields = [
-				{ name: 'seq', type: 'integer' },
-				{ name: 'name', type: 'string' },
-				{ name: 'description', type: 'string' },
-				{ name: 'validityDays', type: 'string' },
-				{ name: 'isEnabled', type: 'bool' },
-				{ name: 'createdOn', type: 'date' },
-				{ name: 'lastmodifieddate', type: 'date'},
-				{ name: 'launchMessage', type: 'string' },
-				{ name: 'campaignSeq', type: 'integer' }
-				//{ name: 'validTillDate', type: 'date' }
-				];
-		var isShowButtons = true;
-
-		$(document).ready(function () {
-				var editorWidth= "85%";
-				var editorHeight = "80%";
-				renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,"",columns,dataFields,true,editorHeight,editorWidth);
-				$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
-				$('#jqxCreateBeanWindow').on('open', function (event) { 
-					$('#jqxCreateBeanWindow').jqxWindow({resizable: false,position: { x: 0, y: 0 } }); 
-					$("#jqxCampaignWizard").jqxScrollView('changePage', 0);//first slide always
-					//now rendering the usergroup usrs grid on campaign open window.
-					renderUserGrid();
-					//in edit mode
-					loadUserGroupDetails();
-					loadGameTemplates($("#seqInput").val());
-				});
-				$("#addQuestionsWindow").jqxWindow({ 
-    				isModal: true, modalOpacity: 0.8,
-    				resizable: true, theme: theme, autoOpen: false, 
-    				maxWidth:'90%', maxHeight:'90%',width:'90%', height:'90%', showCloseButton: true 
-    			});
-				
-				
-				$("#nameInput").jqxInput({	placeHolder : "enter a campaign title", height : 25, width : 500, minLength : 1, maxLength : 256});
-				$("#descriptionInput").jqxInput({	placeHolder : "enter a campaign description", height : 25, width : 500, minLength : 1, maxLength : 256});
-				$("#startDateInput").jqxCalendar({width: 220, height: 220, theme: theme });
-				$("#validTillDateInput").jqxCalendar({width: 220, height: 220, theme: theme });
-				$("#launchMessageInput").jqxInput({	placeHolder : "enter a campaign launch message", height : 25, width : 500, minLength : 1, maxLength : 256});
-				//savebutton click
 			
-				$("#saveCampaignButton").jqxButton({ width: 70, theme: theme });
+	var columns = [
+			{ text: 'Name', datafield: 'name',editable:false,width:190  },
+			{ text: 'Description', datafield: 'description',editable:false },
+			{ text: 'Validity Days', datafield: 'validityDays',editable:false,width:100,cellsalign: 'right',align: 'right'},
+			{ text: 'Created On', datafield: 'createdOn',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'},
+			{ text: 'Last Modified', datafield: 'lastmodifieddate',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'},
+			{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width:80},
+			{ text: 'Launch Message', datafield: 'launchMessage',editable:false,width:80},
+			{ text: 'Start Date', datafield: 'startDate',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'},
+			{ text: 'End Date', datafield: 'validTilldDate',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'}
+			];
+
+	var dataFields = [
+			{ name: 'seq', type: 'integer' },
+			{ name: 'name', type: 'string' },
+			{ name: 'description', type: 'string' },
+			{ name: 'validityDays', type: 'string' },
+			{ name: 'isEnabled', type: 'bool' },
+			{ name: 'createdOn', type: 'date' },
+			{ name: 'lastmodifieddate', type: 'date'},
+			{ name: 'launchMessage', type: 'string' },
+			{ name: 'campaignSeq', type: 'integer' }
+			//{ name: 'validTillDate', type: 'date' }
+			];
+	var isShowButtons = true;
+
+	$(document).ready(function () {
+			var editorWidth= "85%";
+			var editorHeight = "80%";
+			renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,"",columns,dataFields,true,editorHeight,editorWidth);
+			$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
+			$('#jqxCreateBeanWindow').on('open', function (event) { 
+				$('#jqxCreateBeanWindow').jqxWindow({resizable: false,position: { x: 0, y: 0 } }); 
+				$("#jqxCampaignWizard").jqxScrollView('changePage', 0);//first slide always
+				//now rendering the usergroup usrs grid on campaign open window.
+				renderUserGrid();
+				//in edit mode
+				loadUserGroupDetails();
+				loadGameTemplates($("#seqInput").val());
+			});
+			$("#addQuestionsWindow").jqxWindow({ 
+   				isModal: true, modalOpacity: 0.8,
+   				resizable: true, theme: theme, autoOpen: false, 
+   				maxWidth:'90%', maxHeight:'90%',width:'90%', height:'90%', showCloseButton: true 
+   			});
+			
+			
+			$("#nameInput").jqxInput({	placeHolder : "enter a campaign title", height : 25, width : 500, minLength : 1, maxLength : 256});
+			$("#descriptionInput").jqxInput({	placeHolder : "enter a campaign description", height : 25, width : 500, minLength : 1, maxLength : 256});
+			$("#startDateInput").jqxCalendar({width: 220, height: 220, theme: theme });
+			$("#validTillDateInput").jqxCalendar({width: 220, height: 220, theme: theme });
+			$("#launchMessageInput").jqxInput({	placeHolder : "enter a campaign launch message", height : 25, width : 500, minLength : 1, maxLength : 256});
+			//savebutton click
+		
+			$("#saveCampaignButton").jqxButton({ width: 70, theme: theme });
+
+			
+			
+			createWizardLayout();
+			createNewEarlierRadios();	
+	});//end document ready
+		
+	function createWizardLayout(){
+		$("#jqxCampaignWizard").steps({
+			headerTag: "h2",
+			bodyTag: "section",
+			transitionEffect: "slideLeft",
+			enableFinishButton: true,
+			enablePagination: true,
+			enableAllSteps: true,
+			height:"300px",
+			/* Events */
+		    onStepChanging: function (event, currentIndex, newIndex) { 
+		    	//when a slide loses focus
+		    	if(currentIndex == 0){
+		    		return saveCampaignDetails();
+		    	}else if(currentIndex == 1){
+		    		saveCampaignGames();
+		    	}else if(currentIndex == 2){
+		    		saveCampaignUserGroup();
+		    	}
+		    	// when preview slide gets focus
+		    	if(newIndex == 3){
+		    		previewCampaign();
+		    	}
+		    	return true; 
+		    },
+		    onStepChanged: function (event, currentIndex, priorIndex) { },
+		    onFinishing: function (event, currentIndex) { return true; }, 
+		    onFinished: function (event, currentIndex) { },
+		});
+	}
+			
+	function saveCampaignUserGroup(){
+		var userGroupSelectedIndex = $('#createSelectUserGroupRadios').jqxButtonGroup('getSelection');
+		if(userGroupSelectedIndex == 1){
+			addUserGroupFromEarlier();		
+		}else{
+			updateUserGroup();
+		}
+	}
+					
+	function saveCampaignDetails(){
+		var isStepChange = false;
+		var validationCampResult = function (isValid) {
+			if (isValid) {
+				saveCampaignDetailsAction("jqxGrid");
+				isStepChange = isValid;
+			}
+		}
+		$('#createCampaignForm').jqxValidator('validate', validationCampResult);
+		return isStepChange;
+	}
+			
+	function getAllSelectedGamesSeqs(){
+		var $allPublishedGamesRadios = $( "input[name^='earlierGameSeqRadio']" );
+		var gameSeqs = new Array();
+		$($allPublishedGamesRadios).each(function() {
+			if(this.value == "true"){
+				inputName = this.name;
+				gameSeq = this.name.substr(19);
+				gameSeqs.push(gameSeq);
+			}
+		});
+		var $allUnpublishedGamesRadios = $( "input[name^='templateSeqRadio']" );
+		$($allUnpublishedGamesRadios).each(function() {
+			if(this.value == "true"){
+				inputName = this.name;
+				gameTemplateSeq = this.name.substr(16);
+				gameSeq = $("#selectedTemplateDivId"+gameTemplateSeq +" #gameSeq"+ gameTemplateSeq).val();
+				gameSeqs.push(gameSeq);
+			}
+		});
+		return gameSeqs;
+	}
 	
-				
-				
-				createWizardLayout();
-				createNewEarlierRadios();	
-		});//end document ready
-		
-		function createWizardLayout(){
-			
-			$("#jqxCampaignWizard").steps({
-				headerTag: "h2",
-				bodyTag: "section",
-				transitionEffect: "slideLeft",
-				enableFinishButton: true,
-				enablePagination: true,
-				enableAllSteps: true,
-				height:"300px",
-				/* Events */
-			    onStepChanging: function (event, currentIndex, newIndex) { 
-			    	//when a slide loses focus
-			    	if(currentIndex == 0){
-			    		return saveCampaignDetails();
-			    	}else if(currentIndex == 1){
-			    		saveCampaignGames();
-			    	}else if(currentIndex == 2){
-			    		saveCampaignUserGroup();
-			    	}
-			    	// when preview slide gets focus
-			    	if(newIndex == 3){
-			    		previewCampaign();
-			    	}
-			    	return true; 
-			    },
-			    onStepChanged: function (event, currentIndex, priorIndex) { },
-			    onFinishing: function (event, currentIndex) { return true; }, 
-			    onFinished: function (event, currentIndex) { },
+	function saveCampaignGames(){
+			gameSeqs = getAllSelectedGamesSeqs();
+			var campaignSeq = getCampaignSeqFromForm();
+			var dataRow = {};
+			dataRow["campaignSeq"] = campaignSeq;
+			dataRow["gamesSeqs"] = gameSeqs.toString();
+			$.getJSON("AdminUser?action=setGamesOnCampaign",dataRow,function(json){
+				//games saved put validations if any
 			});
-		}
-			
-			function saveCampaignUserGroup(){
-				var userGroupSelectedIndex = $('#createSelectUserGroupRadios').jqxButtonGroup('getSelection');
-				if(userGroupSelectedIndex == 1){
-					addUserGroupFromEarlier();		
-				}else{
-					updateUserGroup();
-				}
-			}
-			
-			
-			function saveCampaignDetails(){
-				var isStepChange = false;
-				var validationCampResult = function (isValid) {
-					if (isValid) {
-						saveCampaignDetailsAction("jqxGrid");
-						isStepChange = isValid;
-					}
-				}
-				$('#createCampaignForm').jqxValidator('validate', validationCampResult);
-				return isStepChange;
-			}
-			
-			function getAllSelectedGamesSeqs(){
-				var $allPublishedGamesRadios = $( "input[name^='earlierGameSeqRadio']" );
-				var gameSeqs = new Array();
-				$($allPublishedGamesRadios).each(function() {
-					if(this.value == "true"){
-						inputName = this.name;
-						gameSeq = this.name.substr(19);
-						gameSeqs.push(gameSeq);
-					}
-				});
-				var $allUnpublishedGamesRadios = $( "input[name^='templateSeqRadio']" );
-				$($allUnpublishedGamesRadios).each(function() {
-					if(this.value == "true"){
-						inputName = this.name;
-						gameTemplateSeq = this.name.substr(16);
-						gameSeq = $("#selectedTemplateDivId"+gameTemplateSeq +" #gameSeq"+ gameTemplateSeq).val();
-						gameSeqs.push(gameSeq);
-					}
-				});
-				return gameSeqs;
-			}
-			function saveCampaignGames(){
-					gameSeqs = getAllSelectedGamesSeqs();
-					var campaignSeq = getCampaignSeqFromForm();
-					var dataRow = {};
-					dataRow["campaignSeq"] = campaignSeq;
-					dataRow["gamesSeqs"] = gameSeqs.toString();
-					$.getJSON("AdminUser?action=setGamesOnCampaign",dataRow,function(json){
-						//games saved put validations if any
-					});
-			}
-		function getCampaignSeqFromForm(){
-			var campaignSeq = $("#createCampaignForm #seqInput").val();
-			return campaignSeq;
-		}
+	}
+	function getCampaignSeqFromForm(){
+		var campaignSeq = $("#createCampaignForm #seqInput").val();
+		return campaignSeq;
+	}
 
-		function saveCampaignDetailsAction(gridId){
-			dataRow = {};
-			dataRow['rowId'] = $("#createCampaignForm #rowIdInput").val();
-			$.each(dataFields,function(index,value){
-				dataRow[value.name] = $("#createCampaignForm #"+ value.name +"Input").val();
-				if(value.type == "radio"){
-					dataRow[value.name] = $('input[name='+ value.name +']:radio:checked').val()
-				}
-			});
-			$.getJSON(addUrl,dataRow,function(json){
-				if(json['status'] == 'success'){
-					dataRow['lastmodifieddate'] = json['lastModified'];	
-					if(dataRow['seq'] == null || dataRow['seq'] == "" || dataRow['seq'] == "0"){		
-						dataRow['seq'] = json['seq'];				
-						if(typeof isCampaignUI != 'undefined'){
-							if(isCampaignUI){
-								$("#createCampaignForm #seqInput").val(json['seq']);
-							}
+	function saveCampaignDetailsAction(gridId){
+		dataRow = {};
+		dataRow['rowId'] = $("#createCampaignForm #rowIdInput").val();
+		$.each(dataFields,function(index,value){
+			dataRow[value.name] = $("#createCampaignForm #"+ value.name +"Input").val();
+			if(value.type == "radio"){
+				dataRow[value.name] = $('input[name='+ value.name +']:radio:checked').val()
+			}
+		});
+		$.getJSON(addUrl,dataRow,function(json){
+			if(json['status'] == 'success'){
+				dataRow['lastmodifieddate'] = json['lastModified'];	
+				if(dataRow['seq'] == null || dataRow['seq'] == "" || dataRow['seq'] == "0"){		
+					dataRow['seq'] = json['seq'];				
+					if(typeof isCampaignUI != 'undefined'){
+						if(isCampaignUI){
+							$("#createCampaignForm #seqInput").val(json['seq']);
 						}
-						dataRow['createdOn'] = json['createdOn'];
-						//var commit = $("#"+gridId).jqxGrid('addrow', null, dataRow,null,true);
-					}else{
-						//var commit = $("#"+gridId).jqxGrid('updaterow', dataRow['rowId'], dataRow,true);
 					}
-					//$("#"+gridId).jqxGrid('ensurerowvisible', dataRow['rowId']);
+					dataRow['createdOn'] = json['createdOn'];
+					//var commit = $("#"+gridId).jqxGrid('addrow', null, dataRow,null,true);
 				}else{
-					displaySaveErrors(json['message']);
+					//var commit = $("#"+gridId).jqxGrid('updaterow', dataRow['rowId'], dataRow,true);
 				}
-			});
-			
-		}
-		function createNewEarlierRadios(){
-			$("#createSelectGameRadios").jqxButtonGroup({ mode: 'radio' , theme: theme});
-			$('#createSelectGameRadios').jqxButtonGroup('setSelection', 0);
-			$('#createSelectGameRadios').on('selected', function () { 
-				var clickedOptionIndex = $('#createSelectGameRadios').jqxButtonGroup('getSelection');
-				if(clickedOptionIndex == 0){
-					$("#createNewGameDiv").show();
-	            	$("#useEarlierGameDiv").hide();
-				}else{
-					$("#createNewGameDiv").hide();
-	            	$("#useEarlierGameDiv").show();
-				}
-			});
-			
-			$("#createSelectUserGroupRadios").jqxButtonGroup({ mode: 'radio' , theme: theme});
-			$('#createSelectUserGroupRadios').jqxButtonGroup('setSelection', 0);
-			$('#createSelectUserGroupRadios').on('selected', function () { 
-				var clickedOptionIndex = $('#createSelectUserGroupRadios').jqxButtonGroup('getSelection');
-				if(clickedOptionIndex == 0){
-					$("#createNewUserGroupDiv").show();
-	            	$("#useEarlierUserGroupDiv").hide();
-				}else{
-					$("#createNewUserGroupDiv").hide();
-	            	$("#useEarlierUserGroupDiv").show();
-				}
-			});
-		}
+				//$("#"+gridId).jqxGrid('ensurerowvisible', dataRow['rowId']);
+			}else{
+				displaySaveErrors(json['message']);
+			}
+		});
+	}
+	function createNewEarlierRadios(){
+		$("#createSelectGameRadios").jqxButtonGroup({ mode: 'radio' , theme: theme});
+		$('#createSelectGameRadios').jqxButtonGroup('setSelection', 0);
+		$('#createSelectGameRadios').on('selected', function () { 
+			var clickedOptionIndex = $('#createSelectGameRadios').jqxButtonGroup('getSelection');
+			if(clickedOptionIndex == 0){
+				$("#createNewGameDiv").show();
+            	$("#useEarlierGameDiv").hide();
+			}else{
+				$("#createNewGameDiv").hide();
+            	$("#useEarlierGameDiv").show();
+			}
+		});
+		
+		$("#createSelectUserGroupRadios").jqxButtonGroup({ mode: 'radio' , theme: theme});
+		$('#createSelectUserGroupRadios').jqxButtonGroup('setSelection', 0);
+		$('#createSelectUserGroupRadios').on('selected', function () { 
+			var clickedOptionIndex = $('#createSelectUserGroupRadios').jqxButtonGroup('getSelection');
+			if(clickedOptionIndex == 0){
+				$("#createNewUserGroupDiv").show();
+            	$("#useEarlierUserGroupDiv").hide();
+			}else{
+				$("#createNewUserGroupDiv").hide();
+            	$("#useEarlierUserGroupDiv").show();
+			}
+		});
+	}
 </script>
+
 </head>
 <body class='default'>
 <%@ include file="menu.jsp" %>
@@ -290,5 +289,69 @@
 
 <%@ include file="campaignQuestionsEditorInclude.jsp" %>
 
+<!-- Editing Game Name/Description code here -->
+<script>
+//passing gameTemplateSeq because the hidden inputs names are using templateIds
+function editGameDetails(gameTemplateSeq){
+	var gameSeq = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameSeq"+gameTemplateSeq).val();
+	$("#editGameEditor #gameEditorSeq").val(gameSeq);
+	var gameName = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameTitle"+gameTemplateSeq).html();
+	var gameDesc = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameDescription"+gameTemplateSeq).html();
+	$("#gameEditorTitle").val(gameName);
+	$("#gameEditorDescription").val(gameDesc);
+	
+	$("#editGameEditor").jqxWindow({ 
+			isModal: true, modalOpacity: 0.8,
+			resizable: true, theme: theme, autoOpen: true, 
+			maxWidth:'400px', maxHeight:'200px',width:'400px', height:'200px', showCloseButton: true 
+	});
+	
+	$("#saveGameDetails").jqxButton({ width: 70, theme: theme });
+	$("#saveGameDetails").unbind();
+	$("#saveGameDetails").on('click', function(event) {
+		saveGameDetails(gameTemplateSeq);
+	});
+	$("#closeGameDetails").jqxButton({ width: 70, theme: theme });
+	$("#closeGameDetails").unbind();
+	$("#closeGameDetails").on('click', function(event) {
+		$("#editGameEditor").jqxWindow("close");
+	});
+	$("#gameEditorTitle").jqxInput({height : 25, width : 300, minLength : 1, maxLength : 256});
+	$("#gameEditorDescription").jqxInput({height : 25, width : 300, minLength : 1, maxLength : 256});
+	
+	$("#editGameEditor").jqxWindow("open");	
+}
+function saveGameDetails(gameTemplateSeq){
+	dataRow = $("#editGameDetailsForms").serializeArray();
+	var url = "AdminUser?action=saveGameDetails";
+	$.getJSON(url,dataRow,function(json){
+		$("#selectedTemplateDivId"+gameTemplateSeq+" #gameTitle"+gameTemplateSeq).html(dataRow[1].value);
+		$("#selectedTemplateDivId"+gameTemplateSeq+" #gameDescription"+gameTemplateSeq).html(dataRow[2].value);
+		$("#editGameEditor").jqxWindow("close");
+	});
+}
+</script>
+<div id="editGameEditor" style="display:none">
+	<div class="title" style="font-weight:bold">Edit Game Details</div>
+	<div>
+		<form name="editGameDetailsForms" id="editGameDetailsForms">
+			<input type="hidden" name="gameSeq" id="gameEditorSeq"/>
+			<table class="formTable">
+				<tr>
+					<td width="100px">Title:</td>
+					<td><input type="text" name="gameTitle" id="gameEditorTitle"/></td>
+				</tr>
+				<tr>
+					<td>Description:</td>
+					<td><input type="text" name="gameDescription" id="gameEditorDescription"/></td>
+				</tr>
+				<tr>
+					<td align="right"><input value='Save' type='button' id='saveGameDetails'/></td>
+					<td align="left"><input value='Close' type='button' id='closeGameDetails'/></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
 </body>
 </html>

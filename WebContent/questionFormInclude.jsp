@@ -53,6 +53,7 @@
 		$("#negativePointsInput").jqxInput({height : 25, width : 50,	minLength : 1, maxLength : 256});
 		$("#maxSecondsAllowedInput").jqxInput({height : 25, width : 50,	minLength : 1, maxLength : 256});
 		$("#extraAttemptsAllowedInput").jqxInput({height : 25, width : 50,	minLength : 1, maxLength : 256});
+		$("#isEnabledQuestionInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 		
 	});
 </script>
@@ -126,7 +127,7 @@
 	</tr>
 	<tr>
 		<td class="marginTop">Enabled</td>
-		<td><div id="isEnabledInput" class="isEnabledInput"></div></td>
+		<td><div name="isEnabledQuestion" id="isEnabledQuestionInput"></div></td>
 	</tr>
 	<tr>
 		<td></td>

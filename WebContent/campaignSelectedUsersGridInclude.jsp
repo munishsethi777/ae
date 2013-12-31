@@ -52,9 +52,11 @@
 			if(campaignSeq != null){
 				getUserGroupDetailsUrl = "AdminUser?action=getUserGroupsSelectedOnCampaign&campaignSeq=" + campaignSeq; 	
 				$.getJSON(getUserGroupDetailsUrl,function(json){
-					$("#userGroupSeqInput").val(json[0]["seq"]);
-					$("#userGroupNameInput").val(json[0]["name"]);
-					$("#userGroupDescriptionInput").val(json[0]["description"]);
+					if(json[0].status != "failure"){
+						$("#userGroupSeqInput").val(json[0]["seq"]);
+						$("#userGroupNameInput").val(json[0]["name"]);
+						$("#userGroupDescriptionInput").val(json[0]["description"]);
+					}
 				});
 			}
 		}

@@ -71,6 +71,7 @@ function submitAction(action,dataRow){
 				 });
 				 if(json['gameSeq'] != 0){
 					$("#gameSeq" + tempSeq).val(json['gameSeq']);
+					$(".editGameButton" + tempSeq).show();
 				 }
 				 
 				$("#selectedQuestionsGrid").jqxGrid('addrow', null, dataRowJson,null,true);
@@ -112,7 +113,10 @@ function loadGameTemplates(campaignSeq){
 			if(val.gameSeq != 0){
 				$("#templateSeqRadio"+val.seq).jqxCheckBox('check');
 			}
-			
+			$(".editGameButton"+val.seq).jqxButton({ width: 70, theme: theme });
+			$(".editGameButton"+val.seq).on('click', function(event) {
+				editGameDetails(event.currentTarget.id);
+			});
 			
 			$("#demo"+val.seq).jqxButton({ width: 70, theme: theme });
 			$("#demo"+val.seq).on('click', function(event) {
@@ -143,15 +147,18 @@ function getGameTemplateDiv(index,json){
 		content += "<div class='gameTemplateDetailsDiv'>";
 			
 		content += "<div style='float:right' id='templateSeqRadio"+ json.seq +"'></div>";
-		content += '<label style="font-size:20px;">' + json.name + '</label>';
+		content += '<label style="font-size:20px;" id="gameTitle'+ json.seq +'">' + json.name + '</label>';
 		var totQuest = 0;
 		if(json.totalQuestions != undefined){
 			totQuest = json.totalQuestions;
 		}
 		content += " <label id='quesCount" + json.seq + "'> "+ totQuest +" /</label>";
 		content += "<label>"+ json.maxQuestions +' Questions</label>';
-	   	content += '<div class="smallFonts" style="height:70px;">' + json.description + '</div>';
+	   	content += '<div class="smallFonts" style="height:70px;" id="gameDescription'+ json.seq +'">' + json.description + '</div>';
 	content += '<div style="margin-top:10px;">';
+	if(json.gameSeq != ""){
+		content += "<input style='display:inline-table;margin-right:4px' value='Edit' class='editGameButton"+json.seq+"' type='button' id='"+json.seq+"'/>";	
+	}
 	content += "<input style='display:inline-table' value='Demo' type='button' id='demo"+json.seq+"'/>";
 	content += "<input value='Add Questions' type='button' id='addQuestionLink"+json.seq+"' class='marL10' style='display:none;margin-left:10px;float:right'/>";
 	content += '</div>';
@@ -168,7 +175,7 @@ function getGameTemplateDiv(index,json){
                			{ name: 'negativePoints', type: 'string' },
                			{ name: 'maxSecondsAllowed', type: 'string' },
                			{ name: 'extraAttemptsAllowed', type: 'string' },
-               			{ name: 'isEnabled', type: 'bool' },
+               			{ name: 'isEnabledQuestion', type: 'bool' },
                			{ name: 'createdOn', type: 'date' },
                			{ name: 'lastmodifieddate', type: 'date'},
                			{ name: 'answer1', type: 'string'},
@@ -195,7 +202,7 @@ function loadSelectedQuestionsGrid(gameSeq){
 			{ text: 'Chances', datafield: 'extraAttemptsAllowed',editable:false,width:80,cellsalign: 'right',align: 'right' },
 			{ text: 'Created On', datafield: 'createdOn',editable:false,width:150,cellsformat: 'dd-MM-yy hh.mm tt'},
 			{ text: 'Last Modified', datafield: 'lastmodifieddate',editable:false,width:150,cellsformat: 'dd-MM-yy hh.mm tt'},
-			{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width:60}
+			{ text: 'Enabled', datafield: 'isEnabledQuestion',columntype: 'checkbox',editable:false,width:60}
 			];
 
 	

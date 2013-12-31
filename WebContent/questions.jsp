@@ -22,7 +22,7 @@
 				{ text: 'Chances', datafield: 'extraAttemptsAllowed',editable:false,width:80,cellsalign: 'right',align: 'right' },
 				{ text: 'Created On', datafield: 'createdOn',editable:false,width:150,cellsformat: 'dd-MM-yy hh.mm tt'},
 				{ text: 'Last Modified', datafield: 'lastmodifieddate',editable:false,width:150,cellsformat: 'dd-MM-yy hh.mm tt'},
-				{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width:60},
+				{ text: 'Enabled', datafield: 'isEnabledQuestion',columntype: 'checkbox',editable:false,width:60},
 				{ text: 'Hint', datafield: 'hint' ,editable:false}
 				];
 
@@ -34,7 +34,7 @@
 				{ name: 'negativePoints', type: 'string' },
 				{ name: 'maxSecondsAllowed', type: 'string' },
 				{ name: 'extraAttemptsAllowed', type: 'string' },
-				{ name: 'isEnabled', type: 'bool' },
+				{ name: 'isEnabledQuestion', type: 'bool' },
 				{ name: 'createdOn', type: 'date' },
 				{ name: 'lastmodifieddate', type: 'date'},
 				{ name: 'answer1', type: 'string'},
