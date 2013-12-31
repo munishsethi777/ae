@@ -56,6 +56,7 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 					for(Game game : campaignGames){
 						if(game.getGameTemplate().getSeq() == gameTemplate.getSeq() && game.isPublished()==false){
 							templateObject.put(IConstants.NAME,game.getTitle());
+							templateObject.put(IConstants.DESCRIPTION,game.getDescription());
 							templateObject.put("gameSeq", game.getSeq());
 							if(game.getQuestions()!=null){
 								templateObject.put("totalQuestions", game.getQuestions().size());

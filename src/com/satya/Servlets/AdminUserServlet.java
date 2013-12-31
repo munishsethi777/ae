@@ -80,6 +80,7 @@ public class AdminUserServlet extends BaseServletClass {
 	// Users UI
 	private static final String GET_REGISRATION_URL = "getRegistrationUrl";
 
+
 	Logger log = Logger.getLogger(UserServlet.class.getName());
 
 	public AdminUserServlet() {
@@ -88,22 +89,6 @@ public class AdminUserServlet extends BaseServletClass {
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
-		// try{
-		// String plaintextHex =
-		// "<?xml version=\"1.0\" encoding=\"utf-8\"?><questions><question id=\"1\" answerId=\"3\" points=\"10\" value=\"Question One?\" description=\"this is description for question 1\"><answer id=\"1\">two balls</answer><answer id=\"2\">four balls</answer><answer id=\"3\">six balls</answer><answer id=\"4\">three balls</answer></question><question id=\"2\" answerId=\"3\" points=\"10\" value=\"Question 2?\" description=\"this is description for question 1\"><answer id=\"1\">Incorrect</answer><answer id=\"2\">incorrect</answer><answer id=\"3\">sahi</answer><answer id=\"4\">galat</answer></question></questions>";
-		// //String plaintextHex = "Munish Sethi Ji";
-		//
-		// String password = "m8dwhZQB7+Y=";
-		// DESKeySpec key = new DESKeySpec(password.getBytes());
-		// SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
-		// Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
-		// cipher.init(Cipher.ENCRYPT_MODE, keyFactory.generateSecret(key));
-		// String encryptedString = encryptBase64(plaintextHex,cipher);
-		// System.out.println(encryptedString);
-		// }catch(Exception e){
-		// System.out.print(e.getMessage());
-		// }
 
 		List<String> errorMsgs = new ArrayList<String>();
 		String action = request.getParameter("action");
@@ -396,8 +381,13 @@ public class AdminUserServlet extends BaseServletClass {
 								response);
 						response.getWriter().write(json.toString());
 					} else if (action.equals("getGameQuestionsAnswers")) {
-						JSONArray json = gameMgr
-								.getGameQuestionAnswersJSONByGameSeq(request);
+						JSONArray json = gameMgr.getGameQuestionAnswersJSONByGameSeq(request);
+						response.getWriter().write(json.toString());
+					}else if(action.equals("saveGameDetails")){
+						JSONObject json = gameMgr.updateGameDetails(request);
+						response.getWriter().write(json.toString());
+					}else if(action.equals("publishCampaign")){
+						JSONObject json = campaignMgr.publishCampaign(request);
 						response.getWriter().write(json.toString());
 					}
 				}

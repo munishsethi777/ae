@@ -460,5 +460,34 @@ public class GameMgr implements GameMgrI {
 		return mainJsonarr;
 	}
 
+	@Override
+	public JSONObject updateGameDetails(HttpServletRequest request) {
+		JSONObject json = new JSONObject();
+		try{
+			String gameSeqStr = request.getParameter("gameSeq");
+			String gameTitle = request.getParameter("gameTitle");
+			String gameDescription = request.getParameter("gameDescription");
+			
+			GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
+			Game game = GDS.findBySeq(Long.parseLong(gameSeqStr));
+			game.setTitle(gameTitle);
+			game.setDescription(gameDescription);
+			GDS.Save(game);
+			
+			json.put(IConstants.STATUS, IConstants.SUCCESS);
+			json.put(IConstants.MESSAGE, "Game updated Successfully");
+		}catch(Exception e){
+			logger.error("Error occured while updating game details",e);
+			try{
+				json.put(IConstants.STATUS, IConstants.FAILURE);
+				json.put(IConstants.MESSAGE, "Game failed to update."+ e.getMessage());
+			}catch(Exception e1){
+				logger.error(e1);
+			}
+		}
+		
+		return json;
+	}
+
 
 }

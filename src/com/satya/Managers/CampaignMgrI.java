@@ -37,21 +37,25 @@ public interface CampaignMgrI {
 
 	public JSONArray getCampaignsForUserJSON(long userSeq) throws Exception;
 
-	public void saveCampaignGames(Long campaignSeq, List<Game> games, boolean isDeleteEarlierCampaignGames)
-			throws Exception;
-	public void saveCampaignGames(HttpServletRequest request)throws ServletException, IOException,
-	Exception;
-	
-	//USERGROUPS METHODS
+	public void saveCampaignGames(Long campaignSeq, List<Game> games,
+			boolean isDeleteEarlierCampaignGames) throws Exception;
+
+	public void saveCampaignGames(HttpServletRequest request)
+			throws ServletException, IOException, Exception;
+
+	// USERGROUPS METHODS
 	public void saveCampaignUserGroups(Long campaignSeq,
 			List<UserGroup> userGroups) throws Exception;
 
 	public JSONObject saveCampaignUserGroups(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException,
 			Exception;
-	
-	//Preview Methods
+
+	// Preview Methods
 	public JSONObject getFullJSON(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException,
 			Exception;
+
+	public JSONObject publishCampaign(HttpServletRequest request)
+			throws ServletException, IOException;
 }

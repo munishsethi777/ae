@@ -22,6 +22,7 @@ import com.satya.Persistence.ProjectDataStoreI;
 import com.satya.Persistence.RowMapper;
 
 public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
+	
 	Logger logger = Logger.getLogger(CampaignDataStore.class);
 	private final static String SELECT = "select campaigns.*, games.seq as gameSeq, games.title as gameTitle, games.description as gameDescription," +
 			" games.projectseq as gameProjectSeq, games.lastmodifieddate as gameLastModifiedDate, games.isenabled as gameIsEnabled,games.ispublished as ispublished from campaigns" +
@@ -50,6 +51,7 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 			"left join users on users.seq = usergroupusers.userseq " +
 			"where users.seq=?";
 	
+	private final static String PUBLISH_CAMPAIGN = "update campaigns set ispublished=? where seq=?";
 	private PersistenceMgr persistenceMgr;
 	
 	public CampaignDataStore(PersistenceMgr psmgr){
@@ -271,6 +273,11 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 		}
 		return campaign;
 		
+	}
+	@Override
+	public void publishCampaign(long seq) {
+		Object [] params = new Object [] {true,seq};
+		persistenceMgr.excecuteUpdate(PUBLISH_CAMPAIGN, params);	
 	}
 
 

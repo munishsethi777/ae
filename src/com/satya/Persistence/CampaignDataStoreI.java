@@ -10,6 +10,7 @@ public interface CampaignDataStoreI {
 	public List<Campaign> findAll();
 	public Campaign findBySeq(long seq);
 	public List<Campaign> findByProjectSeq(long seq);
+	public void publishCampaign(long seq);
 	//User Methods
 	public List<Campaign> findByUserSeq(long seq);
 	public int getCampaignSetSeq(long campaignSeq, long setSeq);

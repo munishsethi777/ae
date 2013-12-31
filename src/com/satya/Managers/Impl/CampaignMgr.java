@@ -388,6 +388,16 @@ public class CampaignMgr implements CampaignMgrI {
 		json.put("userGroup", userGroupsJsonArr.get(0));
 		return json;
 	}
+
+	@Override
+	public JSONObject publishCampaign(HttpServletRequest request)
+			throws ServletException, IOException {
+		JSONObject json = new JSONObject();
+		String campaignSeqStr = request.getParameter("campaignSeq");
+		CampaignDataStoreI CDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getCampaignDataStore();
+		CDS.publishCampaign(Long.parseLong(campaignSeqStr));
+		return json;
+	}
 	
 
 

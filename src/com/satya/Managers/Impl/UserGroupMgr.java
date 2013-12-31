@@ -397,10 +397,21 @@ public class UserGroupMgr implements UserGroupMgrI {
 		for (UserGroup userGroup : userGroups) {
 			jsonArr.put(toJson(userGroup));
 		}
-		try {
-			mainJsonObject.put("jsonArr", jsonArr);
+		try{
+			if(jsonArr.length()==0){
+				mainJsonObject.put(IConstants.STATUS, IConstants.FAILURE);
+				mainJsonObject.put(IConstants.MESSAGE, "Error occured");
+				jsonArr.put(mainJsonObject);
+			}else{
+				mainJsonObject.put("jsonArr", jsonArr);
+			}			
 		} catch (Exception e) {
-
+			try{
+				mainJsonObject.put(IConstants.STATUS, IConstants.FAILURE);
+				mainJsonObject.put(IConstants.MESSAGE, "Error occured"+e.getMessage());
+				jsonArr.put(mainJsonObject);
+			}catch(Exception e1){}
+			log.error("Exception occured while fetching selected usergroups on campaign",e);
 		}
 		return jsonArr;
 	}

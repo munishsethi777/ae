@@ -30,6 +30,8 @@ import com.satya.importmgmt.QuestionImporter;
 
 public class QuestionsMgr implements QuestionsMgrI {
 
+	private static final String GAME_TEMP_SEQ = "gameTempSeq";
+	private static final String IS_ENABLED_QUESTION_INPUT = "isEnabledQuestion";
 	private static final String EXTRA_ATTEMPTS_ALLOWED = "extraAttemptsAllowed";
 	private static final String MAX_SECONDS_ALLOWED = "maxSecondsAllowed";
 	private static final String NEGATIVE_POINTS = "negativePoints";
@@ -119,7 +121,7 @@ public class QuestionsMgr implements QuestionsMgrI {
 			json.put(EXTRA_ATTEMPTS_ALLOWED, question.getExtraAttemptsAllowed());
 			json.put(IConstants.CREATED_ON,
 					DateUtils.getGridDateFormat(question.getCreatedOn()));
-			json.put(IConstants.IS_ENABLED, question.IsEnabled());
+			json.put(IS_ENABLED_QUESTION_INPUT, question.IsEnabled());
 			json.put(IConstants.LAST_MODIFIED_DATE,
 					DateUtils.getGridDateFormat(question.getLastModified()));
 			List<QuestionAnswers> answers = question.getQuestionAnswers();
@@ -151,12 +153,12 @@ public class QuestionsMgr implements QuestionsMgrI {
 		String title = request.getParameter(QUES_TITLE);
 		String description = request.getParameter(IConstants.DESCRIPTION);
 		String pointsStr = request.getParameter(POINTS);
-		String isEnableStr = request.getParameter(IConstants.IS_ENABLED);
+		String isEnableStr = request.getParameter(IS_ENABLED_QUESTION_INPUT);
 		String negativePointsStr = request.getParameter(NEGATIVE_POINTS);
 		String maxSecondsAllowedStr = request.getParameter(MAX_SECONDS_ALLOWED);
 		String extraAttemptsAllowedStr = request
 				.getParameter(EXTRA_ATTEMPTS_ALLOWED);
-		String gameTemplateSeqStr = request.getParameter("gameTempSeq");
+		String gameTemplateSeqStr = request.getParameter(GAME_TEMP_SEQ);
 		String gameSeqStr = request.getParameter("gameSeq");
 		String campaignSeqStr = request.getParameter("campaignSeq");
 		String hintStr = request.getParameter("hint");
@@ -255,11 +257,11 @@ public class QuestionsMgr implements QuestionsMgrI {
 					campaignMgr.saveCampaignGames(campaignSeq, games,false);
 				}
 			} else if (gameSeqStr != null && !gameSeqStr.equals("")) {
-				game = GDS.findBySeqWithQuesAnswers(Long.parseLong(gameSeqStr));
-				List<Questions> questionsList = game.getQuestions();
+				game.setSeq(Long.parseLong(gameSeqStr));
+				List<Questions> questionsList = new ArrayList<Questions>();
 				questionsList.add(questions);
 				game.setQuestions(questionsList);
-				GDS.Save(game);
+				GDS.saveGameQuestions(game, false);
 				json.put("gameSeq", game.getSeq());
 			}
 

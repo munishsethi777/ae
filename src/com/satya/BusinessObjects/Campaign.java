@@ -27,6 +27,7 @@ public class Campaign {
 	private Date startDate;
 	private Date validTillDate;
 	private String launchMessage;
+	private boolean isPublished;
 	
 	public static final String LAUNCH_MESSAGE = "launchMessage";
 	public static final String START_DATE = "startDate";
@@ -144,5 +145,11 @@ public class Campaign {
 			
 		}
 		return json;
+	}
+	public boolean isPublished() {
+		return isPublished;
+	}
+	public void setPublished(boolean isPublished) {
+		this.isPublished = isPublished;
 	}
 }

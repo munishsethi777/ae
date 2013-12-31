@@ -123,16 +123,19 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			if (game.getSeq() == 0) {
 				game.setSeq(persistenceMgr.getLastUpdatedSeq());
 			}
-			saveGameQuestions(game);
+			saveGameQuestions(game,true);
 		} catch (Exception e) {
 			logger.error("Error during Save Questions", e);
 		}
 	}
-
-	private void saveGameQuestions(Game game) {
-		Object[] deleteParams = new Object[1];
-		deleteParams[0] = game.getSeq();
-		persistenceMgr.excecuteUpdate(DELETE_QUESTIONS, deleteParams);
+	
+	@Override
+	public void saveGameQuestions(Game game,boolean isDeleteEarlierQuestionRelations) {
+		if(isDeleteEarlierQuestionRelations){
+			Object[] deleteParams = new Object[1];
+			deleteParams[0] = game.getSeq();		
+			persistenceMgr.excecuteUpdate(DELETE_QUESTIONS, deleteParams);
+		}
 		if (game.getQuestions() != null) {
 			for (Questions question : game.getQuestions()) {
 				Object[] params = new Object[2];
@@ -293,6 +296,8 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 				}
 				
 			} catch (Exception e) {
+				logger.error("Error occured while grabbing game template details",e);
+			}finally{
 				if(gameTemplates != null){
 					game.setGameTemplate(gameTemplates);
 				}
@@ -303,23 +308,23 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 				long questionSeq = rs.getLong("questionseq");
 				if(questionSeq != 0){
 					question = new Questions();
-					String quesTitle = rs.getString("questiontitle");
-					String quesDescription = rs.getString("questiondescription");
-					int negativePoints = rs.getInt("negativepoints");
-					int quesMaxSecondsAllowed= rs.getInt("questionmaxsecondsallowed");
-					
 					question.setSeq(questionSeq);
+					String quesTitle = rs.getString("questiontitle");
 					question.setTitle(quesTitle);
+					String quesDescription = rs.getString("questiondescription");
 					question.setDescription(quesDescription);
+					int negativePoints = rs.getInt("negativepoints");
 					question.setNegativePoints(negativePoints);
+					int quesMaxSecondsAllowed= rs.getInt("questionmaxsecondsallowed");
 					question.setMaxSecondsAllowed(quesMaxSecondsAllowed);
-					
-					game.setQuestions(new ArrayList<Questions>());
-					game.getQuestions().add(question);
 				}
 				
 			} catch (Exception e) {
-				
+				logger.error("Error Occured while grabbing question for game",e);
+			}
+			finally{
+				game.setQuestions(new ArrayList<Questions>());
+				game.getQuestions().add(question);
 			}
 			QuestionAnswers answer = null;
 			//Capture QuestionAnswer
