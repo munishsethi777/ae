@@ -3,6 +3,7 @@
 					<input type="hidden" name="seq" id="seqInput"/>
 					<input type="hidden" name="campaignSeq" id="campaignSeq"/>
 					<input type="hidden" name="createdOn" id="createdOnInput"/>
+					<input type="hidden" name="validityDays" id="validityDaysInput"/>
 					<table class="formTable">
 						<tr>
 							<td>Name</td>
@@ -15,14 +16,9 @@
 						<tr>
 							<td>Campaign Dates</td>
 							<td>
-								<div style="display:inline-table">From
-									<div id="startDateInput"/></div>
-								</div>
-								
-								<div style="display:inline-table;margin-left:20px;">To
-									<div id="validTillDateInput"/></div>
-								</div>
-								
+								<div style="display:inline-table" id="startDateInput"/></div>
+								<div style="display:inline-table;margin:-6px 3px 0px 3px"/>To</div>
+								<div style="display:inline-table" id="validTillDateInput"/></div>
 							</td>
 						</tr>
 						<tr>

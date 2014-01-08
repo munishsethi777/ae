@@ -18,6 +18,7 @@ public class Game {
 	private int maxSecondsAllowed;
 	private boolean isPublished;
 	private int maxQuestions;
+	private String imagePath;
 	
 	public int getMaxSecondsAllowed() {
 		return maxSecondsAllowed;
@@ -109,5 +110,11 @@ public class Game {
 	}
 	public void setMaxQuestions(int maxQuestions) {
 		this.maxQuestions = maxQuestions;
+	}
+	public String getImagePath() {
+		return imagePath;
+	}
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 }

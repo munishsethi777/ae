@@ -50,6 +50,8 @@ public class QuestionDataStore implements QuestionDataStoreI, RowMapper {
 			+ "join questionanswers on questions.seq = questionanswers.questionseq "
 			+ "left join gamequestions on gamequestions.questionseq = questions.seq"
 			+ "left join games on games.seq = gamequestions.gameseq where games.seq = ?";
+	
+	private final static String COUNT_QUESTIONS_SELECTED_IN_GAME = "select count(*) from gamequestions where gameseq = ?";
 
 	private PersistenceMgr persistenceMgr;
 
@@ -242,5 +244,11 @@ public class QuestionDataStore implements QuestionDataStoreI, RowMapper {
 	public List<Questions> findByGameSeq(long gameSeq) {
 		Object[] params = new Object[] { gameSeq };
 		return getQuestionsAndAnswers(FIND_QUESTIONS_BY_GAME, params);
+	}
+
+	@Override
+	public int countQuestionsOnGame(long gameSeq) {
+		Object[] params = new Object[] { gameSeq };
+		return persistenceMgr.executeCountQuery(COUNT_QUESTIONS_SELECTED_IN_GAME,params);
 	}
 }

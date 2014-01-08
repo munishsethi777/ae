@@ -2,6 +2,7 @@ package com.satya.Persistence.Impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,7 +26,8 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 	
 	Logger logger = Logger.getLogger(CampaignDataStore.class);
 	private final static String SELECT = "select campaigns.*, games.seq as gameSeq, games.title as gameTitle, games.description as gameDescription," +
-			" games.projectseq as gameProjectSeq, games.lastmodifieddate as gameLastModifiedDate, games.isenabled as gameIsEnabled,games.ispublished as ispublished from campaigns" +
+			" games.projectseq as gameProjectSeq, games.lastmodifieddate as gameLastModifiedDate, games.isenabled as gameIsEnabled,games.ispublished as ispublished " +
+			" ,games.imagepath as imagepath from campaigns" +
 			" left join campaigngames on campaigngames.campaignseq = campaigns.seq left join games on games.seq = campaigngames.gameseq ";
 	
 	private final static String SELECT_BY_SEQ = SELECT + "where campaigns.seq = ?";
@@ -222,13 +224,13 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 			long seq = rs.getLong("seq");
 			String name = rs.getString("name");
 			String  description = rs.getString("description");			
-			Date createdOn = rs.getDate("createdon");
+			Timestamp createdOn = rs.getTimestamp("createdon");
 			String validityDays = rs.getString("validitydays");
 			boolean isEnable = rs.getBoolean("isenabled");
 			long projectSeq = rs.getLong("projectseq");
-			Date lastModifiedDate = rs.getDate("lastmodifieddate");
-			Date startDate = rs.getDate("startdate");
-			Date validTillDate = rs.getDate("validtilldate");
+			Timestamp lastModifiedDate = rs.getTimestamp("lastmodifieddate");
+			Timestamp startDate = rs.getTimestamp("startdate");
+			Timestamp validTillDate = rs.getTimestamp("validtilldate");
 			String launchMessage=rs.getString("launchMessage");
 			
 			campaign = new Campaign();
@@ -255,6 +257,7 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 				boolean gameIsEnabled = rs.getBoolean("gameIsEnabled");
 				long gameProjectSeq = rs.getLong("gameProjectSeq");
 				Date gameLastModifiedDate = rs.getDate("gameLastModifiedDate");
+				String imagePath = rs.getString("imagepath");
 				
 				Game game = new Game();
 				game.setSeq(gameSeq);
@@ -263,7 +266,7 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 				game.setEnable(gameIsEnabled);
 				game.setProject(new Project(gameProjectSeq));
 				game.setLastModifiedDate(gameLastModifiedDate);
-				
+				game.setImagePath(imagePath);
 				games.add(game);
 				campaign.setGames(games);
 			}catch(Exception e){}

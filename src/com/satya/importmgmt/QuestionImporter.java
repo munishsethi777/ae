@@ -14,8 +14,10 @@ import validator.AEValidationMessage;
 import validator.AEValidatorFactory;
 
 import com.satya.ApplicationContext;
+import com.satya.IConstants;
 import com.satya.ImportedSet;
 import com.satya.RowImporterI;
+import com.satya.BusinessObjects.GameTemplates;
 import com.satya.BusinessObjects.Project;
 import com.satya.BusinessObjects.QuestionAnswers;
 import com.satya.BusinessObjects.Questions;
@@ -185,22 +187,29 @@ public class QuestionImporter implements RowImporterI {
 		return 0;
 	}
 	
-	public JSONObject importFromXls(HttpServletRequest request, HttpServletResponse response)throws Exception{
-		JSONArray jsonArr = new JSONArray();
-		ImportUtils importUtils = new ImportUtils(this);
-		ImportedSet importedSet = importUtils.importFromXls(request, response);
+	public JSONObject importFromXls(HttpServletRequest request, HttpServletResponse response){
 		JSONObject mainJsonObject = new JSONObject();
-		List<Object>objList = importedSet.getObjList(); 
-		for(Object obj: objList){ 
-			Questions question = (Questions)obj;
-			jsonArr.put(QuestionsMgr.toJson(question));
-		}
 		try{
+			JSONArray jsonArr = new JSONArray();
+			ImportUtils importUtils = new ImportUtils(this);
+			ImportedSet importedSet = importUtils.importFromXls(request, response);
+			
+			List<Object>objList = importedSet.getObjList(); 
+			for(Object obj: objList){ 
+				Questions question = (Questions)obj;
+				jsonArr.put(QuestionsMgr.toJson(question));
+			}
 			mainJsonObject.put("jsonArr", jsonArr);
 			mainJsonObject.put("hasErrors", importedSet.getHasErrors());
 			mainJsonObject.put("failedRowCount", importedSet.getFailedRowCount());
 		}catch(Exception e){
-			
+			String message = e.getMessage();
+			try{
+				mainJsonObject.put(IConstants.STATUS, IConstants.FAILURE);
+				mainJsonObject.put(IConstants.MESSAGE, message);
+			}catch(Exception e1){
+				
+			}
 		}
 		return mainJsonObject;
 	}

@@ -18,16 +18,15 @@ public class DateUtils {
 	}
 	
 	public static Date getDateFromString(String strDate){
-		return new Date();
-		/*if (strDate==null){
+		if (strDate == null || strDate == ""){
 			return null;
 		}
 		try{
-			Date date= new SimpleDateFormat("dd-MM-yyyy hh.mm a").parse(strDate);
+			Date date= new SimpleDateFormat("dd/MM/yyyy hh.mm a").parse(strDate);
 			return date;
 		} catch (java.text.ParseException e) {
 			return null;
-		}*/
+		}
 		
 		
 	}

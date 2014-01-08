@@ -213,6 +213,7 @@ public class GameMgr implements GameMgrI {
 			gameTemplate.setSeq(gameTemplateSeq);
 			game.setGameTemplate(gameTemplate);
 			game.setMaxQuestions(gameTemplate.getMaxQuestions());
+			game.setImagePath(gameTemplate.getImagePath());
 		}
 		String selectedQuestionsString = request
 				.getParameter(IConstants.SELECTED_CHILDREN_ROWS);
@@ -306,6 +307,8 @@ public class GameMgr implements GameMgrI {
 				game.setEnable(true);
 				game.setGameTemplate(GT);
 				game.setQuestions(questionsList);
+				game.setImagePath(GT.getImagePath());
+				game.setMaxQuestions(GT.getMaxQuestions());
 				json.put("gameSeq", game.getSeq());
 			} else if (gameSeqStr != null && !gameSeqStr.equals("")) {
 				game = GDS.findBySeqWithQuesAnswers(Long.parseLong(gameSeqStr));
@@ -358,8 +361,18 @@ public class GameMgr implements GameMgrI {
 					DateUtils.getGridDateFormat(game.getCreatedOn()));
 			json.put(IConstants.LAST_MODIFIED_DATE,
 					DateUtils.getGridDateFormat(game.getLastModifiedDate()));
+			json.put("imagePath", game.getImagePath());
 			if (game.getGameTemplate() != null) {
 				json.put("gameTemplate", game.getGameTemplate().getSeq());
+			}
+			json.put("maxQuestions", game.getMaxQuestions());
+			int totalQuestions = 0;
+			if(game.getQuestions()!= null){
+				totalQuestions = game.getQuestions().size();
+			}
+			json.put("totalQuestions", totalQuestions);
+			if(totalQuestions < game.getMaxQuestions()){
+				json.put("status","incompleted");
 			}
 		} catch (Exception e) {
 

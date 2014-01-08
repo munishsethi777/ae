@@ -27,8 +27,15 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import validator.AEValidationMessage;
 
+import com.satya.ApplicationContext;
 import com.satya.ImportedSet;
 import com.satya.RowImporterI;
+import com.satya.BusinessObjects.Game;
+import com.satya.BusinessObjects.GameTemplates;
+import com.satya.Managers.GameMgrI;
+import com.satya.Managers.GameTemplatesMgrI;
+import com.satya.Persistence.GameDataStoreI;
+import com.satya.Persistence.QuestionDataStoreI;
 
 
 public class ImportUtils {
@@ -40,33 +47,54 @@ public class ImportUtils {
 		rowImporterI = rowImporter;
 	}
 	public ImportedSet importFromXls(HttpServletRequest request,
-			HttpServletResponse response){
+			HttpServletResponse response)throws Exception{
+		String gameTemplateSeqstr = request.getParameter("gameTemplateSeq");
+		String gameSeqstr = request.getParameter("gameSeq");
+		GameTemplates gameTemplate = null;
+		int earlierQuestionsOnGame = 0;
+		if(gameTemplateSeqstr != null && !gameTemplateSeqstr.equals("")){
+			long gameTemplateSeq = Long.parseLong(gameTemplateSeqstr);
+			GameTemplatesMgrI GTM = ApplicationContext.getApplicationContext().getGameTemplateMgr();
+			gameTemplate = GTM.getBySeq(gameTemplateSeq);
+		}
+		if(gameSeqstr != null && !gameSeqstr.equals("")){
+			long gameSeq = Long.parseLong(gameSeqstr);
+			QuestionDataStoreI QDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getQuestionDataStore();
+			earlierQuestionsOnGame = QDS.countQuestionsOnGame(gameSeq);
+		}
 		Map<String,String> rowDataMap = null;
 		ImportedSet importSet = new ImportedSet();
-		try{
-			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-			if (isMultipart) {
-				FileItemFactory factory = new DiskFileItemFactory();
-				ServletFileUpload upload = new ServletFileUpload(factory);
-				List items = upload.parseRequest(request);
-				FileItem fileItem = (FileItem) items.get(0);
-				if (!fileItem.getName().equals("")) {
-					int mid = fileItem.getName().lastIndexOf(".");
-					String ext = fileItem.getName().substring(mid + 1,
-							fileItem.getName().length());
-					if (!ext.contains("xls"))
-						throw new Exception("Format not supported");
-				} else {
-					throw new Exception("Select File");
-				}
+		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+		if (isMultipart) {
+			FileItemFactory factory = new DiskFileItemFactory();
+			ServletFileUpload upload = new ServletFileUpload(factory);
+			List items = upload.parseRequest(request);
+			FileItem fileItem = (FileItem) items.get(0);
+			if (!fileItem.getName().equals("")) {
+				int mid = fileItem.getName().lastIndexOf(".");
+				String ext = fileItem.getName().substring(mid + 1,
+						fileItem.getName().length());
+				if (!ext.contains("xls"))
+					throw new Exception("Format not supported");
+			} else {
+				throw new Exception("Select File");
+			}
 				
 			InputStream is = fileItem.getInputStream();
 			
 			Workbook workbook = WorkbookFactory.create(is);
 			Sheet sheet = workbook.getSheetAt(0);
 			
-			Iterator<Row>rowIterator = sheet.rowIterator();
-						
+			Iterator<Row> rowIterator = sheet.rowIterator();
+			//check if game can have more questions then only import
+			if(gameTemplate!=null){
+				int importingRowsCount = getRowsCount(rowIterator);
+				importingRowsCount += earlierQuestionsOnGame;
+				if(importingRowsCount >= gameTemplate.getMaxQuestions()){
+					throw new Exception("Game does not allow more than "+gameTemplate.getMaxQuestions()+ " questions.");
+				}
+			}
+			rowIterator = sheet.rowIterator();			
 			//first row will be column headers in xls file.
 			String[] colHeaders = getColmnHeaders(sheet);
 			List<Object>savedObjects = new ArrayList<Object>();
@@ -96,11 +124,22 @@ public class ImportUtils {
 					importSet.setFailedRowCount(failedRowCount);
 					failedRowCount ++;
 			}
-			}
-		}catch(Exception e){			
-			String msg = e.getMessage();
 		}
 		return importSet;
+	}
+	private int getRowsCount(Iterator<Row> rowIterator){
+		int index = 0;
+		int totalRows = 0;
+		while(rowIterator.hasNext()){
+			if(index == 0){
+				rowIterator.next();
+				index ++;
+				continue;				
+			}
+			Row row = rowIterator.next();
+			totalRows+= 1;
+		}
+		return totalRows;
 	}
 	public void exportFailedRows(HttpServletRequest request,
 			Workbook workbook,Map<Row, List<AEValidationMessage>>errorMap) 

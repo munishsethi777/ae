@@ -1,10 +1,8 @@
-	<%@ include file="includeJars.jsp" %>
+<%@ include file="includeJars.jsp" %>
 <%@ include file="includeJS.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-
 <link rel="stylesheet" href="css/steps/normalize.css">
 <link rel="stylesheet" href="css/steps/main.css">
 <link rel="stylesheet" href="css/steps/jquery.steps.css">
@@ -19,10 +17,10 @@
 	var dataUrl = "AdminUser?action=getAllCampaigns";
 	var deleteUrl = "AdminUser?action=deleteCampaign";
 	var addUrl = "AdminUser?action=addCampaign";
-
+	var isShowButtons = true;
 	
 			
-	var columns = [
+	var columnsCampaign = [
 			{ text: 'Name', datafield: 'name',editable:false,width:190  },
 			{ text: 'Description', datafield: 'description',editable:false },
 			{ text: 'Validity Days', datafield: 'validityDays',editable:false,width:100,cellsalign: 'right',align: 'right'},
@@ -34,7 +32,7 @@
 			{ text: 'End Date', datafield: 'validTilldDate',editable:false,width:220,cellsformat: 'dd-MM-yy hh.mm tt'}
 			];
 
-	var dataFields = [
+	var dataFieldsCampaign = [
 			{ name: 'seq', type: 'integer' },
 			{ name: 'name', type: 'string' },
 			{ name: 'description', type: 'string' },
@@ -43,23 +41,38 @@
 			{ name: 'createdOn', type: 'date' },
 			{ name: 'lastmodifieddate', type: 'date'},
 			{ name: 'launchMessage', type: 'string' },
-			{ name: 'campaignSeq', type: 'integer' }
-			//{ name: 'validTillDate', type: 'date' }
+			{ name: 'campaignSeq', type: 'integer' },
+			{ name: 'startDate', type: 'date' },
+			{ name: 'validTillDate', type: 'date' }
 			];
-	var isShowButtons = true;
-
+	
+	function getJSDateFromStringForDateTimeInput(dateStr){
+		//dateStr = "17-01-2014 12.00 AM";
+		var date = parseInt(dateStr.substring(0,2));
+		var month = parseInt(dateStr.substring(3,5));
+		var year = parseInt(dateStr.substring(6,10));
+		var hours = parseInt(dateStr.substring(11,13));
+		var minutes = parseInt(dateStr.substring(14,16));
+		var ampm = dateStr.substring(17,19);
+		if(ampm == "PM"){
+			hours = hours + 12;
+		}
+		var dated = new Date(year,month,date,hours,minutes);
+		return dated;
+	}
 	$(document).ready(function () {
 			var editorWidth= "85%";
 			var editorHeight = "80%";
-			renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,"",columns,dataFields,true,editorHeight,editorWidth);
+			renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,"",columnsCampaign,dataFieldsCampaign,true,editorHeight,editorWidth);
 			$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 			$('#jqxCreateBeanWindow').on('open', function (event) { 
 				$('#jqxCreateBeanWindow').jqxWindow({resizable: false,position: { x: 0, y: 0 } }); 
-				$("#jqxCampaignWizard").jqxScrollView('changePage', 0);//first slide always
+				$("#startDateInput").jqxDateTimeInput({width: '220px', theme: theme ,formatString: 'dd/MM/yyyy hh.mm tt'});
+				$("#validTillDateInput").jqxDateTimeInput({width: '220px', theme: theme ,formatString: 'dd/MM/yyyy hh.mm tt'});
+				$("#startDateInput").jqxDateTimeInput('setDate', getJSDateFromStringForDateTimeInput(editingBeanRow.startDate));
+				$("#validTillDateInput").jqxDateTimeInput('setDate',getJSDateFromStringForDateTimeInput(editingBeanRow.validTillDate));
 				//now rendering the usergroup usrs grid on campaign open window.
 				renderUserGrid();
-				//in edit mode
-				loadUserGroupDetails();
 				loadGameTemplates($("#seqInput").val());
 			});
 			$("#addQuestionsWindow").jqxWindow({ 
@@ -67,19 +80,12 @@
    				resizable: true, theme: theme, autoOpen: false, 
    				maxWidth:'90%', maxHeight:'90%',width:'90%', height:'90%', showCloseButton: true 
    			});
-			
-			
+
 			$("#nameInput").jqxInput({	placeHolder : "enter a campaign title", height : 25, width : 500, minLength : 1, maxLength : 256});
 			$("#descriptionInput").jqxInput({	placeHolder : "enter a campaign description", height : 25, width : 500, minLength : 1, maxLength : 256});
-			$("#startDateInput").jqxCalendar({width: 220, height: 220, theme: theme });
-			$("#validTillDateInput").jqxCalendar({width: 220, height: 220, theme: theme });
 			$("#launchMessageInput").jqxInput({	placeHolder : "enter a campaign launch message", height : 25, width : 500, minLength : 1, maxLength : 256});
 			//savebutton click
-		
 			$("#saveCampaignButton").jqxButton({ width: 70, theme: theme });
-
-			
-			
 			createWizardLayout();
 			createNewEarlierRadios();	
 	});//end document ready
@@ -96,18 +102,19 @@
 			/* Events */
 		    onStepChanging: function (event, currentIndex, newIndex) { 
 		    	//when a slide loses focus
+		    	var bool = true;
 		    	if(currentIndex == 0){
-		    		return saveCampaignDetails();
+		    		bool =  saveCampaignDetails();
 		    	}else if(currentIndex == 1){
 		    		saveCampaignGames();
 		    	}else if(currentIndex == 2){
 		    		saveCampaignUserGroup();
 		    	}
 		    	// when preview slide gets focus
-		    	if(newIndex == 3){
+		    	if(newIndex == 3 && bool==true){
 		    		previewCampaign();
 		    	}
-		    	return true; 
+		    	return bool; 
 		    },
 		    onStepChanged: function (event, currentIndex, priorIndex) { },
 		    onFinishing: function (event, currentIndex) { return true; }, 
@@ -159,14 +166,14 @@
 	}
 	
 	function saveCampaignGames(){
-			gameSeqs = getAllSelectedGamesSeqs();
-			var campaignSeq = getCampaignSeqFromForm();
-			var dataRow = {};
-			dataRow["campaignSeq"] = campaignSeq;
-			dataRow["gamesSeqs"] = gameSeqs.toString();
-			$.getJSON("AdminUser?action=setGamesOnCampaign",dataRow,function(json){
-				//games saved put validations if any
-			});
+		gameSeqs = getAllSelectedGamesSeqs();
+		var campaignSeq = getCampaignSeqFromForm();
+		var dataRow = {};
+		dataRow["campaignSeq"] = campaignSeq;
+		dataRow["gamesSeqs"] = gameSeqs.toString();
+		$.getJSON("AdminUser?action=setGamesOnCampaign",dataRow,function(json){
+			//games saved put validations if any
+		});
 	}
 	function getCampaignSeqFromForm(){
 		var campaignSeq = $("#createCampaignForm #seqInput").val();
@@ -176,7 +183,7 @@
 	function saveCampaignDetailsAction(gridId){
 		dataRow = {};
 		dataRow['rowId'] = $("#createCampaignForm #rowIdInput").val();
-		$.each(dataFields,function(index,value){
+		$.each(dataFieldsCampaign,function(index,value){
 			dataRow[value.name] = $("#createCampaignForm #"+ value.name +"Input").val();
 			if(value.type == "radio"){
 				dataRow[value.name] = $('input[name='+ value.name +']:radio:checked').val()
@@ -222,11 +229,11 @@
 		$('#createSelectUserGroupRadios').on('selected', function () { 
 			var clickedOptionIndex = $('#createSelectUserGroupRadios').jqxButtonGroup('getSelection');
 			if(clickedOptionIndex == 0){
-				$("#createNewUserGroupDiv").show();
-            	$("#useEarlierUserGroupDiv").hide();
-			}else{
 				$("#createNewUserGroupDiv").hide();
             	$("#useEarlierUserGroupDiv").show();
+			}else{
+				$("#createNewUserGroupDiv").show();
+            	$("#useEarlierUserGroupDiv").hide();
 			}
 		});
 	}
@@ -265,14 +272,14 @@
 			<h2>Campaign Trainees</h2>
 			<section><!-- Slide 3 -->
 				<div id="createSelectUserGroupRadios" style="clear:both;margin-bottom:6px;">
-					<button style="padding:4px 16px;" id="isCreateNewUserGroup">Create new UserGroup</button>
 					<button style="padding:4px 16px;" id="isUseEarlierUserGroup">Use earlier UserGroup</button>
+					<button style="padding:4px 16px;" id="isCreateNewUserGroup">Create new UserGroup</button>
 				</div>
-				<div id="createNewUserGroupDiv">
-					<%@ include file="campaignUsersEditor.jsp"%>
-				</div>
-				<div id="useEarlierUserGroupDiv" style="display:none">
+				<div id="useEarlierUserGroupDiv">
 					<%@ include file="userGroupGridInclude.jsp"%>
+				</div>
+				<div id="createNewUserGroupDiv" style="display:none">
+					<%@ include file="campaignUsersEditor.jsp"%>
 				</div>
 				
 			</section>
@@ -287,71 +294,10 @@
 <!--  including js scripting for game creation -->
 <%@ include file="js_creategame.jsp" %>
 
+<!--  including campaign questions creation file -->
 <%@ include file="campaignQuestionsEditorInclude.jsp" %>
 
 <!-- Editing Game Name/Description code here -->
-<script>
-//passing gameTemplateSeq because the hidden inputs names are using templateIds
-function editGameDetails(gameTemplateSeq){
-	var gameSeq = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameSeq"+gameTemplateSeq).val();
-	$("#editGameEditor #gameEditorSeq").val(gameSeq);
-	var gameName = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameTitle"+gameTemplateSeq).html();
-	var gameDesc = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameDescription"+gameTemplateSeq).html();
-	$("#gameEditorTitle").val(gameName);
-	$("#gameEditorDescription").val(gameDesc);
-	
-	$("#editGameEditor").jqxWindow({ 
-			isModal: true, modalOpacity: 0.8,
-			resizable: true, theme: theme, autoOpen: true, 
-			maxWidth:'400px', maxHeight:'200px',width:'400px', height:'200px', showCloseButton: true 
-	});
-	
-	$("#saveGameDetails").jqxButton({ width: 70, theme: theme });
-	$("#saveGameDetails").unbind();
-	$("#saveGameDetails").on('click', function(event) {
-		saveGameDetails(gameTemplateSeq);
-	});
-	$("#closeGameDetails").jqxButton({ width: 70, theme: theme });
-	$("#closeGameDetails").unbind();
-	$("#closeGameDetails").on('click', function(event) {
-		$("#editGameEditor").jqxWindow("close");
-	});
-	$("#gameEditorTitle").jqxInput({height : 25, width : 300, minLength : 1, maxLength : 256});
-	$("#gameEditorDescription").jqxInput({height : 25, width : 300, minLength : 1, maxLength : 256});
-	
-	$("#editGameEditor").jqxWindow("open");	
-}
-function saveGameDetails(gameTemplateSeq){
-	dataRow = $("#editGameDetailsForms").serializeArray();
-	var url = "AdminUser?action=saveGameDetails";
-	$.getJSON(url,dataRow,function(json){
-		$("#selectedTemplateDivId"+gameTemplateSeq+" #gameTitle"+gameTemplateSeq).html(dataRow[1].value);
-		$("#selectedTemplateDivId"+gameTemplateSeq+" #gameDescription"+gameTemplateSeq).html(dataRow[2].value);
-		$("#editGameEditor").jqxWindow("close");
-	});
-}
-</script>
-<div id="editGameEditor" style="display:none">
-	<div class="title" style="font-weight:bold">Edit Game Details</div>
-	<div>
-		<form name="editGameDetailsForms" id="editGameDetailsForms">
-			<input type="hidden" name="gameSeq" id="gameEditorSeq"/>
-			<table class="formTable">
-				<tr>
-					<td width="100px">Title:</td>
-					<td><input type="text" name="gameTitle" id="gameEditorTitle"/></td>
-				</tr>
-				<tr>
-					<td>Description:</td>
-					<td><input type="text" name="gameDescription" id="gameEditorDescription"/></td>
-				</tr>
-				<tr>
-					<td align="right"><input value='Save' type='button' id='saveGameDetails'/></td>
-					<td align="left"><input value='Close' type='button' id='closeGameDetails'/></td>
-				</tr>
-			</table>
-		</form>
-	</div>
-</div>
+<%@ include file="campaignEditGameDetailsInclude.jsp" %>
 </body>
 </html>

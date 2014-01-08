@@ -24,15 +24,13 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 	private static final String PATH = "path";
 	private static final String MAX_QUESTIONS="maxQuestions";
 	Logger logger = Logger.getLogger(GameTemplateMgr.class);
+	
 	public List<GameTemplates> getAllGameTemplates()throws ServletException, IOException{
 		List<GameTemplates> gameTemplates = null;
 		GameTemplatesDataStoreI GTDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameTemplateDataStore();
 		gameTemplates = GTDS.findAll();
 		return gameTemplates;
 	}
-
-	
-	
 
 	@Override
 	public JSONArray getAllGameTemplateJson(HttpServletRequest request)
@@ -87,6 +85,13 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 			
 		}
 		return json;
+	}
+
+	@Override
+	public GameTemplates getBySeq(long gameSeq) throws ServletException, IOException {
+		List<GameTemplates> gameTemplates = null;
+		GameTemplatesDataStoreI GTDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameTemplateDataStore();
+		return GTDS.findBySeq(gameSeq);
 	}
 	
 }

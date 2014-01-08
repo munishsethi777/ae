@@ -1,10 +1,10 @@
 <form id="questionForm" name="questionForm" method="post" enctype="multipart/form-data">
 			<p style="margin-top:10px;">Import Question</p>
 			<td >
-				<label id="Questionfailedlbl"></label>
-						<p>Please download the <a href="Questions.xlsx">sample file</a> and fill in questions to upload on server.</p>
+				<label id="Questionfailedlbl" style="color:red"></label>
+				<p>Please download the <a href="Questions.xlsx">sample file</a> and fill in questions to upload on server.</p>
 						
-					</td>
+			</td>
 			<table width="500px" style="border:solid silver thin;margin-top:10px;">
 	    		<tr>
 	    			<td class="gameValueTD">
@@ -32,7 +32,9 @@
 	    	</table>
     	</form>	
 		<script type="text/javascript">		
-			$(document).ready(function () {
+		$(document).ready(function () {
+			var importURL =  'AdminUser?action=importQuestions';
+			
 			$("#downloadQuestionLink").hide();
 			$("#quslbl").text("")
 			$("#Questionfailedlbl").text("")
@@ -42,8 +44,18 @@
 					$("#quslbl").text("");
 					$("#Questionfailedlbl").text("");
 					var formData = new FormData($('#questionForm')[0]);
+					//sending templateSeq to importing to make sure maxQuestions validation works
+					if(typeof isCampaignUI != 'undefined'){
+						if(isCampaignUI){
+							importURL = importURL+ "&gameTemplateSeq=" + tempSeq;
+						}
+						if(tempSeq != 0){
+							var gameSeq = $("#gameSeq" + tempSeq).val();
+							importURL = importURL+ "&gameSeq=" + gameSeq;
+						}
+					}
 				    $.ajax({
-				        url: 'AdminUser?action=importQuestions',  //Server script to process data
+				        url: importURL,  //Server script to process data
 				        type: 'POST',
 						dataType: "json",
 				        xhr: function() {  // Custom XMLHttpRequest
@@ -55,32 +67,35 @@
 				        },
 				        //Ajax events
 				        success:  function(data){
-						$("#quslbl").text(data.jsonArr.length + " Row(s) Sucessfully Imported")
-							if(data.jsonArr.length > 0){
-							    var i = 0;
-								if(typeof $("#jqxQuestiongrid").jqxGrid("getrows") == 'undefined'){
-									loadGrid();
-								}
-								$.each(data.jsonArr, function() {
-									$("#jqxQuestiongrid").jqxGrid('addrow', null, data.jsonArr[i],null,true);
-									if(typeof isCampaignUI != 'undefined'){
-										if(isCampaignUI){
-											if(i==0){
-												addGameFromImportQues(data.jsonArr);
-											}
-											updateSelectedQuestionGrid(data.jsonArr[i])
-										}
+					        if(data.status == "failure"){//failed due to some eceptions
+					        	$("#Questionfailedlbl").text(data.message);
+					        }else{
+								$("#quslbl").text(data.jsonArr.length + " Row(s) Sucessfully Imported")
+								if(data.jsonArr.length > 0){
+								    var i = 0;
+									if(typeof $("#jqxQuestiongrid").jqxGrid("getrows") == 'undefined'){
+										loadGrid();
 									}
-									i=i+1;
-								});
-							}
-								if(data.hasErrors == true){
-									$("#Questionfailedlbl").text(data.failedRowCount + " Row(s) Failed to Upload")
-									$("#downloadQuestionLink").show();
-									
+									$.each(data.jsonArr, function() {
+										$("#jqxQuestiongrid").jqxGrid('addrow', null, data.jsonArr[i],null,true);
+										if(typeof isCampaignUI != 'undefined'){
+											if(isCampaignUI){
+												if(i==0){
+													addGameFromImportQues(data.jsonArr);
+												}
+												updateSelectedQuestionGrid(data.jsonArr[i])
+											}
+										}
+										i=i+1;
+									});
 								}
-							
-						},
+					        }
+							if(data.hasErrors == true){
+								$("#Questionfailedlbl").text(data.failedRowCount + " Row(s) Failed to Upload")
+								$("#downloadQuestionLink").show();
+								
+							}
+						},//success block ends
 						
 				        // Form data
 				        data: formData,

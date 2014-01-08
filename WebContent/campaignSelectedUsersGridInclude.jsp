@@ -45,14 +45,20 @@
 				
 			}
 			renderGrid("userJqxGrid",beanUserName,dataUserUrl,deleteUserUrl,addUserUrl,
-					userValidatorRules,userColumns,userDataFields,true,"100%","80%");	
+					userValidatorRules,userColumns,userDataFields,true,"100%","80%");
+			$('#userJqxGrid').on('initialized', function () {
+				loadUserGroupDetails();
+			}); 
+			
 		}
 		function loadUserGroupDetails(){
+			alert("loaded grid");
 			var campaignSeq = $("#createCampaignForm #seqInput").val();
 			if(campaignSeq != null){
 				getUserGroupDetailsUrl = "AdminUser?action=getUserGroupsSelectedOnCampaign&campaignSeq=" + campaignSeq; 	
 				$.getJSON(getUserGroupDetailsUrl,function(json){
 					if(json[0].status != "failure"){
+						$('#userJqxGrid').jqxGrid('selectrow', json[0]["seq"]);
 						$("#userGroupSeqInput").val(json[0]["seq"]);
 						$("#userGroupNameInput").val(json[0]["name"]);
 						$("#userGroupDescriptionInput").val(json[0]["description"]);

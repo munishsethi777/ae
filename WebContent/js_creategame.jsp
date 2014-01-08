@@ -39,11 +39,11 @@ function getFormData(isImport){
 function addGameFromImportQues(quesJson){
 	data = getFormData(true);
 	var quesSeqArr = [];
-	var i = 0
+	var i = 0;
 	$.each(quesJson, function() {
 		quesSeqArr.push(quesJson[i]['seq']);
 		i =i+1;
-	})
+	});
 	var obj1 = new Object();
 	obj1.name = "quesSeqs";
 	obj1.value = quesSeqArr;
@@ -87,7 +87,7 @@ function newQuestionAdded(templateSeq){
 	}
 	questionCount = parseInt(questionCount,10);
 	questionCount = questionCount + 1;
-	$("#quesCount" + templateSeq).html("Count : " + questionCount);
+	$("#quesCount" + templateSeq).html(questionCount);
 	$("#selectedTemplateDivId"+templateSeq +" #gameTemplateTotalQuestions").val(questionCount);
 }
 
@@ -152,8 +152,8 @@ function getGameTemplateDiv(index,json){
 		if(json.totalQuestions != undefined){
 			totQuest = json.totalQuestions;
 		}
-		content += " <label id='quesCount" + json.seq + "'> "+ totQuest +" /</label>";
-		content += "<label>"+ json.maxQuestions +' Questions</label>';
+		content += " <label id='quesCount" + json.seq + "'> "+ totQuest +"</label>";
+		content += "<label> /"+ json.maxQuestions +' Questions</label>';
 	   	content += '<div class="smallFonts" style="height:70px;" id="gameDescription'+ json.seq +'">' + json.description + '</div>';
 	content += '<div style="margin-top:10px;">';
 	if(json.gameSeq != ""){

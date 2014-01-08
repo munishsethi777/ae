@@ -14,5 +14,6 @@ public interface GameTemplatesMgrI {
 	
 	public List<GameTemplates> getAllGameTemplates()throws ServletException, IOException;
 	public JSONArray getAllGameTemplateJson (HttpServletRequest request)throws ServletException, IOException;
+	public GameTemplates getBySeq(long gameSeq) throws ServletException, IOException;
 	
 }

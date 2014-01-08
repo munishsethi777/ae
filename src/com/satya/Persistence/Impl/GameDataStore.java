@@ -13,12 +13,14 @@ import org.apache.log4j.Logger;
 import org.apache.poi.util.StringUtil;
 
 import com.mysql.jdbc.StringUtils;
+import com.satya.ApplicationContext;
 import com.satya.BusinessObjects.Campaign;
 import com.satya.BusinessObjects.Game;
 import com.satya.BusinessObjects.GameTemplates;
 import com.satya.BusinessObjects.QuestionAnswers;
 import com.satya.BusinessObjects.Questions;
 import com.satya.Persistence.GameDataStoreI;
+import com.satya.Persistence.QuestionDataStoreI;
 import com.satya.Persistence.RowMapper;
 
 public class GameDataStore implements GameDataStoreI, RowMapper {
@@ -30,10 +32,10 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 	private final static String SELECT_BY_PROJECT_SEQ = "select * from games where projectseq = ?";
 
 	private final static String SAVE = "insert into games(title, description, gametemplateseq, "
-			+ "projectseq,isenabled,lastmodifieddate,maxsecondsallowed,createdon,ispublished,maxquestions) "
-			+ "values (?,?,?,?,?,?,?,?,?,?)";
+			+ "projectseq,isenabled,lastmodifieddate,maxsecondsallowed,ispublished,maxquestions,imagepath,createdon) "
+			+ "values (?,?,?,?,?,?,?,?,?,?,?)";
 	private final static String UPDATE = "update games set title=?, description=?, gametemplateseq=?, "
-			+ " projectseq=?, isenabled=?,lastmodifieddate=?,maxsecondsallowed=?,ispublished=?,maxquestions=? where seq=?";
+			+ " projectseq=?, isenabled=?,lastmodifieddate=?,maxsecondsallowed=?,ispublished=?,maxquestions=?,imagepath=? where seq=?";
 
 	private final static String SAVE_QUESTIONS = "insert into gamequestions(gameseq, questionseq) values (?,?)";
 
@@ -102,8 +104,8 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 				templateSeq = game.getGameTemplate().getSeq();
 			}
 
-			Object[] params = new Object[10];
-
+			Object[] params = new Object[11];
+			
 			params[0] = game.getTitle();
 			params[1] = game.getDescription();
 			params[2] = templateSeq;
@@ -113,10 +115,11 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			params[6] = game.getMaxSecondsAllowed();
 			params[7] = game.isPublished();
 			params[8] = game.getMaxQuestions();
+			params[9] = game.getImagePath();
 			if (game.getSeq() != 0) {
-				params[9] = game.getSeq();
+				params[10] = game.getSeq();
 			} else {
-				params[9] = game.getCreatedOn();
+				params[10] = game.getCreatedOn();
 			}
 
 			persistenceMgr.excecuteUpdate(SQL, params);
@@ -195,8 +198,33 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 	@Override
 	public List<Game> findSelectedForCampaign(long campaignSeq) {
 		Object[] params = new Object[] { campaignSeq };
-		return (List<Game>) persistenceMgr.executePSQuery(
-				FIND_GAMES_BY_CAMPAIGN, params, this);
+		final Map questionsMap = new HashMap();
+		final Map<Long, Game> gamesMap = new HashMap();
+		final List<Questions> questions = new ArrayList<Questions>();
+		final List<Game> games = new ArrayList<Game>();
+		persistenceMgr.executePSQuery(
+				FIND_GAMES_BY_CAMPAIGN, params, new RowMapper(){
+					@Override
+					public Object mapRow(ResultSet rs) throws SQLException {
+						game = (Game)populateObjectFromResultSet(rs);
+						Questions question = game.getQuestions().get(0);
+						if(!gamesMap.containsKey(game.getSeq())){
+							gamesMap.put(game.getSeq(),game);
+						}else{
+							game = (Game)gamesMap.get(game.getSeq());
+							game.getQuestions().add(question);
+							gamesMap.put(game.getSeq(),game);
+						}
+						return null;
+					}
+				});
+		Iterator iter = gamesMap.entrySet().iterator();
+		while (iter.hasNext()) {
+			Map.Entry mEntry = (Map.Entry) iter.next();
+			Game game = (Game)mEntry.getValue();
+			games.add(game);
+		}
+		return games;
 	}
 	
 	// Method used to make sure if game is for this user alloted
@@ -268,6 +296,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			int maxSecondsAllowed = rs.getInt("maxsecondsallowed");
 			boolean isPublished = rs.getBoolean("ispublished");
 			int maxQuestions = rs.getInt("maxquestions");
+			String imagePath = rs.getString("imagepath");
 			game = new Game();
 			game.setSeq(seq);
 			game.setTitle(title);
@@ -277,6 +306,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			game.setMaxSecondsAllowed(maxSecondsAllowed);
 			game.setPublished(isPublished);
 			game.setMaxQuestions(maxQuestions);
+			game.setImagePath(imagePath);
 			GameTemplates gameTemplates = null;
 			//Capture Game Template
 			try {
@@ -285,11 +315,11 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 					gameTemplates = new GameTemplates(templateSeq);
 					String gameTemplateName = rs.getString("gameTemplateName");
 					String path = rs.getString("gameTemplatePath");
-					String imagePath = rs.getString("gameTemplateImagePath");
+					String templateImagePath = rs.getString("gameTemplateImagePath");
 					String templateDescription = rs.getString("gameTemplateDescriotion");
 					
 					gameTemplates.setName(gameTemplateName);
-					gameTemplates.setImagePath(imagePath);
+					gameTemplates.setImagePath(templateImagePath);
 					gameTemplates.setPath(path);
 					gameTemplates.setDescription(templateDescription);
 					game.setGameTemplate(gameTemplates);

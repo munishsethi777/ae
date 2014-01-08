@@ -26,6 +26,7 @@ import com.satya.Managers.GameMgrI;
 import com.satya.Managers.UserGroupMgrI;
 import com.satya.Managers.UserMgrI;
 import com.satya.Persistence.CampaignDataStoreI;
+import com.satya.Persistence.GameDataStoreI;
 import com.satya.Persistence.UserGroupDataStoreI;
 import com.satya.Utils.DateUtils;
 import com.satya.mail.MailerI;
@@ -379,9 +380,14 @@ public class CampaignMgr implements CampaignMgrI {
 			campaignSeq = Long.parseLong(campaignSeqStr);
 		}
 		Campaign campaign = CDS.findBySeq(campaignSeq);
-		List<Game> games = campaign.getGames();
-		JSONArray gamesJsonArr = gameMgr.getJSONArray(games);
+		GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
+		List<Game> games  = GDS.findSelectedForCampaign(campaignSeq);
 		JSONObject json = new JSONObject();
+		
+		JSONObject campaignJSON = campaign.toJson(campaign);
+		json.put("campaign",campaignJSON);
+		
+		JSONArray gamesJsonArr = gameMgr.getJSONArray(games);
 		json.put("games", gamesJsonArr);
 		
 		JSONArray userGroupsJsonArr = userGroupMgr.getSelectedOnCampaignJSON(campaignSeq);

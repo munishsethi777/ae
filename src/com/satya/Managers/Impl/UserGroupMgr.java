@@ -400,7 +400,7 @@ public class UserGroupMgr implements UserGroupMgrI {
 		try{
 			if(jsonArr.length()==0){
 				mainJsonObject.put(IConstants.STATUS, IConstants.FAILURE);
-				mainJsonObject.put(IConstants.MESSAGE, "Error occured");
+				mainJsonObject.put(IConstants.MESSAGE, "No UserGroup found");
 				jsonArr.put(mainJsonObject);
 			}else{
 				mainJsonObject.put("jsonArr", jsonArr);

@@ -20,4 +20,6 @@ public interface QuestionDataStoreI {
 	public List<Questions> findSelectedByGameSeq(long gameSeq);
 
 	public List<Questions> findAvailableByGameSeq(long gameSeq);
+	
+	public int countQuestionsOnGame(long gameSeq);
 }

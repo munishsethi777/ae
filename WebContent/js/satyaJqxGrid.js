@@ -3,34 +3,34 @@ var columnCheckBox = null;
 var updatingCheckState = false;
 var isSelectionGrid = false;
 var editingBeanRow = null;
-function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,isShowButtons,editorHeight,editorWidth){	
-		$("#jqxCreateBeanWindow").jqxWindow({ 
+function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,gridColumns,gridDataFields,isShowButtons,editorHeight,editorWidth){	
+			$("#jqxCreateBeanWindow").jqxWindow({ 
 				resizable: true, theme: theme, autoOpen: false, maxWidth:2000, 
 				maxHeight: 1000, width:editorWidth,height:editorHeight, showCloseButton: true,
 				resizable: true,animationType: 'fade',isModal: true,modalOpacity: 0.8});
-				var getAdapter = function () {
-					var source =
-						{
-						url:dataUrl,
-						datatype: "json",
-						datafields:dataFields,
-						updaterow: function (rowid, rowdata, commit) {
-							commit(true);
-							$("#jqxCreateBeanWindow").jqxWindow('close');
-						},
-						addrow: function (rowid, rowdata, position, commit) {
-							commit(true);
-							$("#jqxCreateBeanWindow").jqxWindow('close');
-						},
-						deleterow: function (selectedIndexes, commit) {
-							commit(true);
-							$('#deleteBeanConfirmation').jqxWindow('close');	
-						}
-						
-					};
-					var dataAdapter = new $.jqx.dataAdapter(source);
-					return dataAdapter;
-				}
+			var getAdapter = function () {
+				var source =
+					{
+					url:dataUrl,
+					datatype: "json",
+					datafields:gridDataFields,
+					updaterow: function (rowid, rowdata, commit) {
+						commit(true);
+						$("#jqxCreateBeanWindow").jqxWindow('close');
+					},
+					addrow: function (rowid, rowdata, position, commit) {
+						commit(true);
+						$("#jqxCreateBeanWindow").jqxWindow('close');
+					},
+					deleterow: function (selectedIndexes, commit) {
+						commit(true);
+						$('#deleteBeanConfirmation').jqxWindow('close');	
+					}
+					
+				};
+				var dataAdapter = new $.jqx.dataAdapter(source);
+				return dataAdapter;
+			}
 			$("#"+gridId).jqxGrid({
 				width: "100%",
 				height: "100%",
@@ -89,7 +89,7 @@ function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,colu
 					}
 				},
 									   
-				columns: columns
+				columns: gridColumns
 			});//jqxgrid rendering
 			
 			$("#"+gridId).on('rowdoubleclick', function (event){ 
@@ -98,7 +98,7 @@ function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,colu
 				var dataRow = $("#"+gridId).jqxGrid('getrowdata', rowIndex);
 				editingBeanRow = dataRow;//page level variable for use in jsp page
 				$("#jqxCreateBeanWindow #rowIdInput").val(rowIndex);
-				$.each(dataFields,function(index,value){
+				$.each(gridDataFields,function(index,value){
 					if(value.name != "isEnabled"){
 						 var rowColVal=dataRow[value.name];
 						 if (rowColVal==undefined){
@@ -108,12 +108,11 @@ function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,colu
 								 rowColVal="";
 							 }
 						 }
-						// if (value.type="date"){
-						//	 $("#jqxCreateBeanWindow #"+ value.name +"Input").jqxCalendar('setDate', rowColVal); 
-							 //$("#jqxCreateBeanWindow #"+ value.name +"Input").val(rowColVal);
-						// }else{
+						 //if (value.type="date"){
+							 //$("#jqxCreateBeanWindow #"+ value.name +"Input").jqxDateTimeInput('setDate', rowColVal);
+						 //}else{
 							 $("#jqxCreateBeanWindow #"+ value.name +"Input").val(rowColVal);
-						// }
+						 //}
 						
 						 if(value.type=="bool"){
 							 if(dataRow[value.name] == true || dataRow[value.name] == "true"){						 
@@ -213,7 +212,7 @@ function submitAddRecord(gridId){
 	
 	dataRow = {};
 	dataRow['rowId'] = $("#jqxCreateBeanWindow #rowIdInput").val();
-	$.each(dataFields,function(index,value){
+	$.each(gridDataFields,function(index,value){
 		dataRow[value.name] = $("#jqxCreateBeanWindow #"+ value.name +"Input").val();
 		if(value.type == "radio"){
 			dataRow[value.name] = $('input[name='+ value.name +']:radio:checked').val()

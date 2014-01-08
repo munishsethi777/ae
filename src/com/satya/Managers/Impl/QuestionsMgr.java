@@ -219,56 +219,67 @@ public class QuestionsMgr implements QuestionsMgrI {
 		List<QuestionAnswers> questionAnswers = questionAnswerMgr
 				.getQuestionAnswersFromRequest(request, response, questions);
 		questions.setQuestionAnswers(questionAnswers);
+		
 		QuestionDataStoreI QDS = ApplicationContext.getApplicationContext()
 				.getDataStoreMgr().getQuestionDataStore();
-
+		GameTemplatesDataStoreI GTDS = ApplicationContext
+				.getApplicationContext().getDataStoreMgr()
+				.getGameTemplateDataStore();
+		GameDataStoreI GDS = ApplicationContext.getApplicationContext()
+				.getDataStoreMgr().getGameDataStore();
+		
 		String status = IConstants.SUCCESS;
 		String message = IConstants.SAVED_SUCCESSFULLY;
 		try {
-			QDS.Save(questions);
-			GameTemplatesDataStoreI GTDS = ApplicationContext
-					.getApplicationContext().getDataStoreMgr()
-					.getGameTemplateDataStore();
-			GameDataStoreI GDS = ApplicationContext.getApplicationContext()
-					.getDataStoreMgr().getGameDataStore();
-			// GameMgrI gameMgr =
-			// ApplicationContext.getApplicationContext().getGamesMgr()
-			Game game = new Game();
-			if (gameTemplateSeqStr != null && !gameTemplateSeqStr.equals("")) {
-				GameTemplates GT = GTDS.findBySeq(Long
-						.parseLong(gameTemplateSeqStr));
-				List<Questions> questionsList = new ArrayList<Questions>();
-				questionsList.add(questions);
-				game.setTitle(GT.getName());
-				game.setDescription(GT.getDescription());
-				game.setEnable(true);
-				game.setGameTemplate(GT);
-				game.setQuestions(questionsList);
-				GDS.Save(game);
-				json.put("gameSeq", game.getSeq());
-
-				// saving game campaign relation here
-				if (campaignSeqStr != null && !campaignSeqStr.equals("")) {
-					CampaignMgrI campaignMgr = ApplicationContext
-							.getApplicationContext().getCampaiMgr();
-					Long campaignSeq = Long.parseLong(campaignSeqStr);
-					List<Game> games = new ArrayList<Game>();
-					games.add(game);
-					campaignMgr.saveCampaignGames(campaignSeq, games,false);
+			Game game = GDS.findBySeq(Long.parseLong(gameSeqStr));
+			int totalEarlierQuestons = QDS.countQuestionsOnGame(Long.parseLong(gameSeqStr));
+			//checks if more questions can be added to the game or not
+			if(totalEarlierQuestons>= game.getMaxQuestions()){
+				status = IConstants.FAILURE;
+				message = "Cant add more questionst to this game";
+			}else{
+				QDS.Save(questions);
+				game = new Game();
+				//New Game Scenario
+				if (gameTemplateSeqStr != null && !gameTemplateSeqStr.equals("")) {
+					GameTemplates GT = GTDS.findBySeq(Long
+							.parseLong(gameTemplateSeqStr));
+					List<Questions> questionsList = new ArrayList<Questions>();
+					questionsList.add(questions);
+					game.setTitle(GT.getName());
+					game.setDescription(GT.getDescription());
+					game.setImagePath(GT.getImagePath());
+					game.setEnable(true);
+					game.setGameTemplate(GT);
+					game.setQuestions(questionsList);
+					game.setMaxQuestions(GT.getMaxQuestions());
+					GDS.Save(game);
+					json.put("gameSeq", game.getSeq());
+	
+					// saving game campaign relation here
+					if (campaignSeqStr != null && !campaignSeqStr.equals("")) {
+						CampaignMgrI campaignMgr = ApplicationContext
+								.getApplicationContext().getCampaiMgr();
+						Long campaignSeq = Long.parseLong(campaignSeqStr);
+						List<Game> games = new ArrayList<Game>();
+						games.add(game);
+						campaignMgr.saveCampaignGames(campaignSeq, games,false);
+					}
+				//Relation Question on Game Scenario
+				} else if (gameSeqStr != null && !gameSeqStr.equals("")) {
+					game.setSeq(Long.parseLong(gameSeqStr));
+					List<Questions> questionsList = new ArrayList<Questions>();
+					questionsList.add(questions);
+					game.setQuestions(questionsList);
+					GDS.saveGameQuestions(game, false);
+					json.put("gameSeq", game.getSeq());
 				}
-			} else if (gameSeqStr != null && !gameSeqStr.equals("")) {
-				game.setSeq(Long.parseLong(gameSeqStr));
-				List<Questions> questionsList = new ArrayList<Questions>();
-				questionsList.add(questions);
-				game.setQuestions(questionsList);
-				GDS.saveGameQuestions(game, false);
-				json.put("gameSeq", game.getSeq());
-			}
 
-			json.put(IConstants.LAST_MODIFIED,
-					DateUtils.getGridDateFormat(questions.getLastModified()));
-			json.put(IConstants.CREATED_ON,
-					DateUtils.getGridDateFormat(questions.getCreatedOn()));
+				json.put(IConstants.LAST_MODIFIED,
+						DateUtils.getGridDateFormat(questions.getLastModified()));
+				json.put(IConstants.CREATED_ON,
+						DateUtils.getGridDateFormat(questions.getCreatedOn()));
+			}
 		} catch (Exception e) {
 			status = IConstants.FAILURE;
 			message = IConstants.ERROR + " : " + e.getMessage();
@@ -276,7 +287,6 @@ public class QuestionsMgr implements QuestionsMgrI {
 		json.put(IConstants.STATUS, status);
 		json.put(IConstants.MESSAGE, message);
 		json.put(IConstants.SEQ, questions.getSeq());
-
 		return json;
 	}
 
