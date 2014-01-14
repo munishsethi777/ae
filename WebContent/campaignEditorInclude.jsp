@@ -1,4 +1,6 @@
 <form id="createCampaignForm" name="createCampaignForm" method="POST" style="padding:10px"/>
+			<div class="editorErrorDiv"></div>
+			<div class="editorSuccessDiv"></div>
 					<input type="hidden" name="rowId" id="rowIdInput"/>
 					<input type="hidden" name="seq" id="seqInput"/>
 					<input type="hidden" name="campaignSeq" id="campaignSeq"/>

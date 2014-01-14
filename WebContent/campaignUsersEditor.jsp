@@ -102,7 +102,7 @@
 							rule : 'required'
 						} ];
 
-						$("#isEnabledInput").jqxCheckBox({
+						$("#isEnabledUserInput").jqxCheckBox({
 							width : 120,
 							height : 25,
 							theme : theme
@@ -237,7 +237,7 @@
 						</tr>
 						<tr>
 							<td>Enabled</td>
-							<td><div id="isEnabledInput"></div></td>
+							<td><div id="isEnabledUserInput"></div></td>
 						
 							<td><input type="button"
 								style='margin-top: 15px; margin-left: 50px; float: left;'

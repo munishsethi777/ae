@@ -3,8 +3,13 @@ var columnCheckBox = null;
 var updatingCheckState = false;
 var isSelectionGrid = false;
 var editingBeanRow = null;
-function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,gridColumns,gridDataFields,isShowButtons,editorHeight,editorWidth){	
-			$("#jqxCreateBeanWindow").jqxWindow({ 
+
+var gId = "";
+var deleteUrl1 = "";
+function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,isShowButtons,editorHeight,editorWidth){
+	gId = gridId;
+	deleteUrl1 = deleteUrl;
+		$("#jqxCreateBeanWindow").jqxWindow({
 				resizable: true, theme: theme, autoOpen: false, maxWidth:2000, 
 				maxHeight: 1000, width:editorWidth,height:editorHeight, showCloseButton: true,
 				resizable: true,animationType: 'fade',isModal: true,modalOpacity: 0.8});
@@ -263,19 +268,19 @@ function clearErrorMessageDivs(){
 	
 }
 function submitDeleteRecord(gridId){
-	var selectedRowIndexes = $("#"+gridId).jqxGrid('selectedrowindexes');
+	var selectedRowIndexes = $("#"+gId).jqxGrid('selectedrowindexes');
 	var ids = "";
 	var i = 0;
 	$.each(selectedRowIndexes, function(index , value){
-		var dataRow = $("#"+gridId).jqxGrid('getrowdata', value);
+		var dataRow = $("#"+gId).jqxGrid('getrowdata', value);
 		ids = ids + dataRow.seq + ",";
 	});
-	$.getJSON(deleteUrl+"&ids=" + ids,function(json){
+	$.getJSON(deleteUrl1+"&ids=" + ids,function(json){
 		if(json[0]['status'] == 'success'){
-			$("#"+gridId).jqxGrid('deleterow', selectedRowIndexes);
+			$("#"+gId).jqxGrid('deleterow', selectedRowIndexes);
 		}
 	});
-	 $("#"+gridId).jqxGrid('clearselection');
+	 $("#"+gId).jqxGrid('clearselection');
 }
 				
 

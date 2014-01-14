@@ -63,8 +63,10 @@
 	$(document).ready(function () {
 			var editorWidth= "85%";
 			var editorHeight = "80%";
+
 			renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,"",columnsCampaign,dataFieldsCampaign,true,editorHeight,editorWidth);
 			$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
+
 			$('#jqxCreateBeanWindow').on('open', function (event) { 
 				$('#jqxCreateBeanWindow').jqxWindow({resizable: false,position: { x: 0, y: 0 } }); 
 				$("#startDateInput").jqxDateTimeInput({width: '220px', theme: theme ,formatString: 'dd/MM/yyyy hh.mm tt'});
@@ -101,10 +103,12 @@
 			height:"300px",
 			/* Events */
 		    onStepChanging: function (event, currentIndex, newIndex) { 
+		    	clearErrorMessageDivs();
 		    	//when a slide loses focus
 		    	var bool = true;
 		    	if(currentIndex == 0){
 		    		bool =  saveCampaignDetails();
+
 		    	}else if(currentIndex == 1){
 		    		saveCampaignGames();
 		    	}else if(currentIndex == 2){
@@ -181,16 +185,18 @@
 	}
 
 	function saveCampaignDetailsAction(gridId){
+		var isValid = false;
 		dataRow = {};
 		dataRow['rowId'] = $("#createCampaignForm #rowIdInput").val();
 		$.each(dataFieldsCampaign,function(index,value){
 			dataRow[value.name] = $("#createCampaignForm #"+ value.name +"Input").val();
 			if(value.type == "radio"){
-				dataRow[value.name] = $('input[name='+ value.name +']:radio:checked').val()
+				dataRow[value.name] = $('input[name='+ value.name +']:radio:checked').val();
 			}
 		});
 		$.getJSON(addUrl,dataRow,function(json){
 			if(json['status'] == 'success'){
+				isValid = true;
 				dataRow['lastmodifieddate'] = json['lastModified'];	
 				if(dataRow['seq'] == null || dataRow['seq'] == "" || dataRow['seq'] == "0"){		
 					dataRow['seq'] = json['seq'];				
@@ -208,6 +214,7 @@
 			}else{
 				displaySaveErrors(json['message']);
 			}
+			return isValid;
 		});
 	}
 	function createNewEarlierRadios(){
@@ -285,7 +292,7 @@
 			</section>
 			<h2>Preview Campaign</h2>
 			<section><!-- Slide 4 -->
-				<%@ include file="campaignPreview.jsp"%>
+				
 			</section>
 		</div>	
 	</div><!-- Ends createBeanWindow -->

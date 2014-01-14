@@ -18,13 +18,11 @@ import com.satya.IConstants;
 import com.satya.BusinessObjects.Campaign;
 import com.satya.BusinessObjects.Game;
 import com.satya.BusinessObjects.Project;
-import com.satya.BusinessObjects.Set;
 import com.satya.BusinessObjects.User;
 import com.satya.BusinessObjects.UserGroup;
 import com.satya.Managers.CampaignMgrI;
 import com.satya.Managers.GameMgrI;
 import com.satya.Managers.UserGroupMgrI;
-import com.satya.Managers.UserMgrI;
 import com.satya.Persistence.CampaignDataStoreI;
 import com.satya.Persistence.GameDataStoreI;
 import com.satya.Persistence.UserGroupDataStoreI;
@@ -185,12 +183,23 @@ public class CampaignMgr implements CampaignMgrI {
 		String status = IConstants.SUCCESS;
 		String message = IConstants.SAVED_SUCCESSFULLY;
 		try {
-			CDS.Save(campaign);
-			sendCampaignNotification(campaign);
-			json.put(IConstants.LAST_MODIFIED,
-					DateUtils.getGridDateFormat(campaign.getLastModifiedDate()));
-			json.put(IConstants.CREATED_ON,
-					DateUtils.getGridDateFormat(campaign.getCreatedOn()));
+			if (campaign.getSeq() > 0) {
+				boolean isAlreadyExist = CDS.isAlreadyExist(campaign.getName(),
+						campaign.getProject().getSeq());
+				if (isAlreadyExist) {
+					status = IConstants.FAILURE;
+					message = "Campaign is already exist with this name : - "
+							+ campaign.getName();
+				}
+			} else {
+				CDS.Save(campaign);
+				sendCampaignNotification(campaign);
+				json.put(IConstants.LAST_MODIFIED, DateUtils
+						.getGridDateFormat(campaign.getLastModifiedDate()));
+				json.put(IConstants.CREATED_ON,
+						DateUtils.getGridDateFormat(campaign.getCreatedOn()));
+			}
+
 		} catch (Exception e) {
 			status = IConstants.FAILURE;
 			message = IConstants.ERROR + " : " + e.getMessage();
@@ -280,19 +289,19 @@ public class CampaignMgr implements CampaignMgrI {
 	}
 
 	@Override
-	public void saveCampaignGames(Long campaignSeq, List<Game> games, boolean isDeleteEarlierCampaignGames)
-			throws Exception {
+	public void saveCampaignGames(Long campaignSeq, List<Game> games,
+			boolean isDeleteEarlierCampaignGames) throws Exception {
 		Campaign campaign = new Campaign();
 		campaign.setSeq(campaignSeq);
-//		List<Game> savedGames = campaign.getGames();
-//		if (savedGames == null) {
-//			savedGames = new ArrayList<Game>();
-//		}
-//		savedGames.addAll(games);
+		// List<Game> savedGames = campaign.getGames();
+		// if (savedGames == null) {
+		// savedGames = new ArrayList<Game>();
+		// }
+		// savedGames.addAll(games);
 		campaign.setGames(games);
 		CampaignDataStoreI CDS = ApplicationContext.getApplicationContext()
 				.getDataStoreMgr().getCampaignDataStore();
-		CDS.saveGames(campaign,isDeleteEarlierCampaignGames);
+		CDS.saveGames(campaign, isDeleteEarlierCampaignGames);
 	}
 
 	public JSONObject saveCampaignUserGroups(HttpServletRequest request,
@@ -352,8 +361,8 @@ public class CampaignMgr implements CampaignMgrI {
 		Long campaignSeq = Long.parseLong(campaignSeqStr);
 		List<Game> games = new ArrayList<Game>();
 		List<Long> gameSeqList = new ArrayList();
-		
-		if(!gamesStr.equals("")){
+
+		if (!gamesStr.equals("")) {
 			String[] gamesStrArr = gamesStr.split(",");
 			for (String gameStr : gamesStrArr) {
 				Game game = new Game();
@@ -362,21 +371,23 @@ public class CampaignMgr implements CampaignMgrI {
 				games.add(game);
 			}
 		}
-		saveCampaignGames(campaignSeq, games,true);
+		saveCampaignGames(campaignSeq, games, true);
 	}
 
 	@Override
 	public JSONObject getFullJSON(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException,
 			Exception {
-		GameMgrI gameMgr = ApplicationContext.getApplicationContext().getGamesMgr();
-		UserGroupMgrI userGroupMgr = ApplicationContext.getApplicationContext().getUserGroupMgr();
-		CampaignDataStoreI CDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getCampaignDataStore();
-		
-		
+		GameMgrI gameMgr = ApplicationContext.getApplicationContext()
+				.getGamesMgr();
+		UserGroupMgrI userGroupMgr = ApplicationContext.getApplicationContext()
+				.getUserGroupMgr();
+		CampaignDataStoreI CDS = ApplicationContext.getApplicationContext()
+				.getDataStoreMgr().getCampaignDataStore();
+
 		String campaignSeqStr = request.getParameter("campaignSeq");
 		long campaignSeq = 0;
-		if(!campaignSeqStr.equals("")){
+		if (!campaignSeqStr.equals("")) {
 			campaignSeq = Long.parseLong(campaignSeqStr);
 		}
 		Campaign campaign = CDS.findBySeq(campaignSeq);
@@ -389,8 +400,9 @@ public class CampaignMgr implements CampaignMgrI {
 		
 		JSONArray gamesJsonArr = gameMgr.getJSONArray(games);
 		json.put("games", gamesJsonArr);
-		
-		JSONArray userGroupsJsonArr = userGroupMgr.getSelectedOnCampaignJSON(campaignSeq);
+
+		JSONArray userGroupsJsonArr = userGroupMgr
+				.getSelectedOnCampaignJSON(campaignSeq);
 		json.put("userGroup", userGroupsJsonArr.get(0));
 		return json;
 	}
@@ -400,12 +412,10 @@ public class CampaignMgr implements CampaignMgrI {
 			throws ServletException, IOException {
 		JSONObject json = new JSONObject();
 		String campaignSeqStr = request.getParameter("campaignSeq");
-		CampaignDataStoreI CDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getCampaignDataStore();
+		CampaignDataStoreI CDS = ApplicationContext.getApplicationContext()
+				.getDataStoreMgr().getCampaignDataStore();
 		CDS.publishCampaign(Long.parseLong(campaignSeqStr));
 		return json;
 	}
-	
-
 
 }
-
