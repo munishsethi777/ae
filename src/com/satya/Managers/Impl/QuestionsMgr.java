@@ -231,10 +231,14 @@ public class QuestionsMgr implements QuestionsMgrI {
 		String status = IConstants.SUCCESS;
 		String message = IConstants.SAVED_SUCCESSFULLY;
 		try {
-			Game game = GDS.findBySeq(Long.parseLong(gameSeqStr));
-			int totalEarlierQuestons = QDS.countQuestionsOnGame(Long.parseLong(gameSeqStr));
+			Game game = null;
+			int totalEarlierQuestons = 0;
+			if(gameSeqStr != null){//case if its not a new game scenario
+				game = GDS.findBySeq(Long.parseLong(gameSeqStr));
+				totalEarlierQuestons = QDS.countQuestionsOnGame(Long.parseLong(gameSeqStr));
+			}
 			//checks if more questions can be added to the game or not
-			if(totalEarlierQuestons>= game.getMaxQuestions()){
+			if(game != null && totalEarlierQuestons >= game.getMaxQuestions()){
 				status = IConstants.FAILURE;
 				message = "Cant add more questionst to this game";
 			}else{
