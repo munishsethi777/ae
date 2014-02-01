@@ -57,7 +57,7 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 			+ "where users.seq=?";
 
 	private final static String PUBLISH_CAMPAIGN = "update campaigns set ispublished=? where seq=?";
-	private final static String COUNT_CAMPAIGN_BY_NAME = "select count(*) from Campaigns where name = ? and projectseq=?";
+	private final static String CAMPAIGN_ALREADY_EXISTS = "select count(*) from Campaigns where name = ? and projectseq=? and seq != ?";
 	private PersistenceMgr persistenceMgr;
 
 	public CampaignDataStore(PersistenceMgr psmgr) {
@@ -297,10 +297,9 @@ public class CampaignDataStore implements CampaignDataStoreI, RowMapper {
 	}
 
 	@Override
-	public boolean isAlreadyExist(String campaignName, long projectSeq) {
-		Object[] params = new Object[] { campaignName, projectSeq };
-		int count = persistenceMgr.executeCountQuery(COUNT_CAMPAIGN_BY_NAME,
-				params);
+	public boolean isAlreadyExist(Campaign campaign) {
+		Object[] params = new Object[] { campaign.getName(), campaign.getProject().getSeq() ,campaign.getSeq()};
+		int count = persistenceMgr.executeCountQuery(CAMPAIGN_ALREADY_EXISTS,params);
 		return count > 0;
 	}
 

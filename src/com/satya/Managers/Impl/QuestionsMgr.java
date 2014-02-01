@@ -244,39 +244,41 @@ public class QuestionsMgr implements QuestionsMgrI {
 			}else{
 				QDS.Save(questions);
 				game = new Game();
-				//New Game Scenario
-				if (gameTemplateSeqStr != null && !gameTemplateSeqStr.equals("")) {
-					GameTemplates GT = GTDS.findBySeq(Long
-							.parseLong(gameTemplateSeqStr));
-					List<Questions> questionsList = new ArrayList<Questions>();
-					questionsList.add(questions);
-					game.setTitle(GT.getName());
-					game.setDescription(GT.getDescription());
-					game.setImagePath(GT.getImagePath());
-					game.setEnable(true);
-					game.setGameTemplate(GT);
-					game.setQuestions(questionsList);
-					game.setMaxQuestions(GT.getMaxQuestions());
-					GDS.Save(game);
-					json.put("gameSeq", game.getSeq());
-	
-					// saving game campaign relation here
-					if (campaignSeqStr != null && !campaignSeqStr.equals("")) {
-						CampaignMgrI campaignMgr = ApplicationContext
-								.getApplicationContext().getCampaiMgr();
-						Long campaignSeq = Long.parseLong(campaignSeqStr);
-						List<Game> games = new ArrayList<Game>();
-						games.add(game);
-						campaignMgr.saveCampaignGames(campaignSeq, games,false);
+				if(questionsSeq==0){//if question is not in edit mode
+					//New Game Scenario
+					if (gameTemplateSeqStr != null && !gameTemplateSeqStr.equals("")) {
+						GameTemplates GT = GTDS.findBySeq(Long
+								.parseLong(gameTemplateSeqStr));
+						List<Questions> questionsList = new ArrayList<Questions>();
+						questionsList.add(questions);
+						game.setTitle(GT.getName());
+						game.setDescription(GT.getDescription());
+						game.setImagePath(GT.getImagePath());
+						game.setEnable(true);
+						game.setGameTemplate(GT);
+						game.setQuestions(questionsList);
+						game.setMaxQuestions(GT.getMaxQuestions());
+						GDS.Save(game);
+						json.put("gameSeq", game.getSeq());
+		
+						// saving game campaign relation here
+						if (campaignSeqStr != null && !campaignSeqStr.equals("")) {
+							CampaignMgrI campaignMgr = ApplicationContext
+									.getApplicationContext().getCampaiMgr();
+							Long campaignSeq = Long.parseLong(campaignSeqStr);
+							List<Game> games = new ArrayList<Game>();
+							games.add(game);
+							campaignMgr.saveCampaignGames(campaignSeq, games,false);
+						}
+					//Relation Question on Game Scenario
+					} else if (gameSeqStr != null && !gameSeqStr.equals("")) {
+						game.setSeq(Long.parseLong(gameSeqStr));
+						List<Questions> questionsList = new ArrayList<Questions>();
+						questionsList.add(questions);
+						game.setQuestions(questionsList);
+						GDS.saveGameQuestions(game, false);
+						json.put("gameSeq", game.getSeq());
 					}
-				//Relation Question on Game Scenario
-				} else if (gameSeqStr != null && !gameSeqStr.equals("")) {
-					game.setSeq(Long.parseLong(gameSeqStr));
-					List<Questions> questionsList = new ArrayList<Questions>();
-					questionsList.add(questions);
-					game.setQuestions(questionsList);
-					GDS.saveGameQuestions(game, false);
-					json.put("gameSeq", game.getSeq());
 				}
 
 				json.put(IConstants.LAST_MODIFIED,

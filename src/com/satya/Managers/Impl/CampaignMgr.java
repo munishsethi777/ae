@@ -184,8 +184,7 @@ public class CampaignMgr implements CampaignMgrI {
 		String message = IConstants.SAVED_SUCCESSFULLY;
 		try {
 			if (campaign.getSeq() > 0) {
-				boolean isAlreadyExist = CDS.isAlreadyExist(campaign.getName(),
-						campaign.getProject().getSeq());
+				boolean isAlreadyExist = CDS.isAlreadyExist(campaign);
 				if (isAlreadyExist) {
 					status = IConstants.FAILURE;
 					message = "Campaign is already exist with this name : - "

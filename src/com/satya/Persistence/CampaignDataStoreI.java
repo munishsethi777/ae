@@ -26,5 +26,5 @@ public interface CampaignDataStoreI {
 
 	public void saveUserGroups(Campaign campaign);
 
-	public boolean isAlreadyExist(String campaignName, long projectSeq);
+	public boolean isAlreadyExist(Campaign campaign);
 }
