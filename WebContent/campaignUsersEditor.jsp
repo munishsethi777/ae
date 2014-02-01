@@ -181,8 +181,8 @@
 </script>
 
 
-<div id="addusersWindow" style="width: 100%; height:480px">
-	<div id="jqxCreateBeanEditor" style="height: 95%;">
+<div id="addusersWindow" style="width: 100%; height:450px;overflow:scroll">
+	<div id="jqxCreateBeanEditor" style="height: 450px;">
 		<table style="overflow: hidden; margin: 10px;">
 			<tr>
 				<td>User Group Name</td>
@@ -194,9 +194,9 @@
 					id="userGroupDescriptionInput" /></td>
 			</tr>
 		</table>
-		<div id="mainUserSplitter" style="width: 100%; height:100%">
+		<div id="mainUserSplitter" style="width: 100%">
 			<div class="splitter-panel">
-				<div style="padding: 5px;height:300px">
+				<div style="padding: 5px;height:420px;overdflow:scroll">
 					<%@include file="campaignSelectedUsersGridInclude.jsp"%>
 				</div>
 			</div>

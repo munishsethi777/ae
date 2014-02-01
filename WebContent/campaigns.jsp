@@ -15,7 +15,7 @@
 	var tempSeq = 0;
 	var beanName = "Campaign";
 	var dataUrl = "AdminUser?action=getAllCampaigns";
-	var deleteUrl = "AdminUser?action=deleteCampaign";
+	var deleteCampaignUrl = "AdminUser?action=deleteCampaign";
 	var addUrl = "AdminUser?action=addCampaign";
 	var isShowButtons = true;
 	
@@ -64,7 +64,7 @@
 			var editorWidth= "85%";
 			var editorHeight = "80%";
 
-			renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,"",columnsCampaign,dataFieldsCampaign,true,editorHeight,editorWidth);
+			renderGrid("jqxGrid",beanName,dataUrl,deleteCampaignUrl,addUrl,"",columnsCampaign,dataFieldsCampaign,true,editorHeight,editorWidth);
 			$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 
 			$('#jqxCreateBeanWindow').on('open', function (event) { 
@@ -80,7 +80,7 @@
 			$("#addQuestionsWindow").jqxWindow({ 
    				isModal: true, modalOpacity: 0.8,
    				resizable: true, theme: theme, autoOpen: false, 
-   				maxWidth:'90%', maxHeight:'90%',width:'90%', height:'90%', showCloseButton: true 
+   				maxWidth:'85%', maxHeight:'80%',width:'85%', height:'80%', showCloseButton: true 
    			});
 
 			$("#nameInput").jqxInput({	placeHolder : "enter a campaign title", height : 25, width : 500, minLength : 1, maxLength : 256});
@@ -250,10 +250,7 @@
 <body class='default'>
 <%@ include file="menu.jsp" %>
 <%@ include file="grid.jsp" %>
-<div id='jqxWidget1'>
-	<!-- <label style="font-family:verdana;font-size: 16px;color:black;font-weight:bold">Campaigns Information</label><br>
-	<label style="font-family:verdana;font-size: 12px;color:grey">View, Create, Edit, Bulk Delete or Find through various users available in the database.</label>
- -->
+<div id='jqxWidget'>
     <div id="jqxGrid"></div>
 	<div id="jqxCreateBeanWindow">
 		<div class="title" style="font-weight:bold">Create New Campaign</div>
@@ -291,8 +288,7 @@
 				
 			</section>
 			<h2>Preview Campaign</h2>
-			<section><!-- Slide 4 -->
-				
+			<section><%@ include file="campaignPreview.jsp" %>
 			</section>
 		</div>	
 	</div><!-- Ends createBeanWindow -->

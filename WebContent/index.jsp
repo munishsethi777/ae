@@ -28,12 +28,12 @@
                 <table width="100%" border="0" style="padding:10px 10px 10px 10px;">
                    <tr>
                     <td width="22%">Username :</td>
-                    <td width="78%"><input name="username" type="username" size="30" value="baljeet">
+                    <td width="78%"><input name="username" type="username" size="30" value="admin">
                       &nbsp;</td>
                   </tr>
                   <tr>
                     <td width="22%">Password :</td>
-                    <td width="78%"><input name="password" type="password" size="30" value="b">
+                    <td width="78%"><input name="password" type="password" size="30" value="m">
                       &nbsp;</td>
                   </tr>
                   

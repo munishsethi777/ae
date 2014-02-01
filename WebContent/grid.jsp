@@ -33,7 +33,10 @@
 	<script>
 		$(document).ready(function () {
 			
-			$("#deleteBeanConfirmation").jqxWindow({ resizable: true, theme: theme, autoOpen: false, width: 450, height: 200, showCloseButton: true });
+			$("#deleteBeanConfirmation").jqxWindow({ isModal:true,resizable: true, theme: theme, autoOpen: false, width: 450, height: 200, showCloseButton: true });
+			$('#deleteBeanConfirmation').on('open', function (event) { 
+				$("#deleteBeanConfirmation").jqxWindow('bringToFront');
+			}); 
 			$("#NoSelection").jqxWindow({ resizable: true, theme: theme, autoOpen: false, width: 300, height: 175, showCloseButton: true });
 			$("#closeButton").jqxButton({ width: 70, theme: theme });
 			$("#saveButton").jqxButton({ width: 70, theme: theme });
@@ -52,9 +55,10 @@
 			<p>Do you really want to delete the selected <label class="countDeletion"></label> items? Click Yes to delete and No to cancel the deletion.</p>
 			<br>
 			<p align="center">
-				<input type="button" id="yesDelete" onClick="javascript:submitDeleteRecord('jqxGrid');" name="yes" value="Yes"/>
+				<input type="button" id="yesDelete"  name="yes" value="Yes"/>
 				<input type="button" id="noDelete" onClick="$('#deleteBeanConfirmation').jqxWindow('close');" name="no" value="No"/>
 			</p>
+			<input type="hidden" id="gridId"/>
 	   </div>
 	</div>
 	<div id="NoSelection">

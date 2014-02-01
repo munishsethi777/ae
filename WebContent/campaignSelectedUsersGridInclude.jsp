@@ -45,14 +45,13 @@
 				
 			}
 			renderGrid("userJqxGrid",beanUserName,dataUserUrl,deleteUserUrl,addUserUrl,
-					userValidatorRules,userColumns,userDataFields,true,"100%","80%");
+					userValidatorRules,userColumns,userDataFields,true,"700","80%");
 			$('#userJqxGrid').on('initialized', function () {
 				loadUserGroupDetails();
 			}); 
 			
 		}
 		function loadUserGroupDetails(){
-			alert("loaded grid");
 			var campaignSeq = $("#createCampaignForm #seqInput").val();
 			if(campaignSeq != null){
 				getUserGroupDetailsUrl = "AdminUser?action=getUserGroupsSelectedOnCampaign&campaignSeq=" + campaignSeq; 	

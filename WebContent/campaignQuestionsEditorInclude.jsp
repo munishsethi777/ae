@@ -5,7 +5,6 @@ var isCampaignUI = true;
 //updateSelectedQuestionGrid is used in importQuestion.jsp for add the imported row in selectedQuestion grid.
 $(document).ready(function () {
     $(".saveQuestionButton").attr("id", "saveQuestionButtonClick");
-	$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 	$(".saveQuestionButton").jqxButton({ width: 70, theme: theme });
 	//generate add Question jqxWindow
 	$("#addQuestionsWindow").jqxWindow({ 

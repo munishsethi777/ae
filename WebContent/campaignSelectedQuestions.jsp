@@ -3,7 +3,7 @@
 <input type="button" class="deleteSelectedQuestionButton" value="Delete"/>
 
 <script type="text/javascript">
-$(document).ready(function () {
+function bindDoubleClickOnSelectedQuestionsGrid() {
 	$("#selectedQuestionsGrid").on('rowdoubleclick', function (event){ 
 		var args = event.args;
 		var rowIndex = args.rowindex;
@@ -28,13 +28,11 @@ $(document).ready(function () {
 				// }
 				
 				 if(value.type=="bool"){
-					 if(dataRow[value.name] == true || dataRow[value.name] == "true"){						 
+					if(dataRow[value.name] == true || dataRow[value.name] == "true"){						 
 						$("#" + value.name +"Input").prop('checked', true);
-						
-					 }else{
+					}else{
 						$("#" + value.name +"Input").prop('checked', false);
-						
-					 }
+					}
 				 }
 				 if(value.type=="radio"){
 					$("input[name='" + value.name + "'][value='" + dataRow[value.name] + "']").attr("checked", "checked");
@@ -49,5 +47,5 @@ $(document).ready(function () {
 			}
 		});
 	});
-});
+}
 </script>

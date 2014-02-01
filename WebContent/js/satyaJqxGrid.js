@@ -5,10 +5,9 @@ var isSelectionGrid = false;
 var editingBeanRow = null;
 
 var gId = "";
-var deleteUrl1 = "";
-function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,isShowButtons,editorHeight,editorWidth){
+function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,gridColumns,gridDataFields,isShowButtons,editorHeight,editorWidth){
 	gId = gridId;
-	deleteUrl1 = deleteUrl;
+	
 		$("#jqxCreateBeanWindow").jqxWindow({
 				resizable: true, theme: theme, autoOpen: false, maxWidth:2000, 
 				maxHeight: 1000, width:editorWidth,height:editorHeight, showCloseButton: true,
@@ -21,11 +20,11 @@ function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,colu
 					datafields:gridDataFields,
 					updaterow: function (rowid, rowdata, commit) {
 						commit(true);
-						$("#jqxCreateBeanWindow").jqxWindow('close');
+						//$("#jqxCreateBeanWindow").jqxWindow('close');
 					},
 					addrow: function (rowid, rowdata, position, commit) {
 						commit(true);
-						$("#jqxCreateBeanWindow").jqxWindow('close');
+						//$("#jqxCreateBeanWindow").jqxWindow('close');
 					},
 					deleterow: function (selectedIndexes, commit) {
 						commit(true);
@@ -82,8 +81,10 @@ function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,colu
 						deleteButton.click(function (event) {
 							var selectedRowIndexes = $("#"+gridId).jqxGrid('selectedrowindexes');
 							if(selectedRowIndexes.length > 0 ){
+								$("#deleteBeanConfirmation #gridId").val(gridId);
 								$("#deleteBeanConfirmation .countDeletion").html(selectedRowIndexes.length);
 								$("#deleteBeanConfirmation").jqxWindow('open');
+								
 							}else{
 								$("#NoSelection").jqxWindow('open');
 							}
@@ -101,51 +102,7 @@ function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,colu
 				var args = event.args;
 				var rowIndex = args.rowindex;
 				var dataRow = $("#"+gridId).jqxGrid('getrowdata', rowIndex);
-				editingBeanRow = dataRow;//page level variable for use in jsp page
-				$("#jqxCreateBeanWindow #rowIdInput").val(rowIndex);
-				$.each(gridDataFields,function(index,value){
-					if(value.name != "isEnabled"){
-						 var rowColVal=dataRow[value.name];
-						 if (rowColVal==undefined){
-							 if (value.type="date"){
-								// rowColVal=new Date();
-							 }else{
-								 rowColVal="";
-							 }
-						 }
-						 //if (value.type="date"){
-							 //$("#jqxCreateBeanWindow #"+ value.name +"Input").jqxDateTimeInput('setDate', rowColVal);
-						 //}else{
-							 $("#jqxCreateBeanWindow #"+ value.name +"Input").val(rowColVal);
-						 //}
-						
-						 if(value.type=="bool"){
-							 if(dataRow[value.name] == true || dataRow[value.name] == "true"){						 
-								$("#" + value.name +"Input").prop('checked', true);
-								
-							 }else{
-								$("#" + value.name +"Input").prop('checked', false);
-								
-							 }
-						 }
-						 if(value.type=="radio"){
-							$("input[name='" + value.name + "'][value='" + dataRow[value.name] + "']").attr("checked", "checked");
-							 // to hanle null field case //$("input[name='" + value.name + "'][value='" + rowColVal + "']").attr("checked", "checked");
-						 }
-					}else{
-						if(dataRow[value.name] == true){
-							$('#isEnabledInput').jqxCheckBox('check');
-						}else{
-							$('#isEnabledInput').jqxCheckBox('uncheck');
-						}
-					}
-				});
-				var x = ($(window).width() - $("#jqxCreateBeanWindow").jqxWindow('width')) / 2 + $(window).scrollLeft();
-				var y = ($(window).height() - $("#jqxCreateBeanWindow").jqxWindow('height')) / 2 + $(window).scrollTop();
-				$("#jqxCreateBeanWindow").jqxWindow({ position: { x: x, y: y} });
-				$('#jqxCreateBeanWindow').jqxWindow({ title: 'Edit '+ beanName }); 
-				$('#jqxCreateBeanWindow').jqxWindow('open');
-				clearErrorMessageDivs();
+				doubleClickEditRow('jqxCreateBeanWindow',dataRow,rowIndex,gridDataFields);
 			});//end double click method
 
 			var updatePageState = function (gridId) {
@@ -196,7 +153,7 @@ function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,colu
 			$("#saveButton").click(function () {
 				var validationResult = function (isValid) {
 					if (isValid) {
-						submitAddRecord(gridId);
+						submitAddRecord(addUrl,gridId,gridDataFields);
 					}
 				}
 				$('#createBeanForm').jqxValidator('validate', validationResult);
@@ -208,13 +165,26 @@ function renderGrid(gridId,beanName,dataUrl,deleteUrl,addUrl,validatorRules,colu
 			$("#closeButton").click(function () {
 				$('#jqxCreateBeanWindow').jqxWindow('close'); 
 			});
+			$("#yesDelete").click(function () {
 			
-			
+				gridId = $("#deleteBeanConfirmation #gridId").val();
+				var selectedRowIndexes = $("#"+gridId).jqxGrid('selectedrowindexes');
+				var ids = "";
+				$.each(selectedRowIndexes, function(index , value){
+					var dataRow = $("#"+gridId).jqxGrid('getrowdata', value);
+					ids = ids + dataRow.seq + ",";
+				});
+				$.getJSON(deleteUrl+"&ids=" + ids,function(json){
+					if(json[0]['status'] == 'success'){
+						$("#"+gridId).jqxGrid('deleterow', selectedRowIndexes);
+					}
+				});
+				 $("#"+gridId).jqxGrid('clearselection');
+			});
 			
 		}//redner grid function
 
-function submitAddRecord(gridId){
-	
+function submitAddRecord(saveUrl,gridId,gridDataFields){
 	dataRow = {};
 	dataRow['rowId'] = $("#jqxCreateBeanWindow #rowIdInput").val();
 	$.each(gridDataFields,function(index,value){
@@ -224,9 +194,12 @@ function submitAddRecord(gridId){
 		}
 	});
 	if(isSelectionGrid == true){
-		var dataRow =  getSelectedRowsData(dataRow);
+		dataRow =  getSelectedRowsData(dataRow);
 	}
-	$.getJSON(addUrl,dataRow,function(json){
+	submitAddRecordAction(saveUrl,gridId,dataRow);
+}
+function submitAddRecordAction(saveUrl,gridId,dataRow){
+	$.getJSON(saveUrl,dataRow,function(json){
 		if(json['status'] == 'success'){
 			dataRow['lastmodifieddate'] = json['lastModified'];	
 			if(dataRow['seq'] == null || dataRow['seq'] == "" || dataRow['seq'] == "0"){		
@@ -267,20 +240,52 @@ function clearErrorMessageDivs(){
 	$(".editorErrorDiv").text("");
 	
 }
-function submitDeleteRecord(gridId){
-	var selectedRowIndexes = $("#"+gId).jqxGrid('selectedrowindexes');
-	var ids = "";
-	var i = 0;
-	$.each(selectedRowIndexes, function(index , value){
-		var dataRow = $("#"+gId).jqxGrid('getrowdata', value);
-		ids = ids + dataRow.seq + ",";
-	});
-	$.getJSON(deleteUrl1+"&ids=" + ids,function(json){
-		if(json[0]['status'] == 'success'){
-			$("#"+gId).jqxGrid('deleterow', selectedRowIndexes);
+function doubleClickEditRow(windowId,dataRow,rowIndex,gridDataFields){
+	editingBeanRow = dataRow;//page level variable for use in jsp page
+	$("#jqxCreateBeanWindow #rowIdInput").val(rowIndex);
+	$.each(gridDataFields,function(index,value){
+		if(value.name != "isEnabled"){
+			 var rowColVal=dataRow[value.name];
+			 if (rowColVal==undefined){
+				 if (value.type="date"){
+					// rowColVal=new Date();
+				 }else{
+					 rowColVal="";
+				 }
+			 }
+			 //if (value.type="date"){
+				 //$("#jqxCreateBeanWindow #"+ value.name +"Input").jqxDateTimeInput('setDate', rowColVal);
+			 //}else{
+				 $("#jqxCreateBeanWindow #"+ value.name +"Input").val(rowColVal);
+			 //}
+			
+			 if(value.type=="bool"){
+				 if(dataRow[value.name] == true || dataRow[value.name] == "true"){						 
+					$("#" + value.name +"Input").prop('checked', true);
+					
+				 }else{
+					$("#" + value.name +"Input").prop('checked', false);
+					
+				 }
+			 }
+			 if(value.type=="radio"){
+				$("input[name='" + value.name + "'][value='" + dataRow[value.name] + "']").attr("checked", "checked");
+				 // to hanle null field case //$("input[name='" + value.name + "'][value='" + rowColVal + "']").attr("checked", "checked");
+			 }
+		}else{
+			if(dataRow[value.name] == true){
+				$('#isEnabledInput').jqxCheckBox('check');
+			}else{
+				$('#isEnabledInput').jqxCheckBox('uncheck');
+			}
 		}
 	});
-	 $("#"+gId).jqxGrid('clearselection');
+	var x = ($(window).width() - $("#jqxCreateBeanWindow").jqxWindow('width')) / 2 + $(window).scrollLeft();
+	var y = ($(window).height() - $("#jqxCreateBeanWindow").jqxWindow('height')) / 2 + $(window).scrollTop();
+	$("#jqxCreateBeanWindow").jqxWindow({ position: { x: x, y: y} });
+	$('#jqxCreateBeanWindow').jqxWindow({ title: 'Edit '+ beanName }); 
+	$('#jqxCreateBeanWindow').jqxWindow('open');
+	clearErrorMessageDivs();
 }
 				
 

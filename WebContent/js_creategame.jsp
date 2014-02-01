@@ -2,6 +2,8 @@
 
 function openAddQuestionsUI(gameSeq){
 	$("#addQuestionsWindow").jqxWindow('open');
+	$("#isEnabledQuestionInput").jqxCheckBox('check');
+	
 	loadSelectedQuestionsGrid(gameSeq);
 }
 function updateSelectedQuestionGrid(dataRowJson){
@@ -33,6 +35,8 @@ function getFormData(isImport){
 	obj2.name = "campaignSeq";
 	obj2.value = campaignSeq;
 	dataRow[index + 1] = obj2;
+	dataRow['seq'] = $("#createQuestionForm #seqInput").val(); 
+	dataRow['rowId'] = $("#createQuestionForm #rowIdInput").val(); 
 	return dataRow ;
 }
 
@@ -56,8 +60,12 @@ function addGameFromImportQues(quesJson){
 
 function addQuestionAndGame(){		
 	dataRow = getFormData(false);
-	//submitAddRecord("selectedQuestionsGrid");
-	submitAction("AdminUser?action=addQuestions",dataRow);
+	//submitAction("AdminUser?action=addQuestions",dataRow);
+	dataRowJson = {};
+	 $.each(dataRow, function() {
+			dataRowJson[this.name] = this.value || '';
+	 });
+	submitAddRecordAction("AdminUser?action=addQuestions","selectedQuestionsGrid",dataRowJson);
 }
 
 function submitAction(action,dataRow){
@@ -208,6 +216,8 @@ function loadSelectedQuestionsGrid(gameSeq){
 	
 	renderGrid("selectedQuestionsGrid",beanName,selQuesdataUrl,deleteUrl,addUrl,validatorRules,
 			columns,questionsDataFields,true,selectedQuestionsEditorHeight,selectedQuestionsEditorWidth);
+	$("#selectedQuestionsGrid").unbind();
+	bindDoubleClickOnSelectedQuestionsGrid();
 	//unbinding close button of add question form to prevent it from closing the main screen
 	$("#closeButton").unbind();
 	$("#closeButton").click(function () {

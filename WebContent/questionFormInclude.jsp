@@ -36,7 +36,7 @@
 		});
 		
 		$("#quesTitleInput").jqxInput({	placeHolder : "enter a question", height : 25, width : 500,	minLength : 1, maxLength : 256});
-		$("#descriptionInput").jqxInput({placeHolder : "enter description for the question", height : 25, width : 600,	minLength : 1, maxLength : 256});
+		$(".questionForm #descriptionInput").jqxInput({placeHolder : "enter description for the question", height : 25, width : 600,	minLength : 1, maxLength : 256});
 		$("#hintInput").jqxInput({placeHolder : "provide hints for the question", height : 25, width : 600,	minLength : 1, maxLength : 256});
 		$("#pointsInput").jqxInput({ height : 25, width : 38,	minLength : 1, maxLength : 10});
 		$("#answer1Input").jqxInput({placeHolder : "possible answer for the question", height : 25, width : 600,	minLength : 1, maxLength : 256});
@@ -62,7 +62,7 @@
 <input type="hidden" name="seq" id="seqInput" />
 <input type="hidden" name="createdOn" id="createdOnInput" />
 <input name="isAnswerCorrect" type="hidden" id="isAnswerCorrectInput" />
-<table width="100%" class="formTable">
+<table width="100%" class="formTable questionForm">
 	<tr>
 		<td style="width: 15%" class="marginTop">Question</td>
 		<td><input name="quesTitle" type="text" id="quesTitleInput" />
