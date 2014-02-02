@@ -485,7 +485,7 @@ public class GameMgr implements GameMgrI {
 			Game game = GDS.findBySeq(Long.parseLong(gameSeqStr));
 			game.setTitle(gameTitle);
 			game.setDescription(gameDescription);
-			GDS.Save(game);
+			GDS.saveGameDetails(game);
 			
 			json.put(IConstants.STATUS, IConstants.SUCCESS);
 			json.put(IConstants.MESSAGE, "Game updated Successfully");

@@ -23,4 +23,5 @@ public interface GameDataStoreI {
 	public boolean isGameByCampaignSetGameUser(long campaignSeq, long setSeq, long gameSeq, long userSeq);
 	public List<Game> findSelectedForCampaign(long campaignSeq);
 	public void saveGameQuestions(Game game,boolean isDeleteEarlierQuestionRelations);
+	public void saveGameDetails(Game game);
 }
