@@ -49,7 +49,7 @@
 				var editorWidth= "60%";
 				var editorHeight = "70%";
 				$(".saveQuestionButton").attr("id", "saveButton");
-				renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
+				renderGrid("jqxGrid","jqxCreateBeanWindow",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
 				});//end document ready	
     </script>
 </head>

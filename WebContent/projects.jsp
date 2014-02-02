@@ -51,7 +51,7 @@
 		$(document).ready(function () {
 				var editorWidth= "550px";
 				var editorHeight = "500px";
-				renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
+				renderGrid("jqxGrid","jqxCreateBeanWindow",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
 				$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 		});//end document ready	
 

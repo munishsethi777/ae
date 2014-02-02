@@ -33,9 +33,10 @@
 	<script>
 		$(document).ready(function () {
 			
-			$("#deleteBeanConfirmation").jqxWindow({ isModal:true,resizable: true, theme: theme, autoOpen: false, width: 450, height: 200, showCloseButton: true });
+			$("#deleteBeanConfirmation").jqxWindow({ isModal:true,resizable: true, 
+					theme: theme, autoOpen: false, width: 450, height: 200, showCloseButton: true });
 			$('#deleteBeanConfirmation').on('open', function (event) { 
-				$("#deleteBeanConfirmation").jqxWindow('bringToFront');
+				//$("#deleteBeanConfirmation").jqxWindow('bringToFront');
 			}); 
 			$("#NoSelection").jqxWindow({ resizable: true, theme: theme, autoOpen: false, width: 300, height: 175, showCloseButton: true });
 			$("#closeButton").jqxButton({ width: 70, theme: theme });

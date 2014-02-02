@@ -25,7 +25,7 @@
 				var editorWidth= "85%";
 				var editorHeight = "90%";
 				
-				renderGrid("jqxGrid","Image",imgdataUrl,deleteUrl,"","",imgColumns,imgDataFields,true,"90%","85%");
+				renderGrid("jqxGrid","","Image",imgdataUrl,deleteUrl,"","",imgColumns,imgDataFields,true,"90%","85%");
 				$('#jqxGrid').jqxGrid({ rowsheight: 70}); 
 				
 		});

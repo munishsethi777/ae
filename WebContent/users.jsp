@@ -39,7 +39,7 @@
 		$(document).ready(function () {
 			var editorWidth= "75%";
 			var editorHeight = "70%";
-			renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
+			renderGrid("jqxGrid","jqxCreateBeanWindow",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
 		});//end document ready	
     </script>
 </head>

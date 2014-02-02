@@ -63,16 +63,20 @@
 	$(document).ready(function () {
 			var editorWidth= "85%";
 			var editorHeight = "80%";
-
-			renderGrid("jqxGrid",beanName,dataUrl,deleteCampaignUrl,addUrl,"",columnsCampaign,dataFieldsCampaign,true,editorHeight,editorWidth);
+			var createWindowId = "jqxCreateCampaignWindow";
+			renderGrid("jqxGrid",createWindowId,beanName,dataUrl,deleteCampaignUrl,addUrl,"",columnsCampaign,dataFieldsCampaign,true,editorHeight,editorWidth);
 			$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 
-			$('#jqxCreateBeanWindow').on('open', function (event) { 
-				$('#jqxCreateBeanWindow').jqxWindow({resizable: false,position: { x: 0, y: 0 } }); 
+			$('#'+createWindowId).on('open', function (event) { 
+				$('#'+createWindowId).jqxWindow({resizable: false,position: { x: 0, y: 0 } }); 
 				$("#startDateInput").jqxDateTimeInput({width: '220px', theme: theme ,formatString: 'dd/MM/yyyy hh.mm tt'});
 				$("#validTillDateInput").jqxDateTimeInput({width: '220px', theme: theme ,formatString: 'dd/MM/yyyy hh.mm tt'});
-				$("#startDateInput").jqxDateTimeInput('setDate', getJSDateFromStringForDateTimeInput(editingBeanRow.startDate));
-				$("#validTillDateInput").jqxDateTimeInput('setDate',getJSDateFromStringForDateTimeInput(editingBeanRow.validTillDate));
+				if(editingBeanRow.startDate != undefined){
+					$("#startDateInput").jqxDateTimeInput('setDate', getJSDateFromStringForDateTimeInput(editingBeanRow.startDate));
+				}
+				if(editingBeanRow.validTillDate != undefined){
+					$("#validTillDateInput").jqxDateTimeInput('setDate',getJSDateFromStringForDateTimeInput(editingBeanRow.validTillDate));
+				}
 				//now rendering the usergroup usrs grid on campaign open window.
 				renderUserGrid();
 				loadGameTemplates($("#seqInput").val());
@@ -80,7 +84,7 @@
 			$("#addQuestionsWindow").jqxWindow({ 
    				isModal: true, modalOpacity: 0.8,
    				resizable: true, theme: theme, autoOpen: false, 
-   				maxWidth:'85%', maxHeight:'80%',width:'85%', height:'80%', showCloseButton: true 
+   				maxWidth:'90%', maxHeight:'90%',width:'90%', height:'90%', showCloseButton: true 
    			});
 
 			$("#nameInput").jqxInput({	placeHolder : "enter a campaign title", height : 25, width : 500, minLength : 1, maxLength : 256});
@@ -252,7 +256,7 @@
 <%@ include file="grid.jsp" %>
 <div id='jqxWidget'>
     <div id="jqxGrid"></div>
-	<div id="jqxCreateBeanWindow">
+	<div id="jqxCreateCampaignWindow">
 		<div class="title" style="font-weight:bold">Create New Campaign</div>
 		<div id="jqxCampaignWizard" class="jqxCreateBeanEditor">
 		   	<h2>Campaign Information</h2>

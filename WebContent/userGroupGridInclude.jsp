@@ -28,11 +28,8 @@
 			$(document).ready(function () {
 				var editorWidth= "80%";
 				var editorHeight = "80%";
-				renderGrid("userGroupJqxGrid","userGroups",userGroupDataUrl,deleteUserGroupUrl,"","",userGroupcolumns,userGroupDataFields,false,editorHeight,editorWidth);
-				$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
-				
-				
-	            
+				renderGrid("userGroupJqxGrid","addusersWindow","userGroups",
+						userGroupDataUrl,deleteUserGroupUrl,"","",userGroupcolumns,userGroupDataFields,false,editorHeight,editorWidth);
 		});//end document ready	
 	
 		function addUserGroupFromEarlier(){

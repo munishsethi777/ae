@@ -66,7 +66,7 @@
 		$(document).ready(function () {
 				var editorWidth= "80%";
 				var editorHeight = "80%";
-				renderGrid("jqxGrid",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
+				renderGrid("jqxGrid","jqxCreateBeanWindow",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
 				$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
 				renderSelectionGrid(0,sourceGridColumnCheckBox_,sourceGridUpdatingCheckState_,destinationGridColumnCheckBox_,destinationGridUpdatingCheckState_,sourceGridId_,destinationGridId_,sourceGridWidth_,destinationGridWidth_,selectionGridSourceUrl_,selectionGridDestinationUrl_,theme_,selectionGridColumns_,selectGriddataFields_);
 				

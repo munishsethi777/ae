@@ -2,9 +2,8 @@
 
 function openAddQuestionsUI(gameSeq){
 	$("#addQuestionsWindow").jqxWindow('open');
-	$("#isEnabledQuestionInput").jqxCheckBox('check');
-	
 	loadSelectedQuestionsGrid(gameSeq);
+	resetQuestionsEditor();
 }
 function updateSelectedQuestionGrid(dataRowJson){
 	$("#selectedQuestionsGrid").jqxGrid('addrow', null, dataRowJson,null,true);
@@ -66,6 +65,8 @@ function addQuestionAndGame(){
 			dataRowJson[this.name] = this.value || '';
 	 });
 	submitAddRecordAction("AdminUser?action=addQuestions","selectedQuestionsGrid",dataRowJson);
+	newQuestionAdded(tempSeq);
+	$('#createQuestionForm')[0].reset();
 }
 
 function submitAction(action,dataRow){
@@ -137,16 +138,20 @@ function loadGameTemplates(campaignSeq){
 				gameSeq = $("#gameSeq"+tempSeq).val();
 				openAddQuestionsUI(gameSeq);							
 			});
-			$("#deleteBeanConfirmation").jqxWindow({ resizable: true, theme: theme, autoOpen: false, width: 450, height: 200, showCloseButton: true });
+			//$("#deleteBeanConfirmation").jqxWindow({ resizable: true, theme: theme, autoOpen: false, width: 450, height: 200, showCloseButton: true });
 		});
 	});
 	loadEarlierGames(campaignSeq);
 }
 
 function getGameTemplateDiv(index,json){
+	var totQuest = 0;
+	if(json.totalQuestions != undefined){
+		totQuest = json.totalQuestions;
+	}
 	var content= "";
 	content += "<div class='selectGameTemplatesDiv' id='selectedTemplateDivId"+json.seq+"'>";
-	content += "<input type='hidden' id='gameTemplateTotalQuestions'/>";
+	content += "<input type='hidden' id='gameTemplateTotalQuestions' value='"+ totQuest +"'/>";
 	content += "<input type='hidden' id='gameTemplateSeq' value='" + json.seq + "'/>";
 	content += "<input type='hidden' id='gameSeq"+json.seq +"' value='"+json.gameSeq +"'/>";
 		content += "<div class='gameIcon'>";
@@ -156,11 +161,9 @@ function getGameTemplateDiv(index,json){
 			
 		content += "<div style='float:right' id='templateSeqRadio"+ json.seq +"'></div>";
 		content += '<label style="font-size:20px;" id="gameTitle'+ json.seq +'">' + json.name + '</label>';
-		var totQuest = 0;
-		if(json.totalQuestions != undefined){
-			totQuest = json.totalQuestions;
-		}
-		content += " <label id='quesCount" + json.seq + "'> "+ totQuest +"</label>";
+		
+		
+		content += " <label id='quesCount" + json.seq + "'>"+ totQuest +"</label>";
 		content += "<label> /"+ json.maxQuestions +' Questions</label>';
 	   	content += '<div class="smallFonts" style="height:70px;" id="gameDescription'+ json.seq +'">' + json.description + '</div>';
 	content += '<div style="margin-top:10px;">';
@@ -195,7 +198,7 @@ function getGameTemplateDiv(index,json){
           ];
 function loadSelectedQuestionsGrid(gameSeq){
 
-	var selectedQuestionsEditorWidth= "70%";
+	var selectedQuestionsEditorWidth= "90%";
 	var selectedQuestionsEditorHeight = "100%";
 	var selQuesdataUrl = "AdminUser?action=getQuestionsSelectedOnGame&gameSeq="+gameSeq;
 	var deleteUrl = "AdminUser?action=deleteQuestions";
@@ -214,10 +217,10 @@ function loadSelectedQuestionsGrid(gameSeq){
 			];
 
 	
-	renderGrid("selectedQuestionsGrid",beanName,selQuesdataUrl,deleteUrl,addUrl,validatorRules,
+	renderGrid("selectedQuestionsGrid","addQuestionsWindow",beanName,selQuesdataUrl,deleteUrl,addUrl,validatorRules,
 			columns,questionsDataFields,true,selectedQuestionsEditorHeight,selectedQuestionsEditorWidth);
-	$("#selectedQuestionsGrid").unbind();
-	bindDoubleClickOnSelectedQuestionsGrid();
+	bindNewClickOnSelectedQuestionsGrid();
+	//bindDoubleClickOnSelectedQuestionsGrid();
 	//unbinding close button of add question form to prevent it from closing the main screen
 	$("#closeButton").unbind();
 	$("#closeButton").click(function () {
@@ -225,5 +228,65 @@ function loadSelectedQuestionsGrid(gameSeq){
 	});
 	
 }
-
+function bindNewClickOnSelectedQuestionsGrid(){
+	$("#statusbarselectedQuestionsGrid #addButton").unbind('click');
+	$("#statusbarselectedQuestionsGrid #addButton").click(function (event) {
+		resetQuestionsEditor();
+	});
+}
+function resetQuestionsEditor(){
+	showHideErrorMessageEditorDiv(false);
+	if(typeof $('#createQuestionForm')[0] != 'undefined'){
+		$('#createQuestionForm')[0].reset();
+	}
+	$("#isEnabledQuestionInput").jqxCheckBox('check');
+	$("#createQuestionForm #seqInput").val(0);
+}
+function bindDoubleClickOnSelectedQuestionsGrid() {
+	//$("#selectedQuestionsGrid").unbind('rowdoubleclick');
+	$("#selectedQuestionsGrid").unbind('rowdoubleclick');
+	$("#selectedQuestionsGrid").on('rowdoubleclick', function (event){ 
+		var args = event.args;
+		var rowIndex = args.rowindex;
+		var dataRow = $("#selectedQuestionsGrid").jqxGrid('getrowdata', rowIndex);
+		editingBeanRow = dataRow;//page level variable for use in jsp page
+		$("#createQuestionForm #rowIdInput").val(rowIndex);
+		$.each(questionsDataFields,function(index,value){
+			if(value.name != "isEnabled"){
+				 var rowColVal=dataRow[value.name];
+				 if (rowColVal==undefined){
+					 if (value.type="date"){
+						// rowColVal=new Date();
+					 }else{
+						 rowColVal="";
+					 }
+				 }
+				// if (value.type="date"){
+				//	 $("#jqxCreateBeanWindow #"+ value.name +"Input").jqxCalendar('setDate', rowColVal); 
+					 //$("#jqxCreateBeanWindow #"+ value.name +"Input").val(rowColVal);
+				// }else{
+					 $("#createQuestionForm #"+ value.name +"Input").val(rowColVal);
+				// }
+				
+				 if(value.type=="bool"){
+					if(dataRow[value.name] == true || dataRow[value.name] == "true"){						 
+						$("#" + value.name +"Input").prop('checked', true);
+					}else{
+						$("#" + value.name +"Input").prop('checked', false);
+					}
+				 }
+				 if(value.type=="radio"){
+					$("input[name='" + value.name + "'][value='" + dataRow[value.name] + "']").attr("checked", "checked");
+					 // to hanle null field case //$("input[name='" + value.name + "'][value='" + rowColVal + "']").attr("checked", "checked");
+				 }
+			}else{
+				if(dataRow[value.name] == true){
+					$('#isEnabledInput').jqxCheckBox('check');
+				}else{
+					$('#isEnabledInput').jqxCheckBox('uncheck');
+				}
+			}
+		});
+	});
+}
 </script>
