@@ -1,9 +1,8 @@
-<form id="createCampaignForm" name="createCampaignForm" method="POST" style="padding:10px"/>
+<form id="createCampaignForm" name="createCampaignForm" method="POST" style="padding:10px;height:520px"/>
 			<div class="editorErrorDiv"></div>
 			<div class="editorSuccessDiv"></div>
 					<input type="hidden" name="rowId" id="rowIdInput"/>
-					<input type="hidden" name="seq" id="seqInput"/>
-					<input type="hidden" name="campaignSeq" id="campaignSeq"/>
+					<input type="hidden" name="campSeq" id="campSeqInput"/>
 					<input type="hidden" name="createdOn" id="createdOnInput"/>
 					<input type="hidden" name="validityDays" id="validityDaysInput"/>
 					<table class="formTable">
@@ -27,10 +26,10 @@
 							<td>Launch Message</td>
 							<td><input name="launchMessage" type="text" id="launchMessageInput"/></td>
 						</tr>
-						<tr>
+						<!-- <tr>
 							<td>Enabled</td>
 							<td><div id="isEnabledInput"></div></td>
-						</tr>
+						</tr> -->
 						<!-- <tr>
 							<td><input type="button" style='margin-top: 15px; margin-left: 50px; float: left;' value="Save" id="saveCampaignButton" /></td>
 							<td><input type="button" style='margin-left: 5px; margin-top: 15px; float: left;' value="Close" id="closeButton" /></td>
@@ -39,7 +38,10 @@
 				</form>
 <script type="text/javascript">
 $(document).ready(function () {
-	var campValidatorRules = [{ input: '#launchMessageInput', message: 'Launch Message is required!', action: 'keyup, blur', rule: 'required' }];
+	var campValidatorRules = [
+		{ input: '#launchMessageInput', message: 'Launch Message is required!', action: 'keyup, blur', rule: 'required' },
+		{ input: '#nameInput', message: 'Campaign Name is required!', action: 'keyup, blur', rule: 'required' }
+	];
 	$("#saveCampaignButton").jqxButton({ width: 70, theme: theme });
 	
 	$('#createCampaignForm').jqxValidator({
@@ -47,7 +49,7 @@ $(document).ready(function () {
 		rules: campValidatorRules
 	});		
 	$("#createCampaignForm").on('validationSuccess', function () {
-		$("#createCampaignForm-iframe").fadeIn('fast');
+		//$("#createCampaignForm-iframe").fadeIn('fast');
 	});
 });
 </script>

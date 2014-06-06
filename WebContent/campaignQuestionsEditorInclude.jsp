@@ -11,9 +11,20 @@ $(document).ready(function () {
 				resizable: true, theme: theme, autoOpen: false,  showCloseButton: true,
 				resizable: true,animationType: 'fade',isModal: true,modalOpacity: 0.8});
 	
-	
-	var validatorRules = [
-				{ input: '#quesTitleInput', message: 'Question is required!', action: 'keyup, blur', rule: 'required' }];
+	//Game Name Desc controls.
+	$("#gameNameInput").jqxInput({height : 25, width : 400,	minLength : 1, maxLength : 256});
+	$("#gameDescriptionInput").jqxInput({height : 25, width : 400,	minLength : 1, maxLength : 256});
+		
+	var addQuestionValidatorRules = 
+			[
+				{ input: '#quesTitleInput', message: 'Question is required!', action: 'keyup, blur', rule: 'required' },
+				{ input: '.questionForm #descriptionInput', message: 'Description is required!', action: 'keyup, blur', rule: 'required' },
+				{ input: '#answer1Input', message: 'Answer 1 is required!', action: 'keyup, blur', rule: 'required' },
+				{ input: '#answer2Input', message: 'Answer 2 is required!', action: 'keyup, blur', rule: 'required' },
+				{ input: '#answer3Input', message: 'Answer 3 is required!', action: 'keyup, blur', rule: 'required' },
+				{ input: '#answer4Input', message: 'Answer 4 is required!', action: 'keyup, blur', rule: 'required' },
+				{ input: '#gameNameInput', message: 'Game Name is required!', action: 'keyup, blur', rule: 'required' },
+			];
 	
 	$("#saveQuestionButtonClick").click(function (event) {
 		var validationResult = function (isValid) {
@@ -25,7 +36,7 @@ $(document).ready(function () {
 	});
 	$('#createQuestionForm').jqxValidator({
 		animationDuration:5,
-		rules: validatorRules
+		rules: addQuestionValidatorRules
 	});
 			
 	//savebutton click			
@@ -52,20 +63,69 @@ $(document).ready(function () {
     	$(".tabContent2").hide();
     	$(".tabContent3").show();
    });
-    $('#mainSplitter').jqxSplitter({ width: "100%", height: "100%", orientation: 'horizontal', theme: theme, panels: [{ size: 200 }, { size: 300}] });
+    $('#mainSplitter').jqxSplitter({ width: "100%", height: "100%", orientation: 'horizontal', theme: theme, panels: [{ size: 300 }, { size: 200}] });
     $(".editorArea").jqxPanel({ width:"100%", theme: theme });
     
+    //Saving just game name and description with top save button
+    var saveGameDetailsValidationRules = 
+			[
+				{ input: '#gameNameInput', message: 'Game Name is required!', action: 'keyup, blur', rule: 'required' }
+			];
+	
+    $("#saveGameDetails").jqxButton({ width: 70, theme: theme });
+	$("#saveGameDetails").unbind();
+	$("#saveGameDetails").click(function (event) {
+		var validationResult = function (isValid) {
+			if (isValid) {
+				//saveGameDetails(gameTemplateSeq);
+			}
+		};
+		$('#gameDetailsForm').jqxValidator('validate', validationResult);
+	});
+	$('#gameDetailsForm').jqxValidator({
+		animationDuration:5,
+		rules: saveGameDetailsValidationRules
+	});
+			
+	//savebutton click			
+	$("#gameDetailsForm").on('validationSuccess', function () {
+		$("#gameDetailsForm-iframe").fadeIn('fast');
+	});
 
+	$("#closeGameDetails").jqxButton({ width: 70, theme: theme });
+	$("#closeGameDetails").unbind();
+	$("#closeGameDetails").on('click', function(event) {
+		//$("#editGameEditor").jqxWindow("close");
+	});
+	
+	function saveGameDetails(gameTemplateSeq){
+		dataRow = $("#editGameDetailsForms").serializeArray();
+		var url = "AdminUser?action=saveGameDetails";
+		$.getJSON(url,dataRow,function(json){
+			$("#selectedTemplateDivId"+gameTemplateSeq+" #gameTitle"+gameTemplateSeq).html(dataRow[1].value);
+			$("#selectedTemplateDivId"+gameTemplateSeq+" #gameDescription"+gameTemplateSeq).html(dataRow[2].value);
+			$("#editGameEditor").jqxWindow("close");
+		});
+	}
 	
 });//end document ready
 
 </script>
 <div id="addQuestionsWindow">
-           <div class="title" style="font-weight:bold">Create New Question</div>
+           <div class="title" style="font-weight:bold">Create Game</div>
   		   <div id="jqxCreateBeanEditor" style="overflow: hidden;">
   		   		<div id="mainSplitter">
 	  		   		<div class="splitter-panel selectQuestionsDiv"><!-- Selected Questions Area -->
-		  		   		<%@include file="campaignSelectedQuestions.jsp"%> 
+	  		   			<div style="padding:2px;">
+	  		   				<form id="gameDetailsForm">
+			  		   			Name:<input type="text" name="gameName" id="gameNameInput" class="gameNameInput"/>&nbsp;
+			  		   			Description:<input type="text" name="gameDescription" id="gameDescriptionInput" class="gameDescriptionInput"/>
+			  		   			<input value='Save Game' type='button' id='saveGameDetails'/>
+			  		   			<input value='Close' type='button' id='closeGameDetails'/>
+			  		   			<label style="color:red;margin-left:10px" class="questionEditorErrorDiv"></label>
+		  		   			</form>
+	  		   			</div>
+		  		   		<div id="selectedQuestionsGrid"></div>
   		   			</div>
   		   			
   		   			<div class="splitter-panel editorArea" style="height:100%"><!-- Editor Area -->
@@ -79,7 +139,7 @@ $(document).ready(function () {
 								<%@include file="questionFormInclude.jsp"%>
 							</form>
 						</div>
-						<div class="tabContent2">
+						<div class="tabContent2" style="display:none">
 							<p>Please download the <a href="#">sample file</a> and fill in questions to upload on server.</p>
 							<p><input type = "file"></p>
 						</div>

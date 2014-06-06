@@ -1,7 +1,7 @@
 <script>
 //passing gameTemplateSeq because the hidden inputs names are using templateIds
 function editGameDetails(gameTemplateSeq){
-	var gameSeq = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameSeq"+gameTemplateSeq).val();
+	/* var gameSeq = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameSeq"+gameTemplateSeq).val();
 	$("#editGameEditor #gameEditorSeq").val(gameSeq);
 	var gameName = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameTitle"+gameTemplateSeq).html();
 	var gameDesc = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameDescription"+gameTemplateSeq).html();
@@ -27,7 +27,7 @@ function editGameDetails(gameTemplateSeq){
 	$("#gameEditorTitle").jqxInput({height : 25, width : 300, minLength : 1, maxLength : 256});
 	$("#gameEditorDescription").jqxInput({height : 25, width : 300, minLength : 1, maxLength : 256});
 	
-	$("#editGameEditor").jqxWindow("open");	
+	$("#editGameEditor").jqxWindow("open"); */	
 }
 function saveGameDetails(gameTemplateSeq){
 	dataRow = $("#editGameDetailsForms").serializeArray();
@@ -54,8 +54,8 @@ function saveGameDetails(gameTemplateSeq){
 					<td><input type="text" name="gameDescription" id="gameEditorDescription"/></td>
 				</tr>
 				<tr>
-					<td align="right"><input value='Save' type='button' id='saveGameDetails'/></td>
-					<td align="left"><input value='Close' type='button' id='closeGameDetails'/></td>
+					<td align="right"><input value='Save' type='button' id='saveGameDetails1'/></td>
+					<td align="left"><input value='Close' type='button' id='closeGameDetails1'/></td>
 				</tr>
 			</table>
 		</form>

@@ -89,7 +89,7 @@
 		return content;
 	}
 </script>
-<div style="height:400px;overflow:scroll">
+<div style="height:550px;overflow:scroll;width:100%">
 <table width="100%" border="0" cellspacing="2" cellpadding="2">
   <tr>
     <td>
