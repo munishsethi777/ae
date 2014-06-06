@@ -25,7 +25,7 @@
 		<script>
 		function getCampaignDiv(campaign){
 			var str = "<div class='campaignDiv'>";
-			str += "<a href='campaign.jsp?campaignSeq="+ campaign.seq +"' class='campaignLink'>"+ campaign.name+"</a>";
+			str += "<a href='userCampaign.jsp?campaignSeq="+ campaign.campSeq +"' class='campaignLink'>"+ campaign.name+"</a>";
 			str += campaign.description;
 			str += "</br>Started On: "+ campaign.createdOn;
 			str += "</br>Valid till: "+ campaign.validityDays;

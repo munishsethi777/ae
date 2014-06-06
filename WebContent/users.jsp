@@ -10,14 +10,14 @@
 		var addUrl = "AdminUser?action=addUser";
 		
 		var validatorRules = [
-				{ input: '#nameInput', message: 'Name is required!', action: 'keyup, blur', rule: 'required' },
+				{ input: '#nameUserInput', message: 'Name is required!', action: 'keyup, blur', rule: 'required' },
 				{ input: '#usernameInput', message: 'Username is required!', action: 'keyup, blur', rule: 'required' },
 				{ input: '#passwordInput', message: 'Password is required!', action: 'keyup, blur', rule: 'required' },
 				{ input: '#emailInput', message: 'Enter valid email!', action: 'keyup, blur', rule: 'email' },
 				{ input: '#mobileInput', message: 'Mobile is required!', action: 'keyup, blur', rule: 'required' }];
 	
 		var columns = [
-				{ text: 'First Name', datafield: 'name' ,editable:false,width:"20%"},
+				{ text: 'First Name', datafield: 'nameUser' ,editable:false,width:"20%"},
 				{ text: 'Email Id', datafield: 'email' ,editable:false,width: "20%"},
 				{ text: 'UserName', datafield: 'username',editable:false,width: "20%"},
 				{ text: 'Location', datafield: 'location' ,editable:false,},
@@ -26,7 +26,7 @@
 				{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width: 80}];
 		var dataFields = [
 				{ name: 'seq', type: 'integer' },
-				{ name: 'name', type: 'string' },
+				{ name: 'nameUser', type: 'string' },
 				{ name: 'email', type: 'string' },
 				{ name: 'mobile', type: 'string' },
 				{ name: 'location', type: 'string' },

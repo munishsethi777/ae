@@ -60,6 +60,7 @@
 				<input type="button" id="noDelete" onClick="$('#deleteBeanConfirmation').jqxWindow('close');" name="no" value="No"/>
 			</p>
 			<input type="hidden" id="gridId"/>
+			<input type="hidden" id="deleteUrl"/>
 	   </div>
 	</div>
 	<div id="NoSelection">

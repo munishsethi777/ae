@@ -56,7 +56,7 @@
 					<table style="overflow: hidden;">
 						<tr>
 							<td>Name</td>
-							<td><input name="name" type="text" id="nameInput"/></td>
+							<td><input name="nameUser" type="text" id="nameUserInput"/></td>
 						</tr>
 						<tr>
 							<td>Mobile</td>

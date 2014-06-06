@@ -46,7 +46,7 @@
 				];
 
 		$(document).ready(function () {
-				var editorWidth= "60%";
+				var editorWidth= "90%";
 				var editorHeight = "70%";
 				$(".saveQuestionButton").attr("id", "saveButton");
 				renderGrid("jqxGrid","jqxCreateBeanWindow",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);

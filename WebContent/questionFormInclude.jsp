@@ -39,10 +39,10 @@
 		$(".questionForm #descriptionInput").jqxInput({placeHolder : "enter description for the question", height : 25, width : 600,	minLength : 1, maxLength : 256});
 		$("#hintInput").jqxInput({placeHolder : "provide hints for the question", height : 25, width : 600,	minLength : 1, maxLength : 256});
 		$("#pointsInput").jqxInput({ height : 25, width : 38,	minLength : 1, maxLength : 10});
-		$("#answer1Input").jqxInput({placeHolder : "possible answer for the question", height : 25, width : 600,	minLength : 1, maxLength : 256});
-		$("#answer2Input").jqxInput({placeHolder : "possible answer for the question", height : 25, width : 600,	minLength : 1, maxLength : 256});
-		$("#answer3Input").jqxInput({placeHolder : "possible answer for the question", height : 25, width : 600,	minLength : 1, maxLength : 256});
-		$("#answer4Input").jqxInput({placeHolder : "possible answer for the question", height : 25, width : 600,	minLength : 1, maxLength : 256});
+		$("#answer1Input").jqxInput({placeHolder : "possible answer for the question", height : 25, width : 400,	minLength : 1, maxLength : 256});
+		$("#answer2Input").jqxInput({placeHolder : "possible answer for the question", height : 25, width : 400,	minLength : 1, maxLength : 256});
+		$("#answer3Input").jqxInput({placeHolder : "possible answer for the question", height : 25, width : 400,	minLength : 1, maxLength : 256});
+		$("#answer4Input").jqxInput({placeHolder : "possible answer for the question", height : 25, width : 400,	minLength : 1, maxLength : 256});
 		
 		//$("#answer1FeedbackInput").jqxInput({placeHolder : "feedback for answer 1", height : 20, width : 600,	minLength : 1, maxLength : 256});
 		//$("#answer2FeedbackInput").jqxInput({placeHolder : "feedback for answer 2", height : 20, width : 600,	minLength : 1, maxLength : 256});
@@ -64,7 +64,7 @@
 <input name="isAnswerCorrect" type="hidden" id="isAnswerCorrectInput" />
 <table width="100%" class="formTable questionForm">
 	<tr>
-		<td style="width: 15%" class="marginTop">Question</td>
+		<td style="width: 12%" class="marginTop">Question</td>
 		<td><input name="quesTitle" type="text" id="quesTitleInput" />
 			Points <input name="points" type="text" id="pointsInput" />
 		</td>
@@ -81,36 +81,30 @@
 	</tr>
 	<tr>
 		<td class="marginTop">Answer 1</td>
-		<td><input name="answer1" size="33" type="text" id="answer1Input"
-			style="float: left" />
-			<div id='isAnswer1CorrectInput' style="display: inline"></div>
+		<td>
+			<input name="answer1" size="33" type="text" id="answer1Input" style="display:inline-table"/>
+			<div id='isAnswer1CorrectInput' style="display: inline-table"></div>
 			<!-- <input class="marginTop" name="answer1Feedback" type="text" id="answer1FeedbackInput"/>	 -->
+			
+			<span>Answer 2</span>
+			<input name="answer2" size="33" type="text" id="answer2Input" style="display:inline-table"/>
+			<div id='isAnswer2CorrectInput' style="display:inline-table"></div>
 		</td>
 	</tr>
-	<tr>
-		<td class="marginTop">Answer 2</td>
-		<td><input name="answer2" size="33" type="text" id="answer2Input"
-			style="float: left" />
-			<div id='isAnswer2CorrectInput' style="display: inline"></div>
-			<!-- <input class="marginTop" name="answer2Feedback" type="text" id="answer2FeedbackInput"/> -->
-		</td>
-	</tr>
+
 	<tr>
 		<td class="marginTop">Answer 3</td>
-		<td><input name="answer3" size="33" type="text" id="answer3Input"
-			style="float: left" />
-			<div id='isAnswer3CorrectInput' style="display: inline"></div>
-			<!-- <input class="marginTop" name="answer3Feedback" type="text" id="answer3FeedbackInput"/>	 -->	
+		<td>
+			<input name="answer3" size="33" type="text" id="answer3Input" style="display:inline-table"/>
+			<div id='isAnswer3CorrectInput' style="display: inline-table"></div>
+			<!-- <input class="marginTop" name="answer1Feedback" type="text" id="answer1FeedbackInput"/>	 -->
+			
+			<span>Answer 4</span>
+			<input name="answer4" size="33" type="text" id="answer4Input" style="display:inline-table"/>
+			<div id='isAnswer4CorrectInput' style="display:inline-table"></div>
 		</td>
 	</tr>
-	<tr>
-		<td class="marginTop">Answer 4</td>
-		<td><input name="answer4" size="33" type="text" id="answer4Input"
-			style="float: left" />
-			<div id='isAnswer4CorrectInput' style="display: inline"></div>
-			<!-- <input class="marginTop" name="answer4Feedback" type="text" id="answer4FeedbackInput"/>	 -->
-		</td>
-	</tr>
+
 	<tr>
 		<td class="marginTop">
 			Negative Points
