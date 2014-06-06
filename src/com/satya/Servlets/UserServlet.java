@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 
 import com.satya.ApplicationContext;
+import com.satya.BusinessObjects.Campaign;
 import com.satya.BusinessObjects.Game;
 import com.satya.BusinessObjects.GameTemplates;
 import com.satya.BusinessObjects.Result;
@@ -35,7 +36,7 @@ public class UserServlet extends HttpServlet {
 	private static final String SIGNUP = "signup";
 	
 	private static final String GET_CAMPAIGNS ="getCampaigns";
-	private static final String GET_SETS_FOR_CAMPAIGN = "getSetsByCampaign";
+	private static final String GET_GAMES_FOR_CAMPAIGN = "getGamesForCampaign";
 	private static final String PLAYER = "loadPlayer";
 	
 	
@@ -58,9 +59,9 @@ public class UserServlet extends HttpServlet {
 			}catch(Exception e){
 				logger.error(e.getMessage());
 			}
-		}else if(action.equals(GET_SETS_FOR_CAMPAIGN)){
+		}else if(action.equals(GET_GAMES_FOR_CAMPAIGN)){
 			try{
-				JSONArray json = setMgr.getSetsByCampaign(request, response);
+				JSONArray json = gameMgr.getGamesByCampaign(request);
 				response.getWriter().print(json.toString());
 			}catch(Exception e){
 				logger.error(e.getMessage());
@@ -80,32 +81,34 @@ public class UserServlet extends HttpServlet {
 			ResultsMgrI resultMgr = ApplicationContext.getApplicationContext().getResultMgr();
 			
 			String action = request.getParameter("action");
+			//i am passing campaignSeq separated by comma in returning url
+			if(action.contains(",")){
+				action = "result";
+			}
 			if(action.equals("getGameInfo")){
 				String gameIdStr = request.getParameter("game_id");
-				String campaignSetSeqStr = request.getParameter("campaignSetSeq");
-				
-				Long gameId = Long.parseLong(gameIdStr);
-				Long campaignSetSeq = Long.parseLong(campaignSetSeqStr);
-				
+				String campaignSeqStr = request.getParameter("campaign_id");
+				Long gameSeq = Long.parseLong(gameIdStr);
+				Long campaignSeq = Long.parseLong(campaignSeqStr);		
 				GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
-				Game game = GDS.findBySeq(gameId);
-				
-//				GameTemplatesDataStoreI GTDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameTemplateDataStore();
-//				GameTemplates gameTemplate = GTDS.findBySeq(Long.parseLong(gameId));
+				Game game = GDS.findBySeq(gameSeq);
 				User user = ApplicationContext.getApplicationContext().getLoggedinUser(request);
 				String vars = "gamepath="+ game.getGameTemplate().getPath() +
 						"&gameId=" + game.getSeq() +
-						"&campaignSetSeq=" + campaignSetSeq +
+						"&campaignSeq=" + campaignSeq +
 						"&gamename=" + game.getTitle() +
-						"&xmlfile=" + game.getQuestionsXMLPath() +
+						"&xmlfile=" + game.getQuestionsXMLPath() + ".txt"+
 						"&userId="+ user.getSeq() +
-						"&resulturl=User?action=result";
+						"&resulturl=User?action=result,campaignSeq="+campaignSeq;
 				response.getWriter().print(vars);
 				return;
 			}else if(action.equals("result")){
+				request.getParameterNames();
 				String resultXML = request.getParameter("resultXML");
-				
 				Result result = resultMgr.ConvertXMLToResult(resultXML);
+				String fullActionValue = request.getParameter("action");
+				String campaignSeqStr = fullActionValue.substring(fullActionValue.indexOf("=")+1);
+				result.setCampaign(new Campaign(Long.parseLong(campaignSeqStr)));
 				resultMgr.SaveResult(result);
 			}else if (action.equals(SIGNUP)) {
 				userMgr.signup(request, response);

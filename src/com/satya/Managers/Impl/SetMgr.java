@@ -14,12 +14,14 @@ import org.json.JSONObject;
 
 import com.satya.ApplicationContext;
 import com.satya.IConstants;
+import com.satya.BusinessObjects.Campaign;
 import com.satya.BusinessObjects.Game;
 import com.satya.BusinessObjects.Project;
 import com.satya.BusinessObjects.Questions;
 import com.satya.BusinessObjects.Set;
 import com.satya.BusinessObjects.UserGroup;
 import com.satya.Managers.SetMgrI;
+import com.satya.Persistence.CampaignDataStoreI;
 import com.satya.Persistence.SetDataStoreI;
 import com.satya.Persistence.UserGroupDataStoreI;
 import com.satya.Utils.DateUtils;
@@ -184,14 +186,6 @@ public class SetMgr implements SetMgrI {
 	@Override
 	public JSONArray getSetsByCampaign(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		String campaignSeqStr = request.getParameter("campaignSeq");
-		SetDataStoreI SDS = ApplicationContext.getApplicationContext()
-				.getDataStoreMgr().getSetDataStore();
-		List<Set> sets = null;
-		if (!campaignSeqStr.equals("")) {
-			sets = SDS.findByCampaign(Long.parseLong(campaignSeqStr));
-		}
-
-		return Set.getJSONArray(sets);
+			return null;
 	}
 }

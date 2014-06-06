@@ -104,6 +104,7 @@ public class QuestionDataStore implements QuestionDataStoreI, RowMapper {
 			if (questions.getSeq() == 0) {
 				questions.setSeq(persistenceMgr.getLastUpdatedSeq());
 			}
+			//joining answers to question
 			QuestionAnswersMgrI questionAnswerMgr = ApplicationContext
 					.getApplicationContext().getQuestionAnswersMgr();
 			questionAnswerMgr.deleteByQuestion(questions.getSeq());

@@ -33,6 +33,12 @@ public class Campaign {
 	public static final String START_DATE = "startDate";
 	public static final String VALID_TILL_DATE = "validTillDate";
 	
+	public Campaign(){
+		
+	}
+	public Campaign(long seq){
+		this.setSeq(seq);
+	}
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -131,7 +137,7 @@ public class Campaign {
 	public static JSONObject toJson(Campaign campaign){		
 		JSONObject json = new JSONObject();
 		try{
-			json.put(IConstants.SEQ, campaign.getSeq());
+			json.put(IConstants.CAMP_SEQ, campaign.getSeq());
 			json.put(IConstants.NAME, campaign.getName());
 			json.put(IConstants.DESCRIPTION, campaign.getDescription());
 			json.put(IConstants.VALIDITY_DAYS, campaign.getValidityDays());

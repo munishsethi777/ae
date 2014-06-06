@@ -10,14 +10,12 @@ public class Result {
 	private String gameId;
 	private String totalScore;
 	private String totalTime;
-	private String campaignSetSeq;
 	private List<ResultQuestion> questions;
 	private Date createdOn;
 	
 	
 	private User user;
 	private Game game;
-	private Set set;
 	private Campaign campaign;
 	private UserGroup userGroup;
 	
@@ -69,12 +67,6 @@ public class Result {
 	public void setTotalTime(String totalTime) {
 		this.totalTime = totalTime;
 	}
-	public String getCampaignSetSeq() {
-		return campaignSetSeq;
-	}
-	public void setCampaignSetSeq(String campaignSetSeq) {
-		this.campaignSetSeq = campaignSetSeq;
-	}
 	public List<ResultQuestion> getQuestions() {
 		return questions;
 	}
@@ -86,12 +78,6 @@ public class Result {
 	}
 	public void setGame(Game game) {
 		this.game = game;
-	}
-	public Set getSet() {
-		return set;
-	}
-	public void setSet(Set set) {
-		this.set = set;
 	}
 	public Campaign getCampaign() {
 		return campaign;

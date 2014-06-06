@@ -70,6 +70,7 @@ public class PersistenceMgr {
 			} 
 		}catch (SQLException e){
 			log.error("SQL Exception ",e);
+			throw new RuntimeException("SQL Error: " + e.getMessage());
 		}finally{
 			try {
 				if(ps != null){
@@ -78,6 +79,7 @@ public class PersistenceMgr {
 				c.close();
 			}catch (SQLException e){
 				log.error("SQL Exception ",e);
+				throw new RuntimeException("SQL Error: " + e.getMessage());
 			}
 		}
 	}
@@ -97,6 +99,7 @@ public class PersistenceMgr {
 			}
 		}catch(SQLException e){
 			log.error("SQL Error: " + e.getMessage(),e);
+			throw new RuntimeException("SQL Error: " + e.getMessage());
 		}finally{
 			try{
 				if(rs != null)rs.close();
@@ -104,6 +107,7 @@ public class PersistenceMgr {
 				c.close();
 			}catch(SQLException e){
 				log.error("SQL Error: " + e.getMessage(), e);
+				throw new RuntimeException("SQL Error: " + e.getMessage());
 			}
 		}
 		return results;
@@ -130,13 +134,15 @@ public class PersistenceMgr {
 			}
 		}catch(SQLException e){
 			log.error("error during executePSQuery for sql - " + sql,e);
-			
+			throw new RuntimeException("SQL Error: " + e.getMessage());
 		}finally{
 			try{
 				if(rs != null)rs.close();
 				if(ps != null)ps.close();
 				c.close();
-			}catch(SQLException sqe){}
+			}catch(SQLException sqe){
+				throw new RuntimeException("SQL Error: " + sqe.getMessage());
+			}
 
 		}
 		return count;
@@ -191,6 +197,7 @@ public class PersistenceMgr {
 
 		}catch(SQLException e){
 			log.error("SQL Error occured : ", e);
+			throw new RuntimeException("SQL Error: " + e.getMessage());
 		}finally{
 			try{
 				if(rs != null)rs.close();
@@ -198,6 +205,7 @@ public class PersistenceMgr {
 				c.close();
 			}catch(SQLException sqe){
 				log.error("SQL Error in final clause: " , sqe);
+				throw new RuntimeException("SQL Error: " + sqe.getMessage());
 			}
 
 		}

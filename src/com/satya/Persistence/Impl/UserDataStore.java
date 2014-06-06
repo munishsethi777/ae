@@ -2,13 +2,10 @@ package com.satya.Persistence.Impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-
 import org.apache.log4j.Logger;
-
 
 import com.satya.BusinessObjects.User;
 import com.satya.Persistence.RowMapper;
@@ -75,6 +72,7 @@ public class UserDataStore implements UserDataStoreI,RowMapper {
 			}
 		}catch(Exception e){
 			logger.error(e);
+			throw new RuntimeException(e);
 		}
 		
 	}

@@ -24,7 +24,7 @@ public class ResultsDataStore implements ResultsDataStoreI,RowMapper{
 	private PersistenceMgr persistenceMgr;
 	
 	
-	private final static String SAVE = "INSERT into results(userseq,gameseq,score,timetaken,createdon,campaignsetseq) " +
+	private final static String SAVE = "INSERT into results(userseq,gameseq,score,timetaken,createdon,campaignseq) " +
 			" values(?,?,?,?,?,?)";
 	private final static String SAVE_DETAIL = "INSERT into resultquestions(resultseq,questionseq,timetaken,selectedanswerseq,points,attempts,negativepoints) "+
 			" values(?,?,?,?,?,?,?)";
@@ -39,7 +39,7 @@ public class ResultsDataStore implements ResultsDataStoreI,RowMapper{
 			" left join usergroups on usergroups.seq = usergroupusers.usergroupseq" +
 			" left join campaigns on campaigns.seq = campaignsets.campaignseq" + 
 			" where campaigns.seq = ?";
-	
+	private final static String FIND_RESULTS_BY_CAMPAIGN_GAME_USER = "select * from results where campaignseq=? and gameseq=? and userseq=?";
 
 	
 	public ResultsDataStore(PersistenceMgr psmgr){
@@ -50,13 +50,14 @@ public class ResultsDataStore implements ResultsDataStoreI,RowMapper{
 	public void Save(Result result) {
 		String SQL = SAVE;
 		try{
-			Object[] params  = new Object[5];
+			Object[] params  = new Object[6];
 			
 					params[0]= result.getUserId();
 					params[1] = result.getGameId();
 					params[2] = result.getTotalScore();
 					params[3] = result.getTotalTime();
 					params[4] = new Date();
+					params[5] = result.getCampaign().getSeq();
 			persistenceMgr.excecuteUpdate(SQL, params);
 			result.setSeq(persistenceMgr.getLastUpdatedSeq());
 			SaveResultQuestions(result);	
@@ -68,13 +69,24 @@ public class ResultsDataStore implements ResultsDataStoreI,RowMapper{
 	private void SaveResultQuestions(Result result){
 		for(ResultQuestion resultQuestions : result.getQuestions()){
 			try{
-				Object[] params  = new Object[5];
+				Object[] params  = new Object[7];
 				
 						params[0] = result.getSeq();
 						params[1] = Integer.parseInt(resultQuestions.getId());
 						params[2] = Integer.parseInt(resultQuestions.getTimeTaken());
 						params[3] = Integer.parseInt(resultQuestions.getSelectedAnswerId());
 						params[4] = Integer.parseInt(resultQuestions.getPoints());
+						if(resultQuestions.getAttempts()!=null){
+							params[5] = Integer.parseInt(resultQuestions.getAttempts());
+						}else{
+							params[5] = null;
+						}
+						if(resultQuestions.getNegativePoints()!=null){
+							params[6] = Integer.parseInt(resultQuestions.getNegativePoints());
+						}else{
+							params[6] = null;
+						}
+						
 						
 				persistenceMgr.excecuteUpdate(SAVE_DETAIL, params);
 				result.setSeq(persistenceMgr.getLastUpdatedSeq());
@@ -90,6 +102,13 @@ public class ResultsDataStore implements ResultsDataStoreI,RowMapper{
 	public List<Result> findByCampaign(long campaignSeq) {
 		Object [] params = new Object [] {campaignSeq};
 		return (List<Result>)persistenceMgr.executePSQuery(FIND_RESULTS_BY_CAMPAIGN, params, this);	
+	}
+
+	@Override
+	public Result findByCampaignAndGameAndUser(long campaignSeq, long gameSeq,
+			long userSeq) {
+		Object [] params = new Object [] {campaignSeq,gameSeq,userSeq};
+		return (Result)persistenceMgr.executeSingleObjectQuery(FIND_RESULTS_BY_CAMPAIGN_GAME_USER, params, this);	
 	}
 	@Override
 	public Object mapRow(ResultSet rs) throws SQLException {
@@ -115,7 +134,7 @@ public class ResultsDataStore implements ResultsDataStoreI,RowMapper{
 			result.setUser(user);
 			Set set = new Set();
 			set.setName(setName);
-			result.setSet(set);
+			//result.setSet(set);
 			Game game = new Game();
 			game.setTitle(gameTitle);
 			result.setGame(game);
@@ -136,5 +155,6 @@ public class ResultsDataStore implements ResultsDataStoreI,RowMapper{
 		return result;
 		
 	}
+
 
 }

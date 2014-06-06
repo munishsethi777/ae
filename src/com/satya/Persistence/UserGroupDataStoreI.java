@@ -14,4 +14,6 @@ public interface UserGroupDataStoreI {
 	
 	public List<UserGroup> findAvailableForCampaign(long campaignSeq);
 	public List<UserGroup> findSelectedForCampaign(long campaignSeq);
+	
+	public void RemoveUserFromUserGroup(long userGroupSeq, long userSeq);
 }

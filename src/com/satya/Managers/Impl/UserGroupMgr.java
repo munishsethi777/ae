@@ -21,6 +21,7 @@ import com.satya.BusinessObjects.UserGroup;
 import com.satya.Managers.CampaignMgrI;
 import com.satya.Managers.UserGroupMgrI;
 import com.satya.Managers.UserMgrI;
+import com.satya.Persistence.GameDataStoreI;
 import com.satya.Persistence.UserDataStoreI;
 import com.satya.Persistence.UserGroupDataStoreI;
 import com.satya.Utils.DateUtils;
@@ -232,14 +233,7 @@ public class UserGroupMgr implements UserGroupMgrI {
 			}
 		}
 	}
-	
-//	@Override
-//	public JSONObject addUserGroupFromCampaign(HttpServletRequest request,
-//			HttpServletResponse response) throws ServletException, IOException,
-//			Exception {
-//			
-//			return null;
-//	}
+
 	
 	@Override
 	public JSONObject addUserGroupFromCampaign(HttpServletRequest request,
@@ -257,24 +251,25 @@ public class UserGroupMgr implements UserGroupMgrI {
 		UserGroupDataStoreI UGDS = ApplicationContext.getApplicationContext()
 										.getDataStoreMgr().getUserGroupDataStore();
 		UserGroup userGroup = new UserGroup();
+		userGroup.setCreatedOn(new Date());	
 		if(UsersGroupSeqString != null && !UsersGroupSeqString.equals("")){
 			int userGroupSeq = Integer.valueOf(UsersGroupSeqString);
 			userGroup = UGDS.findBySeq(userGroupSeq);
 		}
-			userGroup.setName(name);
-			userGroup.setDescription(description);
-			userGroup.setCreatedOn(new Date());			
-			boolean isEnable = false;
-			if (isEnableStr != null && !isEnableStr.equals("")) {
-				isEnable = Boolean.parseBoolean(isEnableStr);
-			}
-			userGroup.setEnable(isEnable);
-			userGroup.setProject(ApplicationContext.getApplicationContext()
-					.getAdminWorkspaceProject(request));
-	
+		userGroup.setName(name);
+		userGroup.setDescription(description);
+		boolean isEnable = false;
+		if (isEnableStr != null && !isEnableStr.equals("")) {
+			isEnable = Boolean.parseBoolean(isEnableStr);
+		}
+		userGroup.setEnable(isEnable);
+		userGroup.setProject(ApplicationContext.getApplicationContext()
+				.getAdminWorkspaceProject(request));
+
 		userGroup.setLastModifiedDate(new Date());
 		try {
 			if(selectedUsersString != null && !selectedUsersString.equals("")){
+				//this case will save usergroup details and relations only. 
 				setUsersOnUserGroup(userGroup,selectedUsersString);
 			}else{
 				List<User> usersList = userGroup.getUsers();
@@ -414,5 +409,31 @@ public class UserGroupMgr implements UserGroupMgrI {
 			log.error("Exception occured while fetching selected usergroups on campaign",e);
 		}
 		return jsonArr;
+	}
+
+	@Override
+	public JSONObject removeUsersFromUserGroup(HttpServletRequest request) {
+		String userGroupStr = request.getParameter("userGroupSeq");
+		String idsStr = request.getParameter("ids");
+		JSONObject json = new JSONObject();
+		if(idsStr != null && !idsStr.equals("")){
+//			long gameSeq = Long.parseLong(gameSeqStr);
+//			String[] ids = idsStr.split(",");
+//			if(ids.length>0){
+//				try{
+//					long questionSeq = Long.parseLong(ids[0]);
+//					GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
+//					GDS.deleteGameQuestion(gameSeq, questionSeq);
+//
+//					json.put(IConstants.STATUS, IConstants.SUCCESS);
+//					json.put(IConstants.MESSAGE, IConstants.msg_DeletedSuccessfully);
+//					json.put(IConstants.SEQ, questionSeq);
+//					return json;
+//				}catch(Exception e){
+//				}
+//			}
+			
+		}
+		return json;
 	}
 }

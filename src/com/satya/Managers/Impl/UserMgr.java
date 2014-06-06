@@ -153,7 +153,7 @@ public class UserMgr implements UserMgrI{
 		JSONObject json = new JSONObject();
 		try{
 			json.put(ID, user.getSeq());
-			json.put(NAME, user.getName());
+			json.put("nameUser", user.getName());
 			json.put(EMAIL, user.getEmail());
 			json.put(MOBILE, user.getMobile());
 			json.put(LOCATION, user.getLocation());
@@ -204,7 +204,7 @@ public class UserMgr implements UserMgrI{
 							throws Exception{
 		User user = new User();		
 		String id = request.getParameter(ID);
-		String name = request.getParameter(NAME);
+		String name = request.getParameter("nameUser");
 		String email = request.getParameter(EMAIL);
 		String mobile = request.getParameter(MOBILE);
 		String location = request.getParameter(LOCATION);
@@ -236,9 +236,8 @@ public class UserMgr implements UserMgrI{
 			UDS.Save(user);
 			return user;
 		}catch(Exception  e){
-
+			throw e;
 		}
-		return null;
 	}
 	public JSONObject delete(long userSeq)throws Exception{
 		JSONObject json = new JSONObject();

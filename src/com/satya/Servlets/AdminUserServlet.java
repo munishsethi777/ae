@@ -74,7 +74,7 @@ public class AdminUserServlet extends BaseServletClass {
 	private static final String IMPORT_QUESTIONS = "importQuestions";
 	private static final String ADD_GAME_FROM_IMPORT_QUESTIONS = "addGameFromImportQuestion";
 	private static final String ADD_USER_GROUP_FROM_CAMPAIGN = "addUserGroupFromCampaign";
-	private static final String GET_SELECTED_USERGROUPS_BY_CAMPAIGN = "getSelectedUserGroupsByCampaign";
+	private static final String GET_USERS_IN_SELECTED_USERGROUPS_BY_CAMPAIGN = "getUsersInSelectedUserGroupByCampaign";
 	private static final String SET_GAMES_ON_CAMPAIGN = "setGamesOnCampaign";
 
 	// Users UI
@@ -176,16 +176,6 @@ public class AdminUserServlet extends BaseServletClass {
 								request, response);
 						response.getWriter().write(jsonArr.toString());
 
-					} else if (action.equals(GET_GAMES_AVAILABLE_ON_SET)) {
-						JSONArray jsonArr = gameMgr.getAvailableOnSetJson(
-								request, response);
-						response.getWriter().write(jsonArr.toString());
-
-					} else if (action.equals(GET_GAMES_SELECTED_ON_SET)) {
-						JSONArray jsonArr = gameMgr.getSelectedOnSetJson(
-								request, response);
-						response.getWriter().write(jsonArr.toString());
-
 					} else if (action.equals("addUser")) {
 
 						JSONObject json = userMgr.addUser(request, response);
@@ -210,20 +200,6 @@ public class AdminUserServlet extends BaseServletClass {
 
 						JSONArray jsonArr = projectMgr.deleteBulk(request,
 								response);
-						response.getWriter().write(jsonArr.toString());
-
-					} else if (action.equals("getAllSets")) {
-						JSONArray jsonArr = setMgr.getAllSetJson(request,
-								response);
-						response.getWriter().write(jsonArr.toString());
-
-					} else if (action.equals("addSet")) {
-						JSONObject json = setMgr.addSet(request, response);
-						response.getWriter().write(json.toString());
-
-					} else if (action.equals("deleteSet")) {
-						JSONArray jsonArr = setMgr
-								.deleteBulk(request, response);
 						response.getWriter().write(jsonArr.toString());
 
 					} else if (action.equals("addGame")) {
@@ -342,7 +318,7 @@ public class AdminUserServlet extends BaseServletClass {
 								.addUserGroupFromCampaign(request, response);
 						response.getWriter().write(json.toString());
 					} else if (action
-							.equals(GET_SELECTED_USERGROUPS_BY_CAMPAIGN)) {
+							.equals(GET_USERS_IN_SELECTED_USERGROUPS_BY_CAMPAIGN)) {
 						JSONArray json = userGroupMgr
 								.getSelectedUsersOnCampaignJson(request,
 										response);
@@ -388,6 +364,9 @@ public class AdminUserServlet extends BaseServletClass {
 						response.getWriter().write(json.toString());
 					}else if(action.equals("publishCampaign")){
 						JSONObject json = campaignMgr.publishCampaign(request);
+						response.getWriter().write(json.toString());
+					}else if(action.equals("removeQuestionFromGame")){
+						JSONObject json = gameMgr.removeQuestionFromGame(request);
 						response.getWriter().write(json.toString());
 					}
 				}

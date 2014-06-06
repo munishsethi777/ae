@@ -64,6 +64,15 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			+ "left join usergroupusers on usergroupusers.usergroupseq = campaignusergroups.usergroupseq "
 			+ "left join users on users.seq = usergroupusers.userseq "
 			+ "where campaigns.seq = ? and sets.seq = ? and games.seq = ? and users.seq = ? ";
+	
+	private final static String FIND_GAME_BY_GAMESEQ_CAMPSEQ_USERSEQ = "select distinct games.* from games " +
+			"left join campaigngames on campaigngames.gameseq = games.seq " +
+			"left join campaigns on campaigns.seq = campaigngames.campaignseq " +
+			"left join campaignusergroups on campaignusergroups.campaignseq = campaigns.seq " +
+			"left join usergroups on usergroups.seq =campaignusergroups.usergroupseq " +
+			"left join usergroupusers on usergroupusers.usergroupseq = campaignusergroups.usergroupseq " +
+			"left join users on users.seq = usergroupusers.userseq " +
+			"where campaigns.seq = ?  and games.seq = ? and users.seq = ? ";
 	//particularly used for XML generation
 	private static String FIND_GAME_WITH_QUESTION_ANSWERS_COMMON = 
 					"select distinct games.*, "+
@@ -80,6 +89,16 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			FIND_GAME_WITH_QUESTION_ANSWERS_COMMON + 	"where games.seq = ?";
 	
 	private static String FIND_GAMES_BY_CAMPAIGN = 
+//			"select distinct games.*, "+
+//			"questions.seq as questionseq,questions.title as questiontitle, questions.description as questiondescription,questions.negativepoints, "+
+//			"questions.maxsecondsallowed as questionmaxsecondsallowed, "+
+//			"questionanswers.seq as answerseq, questionanswers.title as answertitle, questionanswers.iscorrect "+
+//			"from games "+
+//			"left join gamequestions on gamequestions.gameseq = games.seq "+
+//			"left join questions on questions.seq = gamequestions.questionseq "+
+//			"left join questionanswers on questionanswers.questionseq = gamequestions.questionseq "+
+//			"left join campaigngames on campaigngames.gameseq = games.seq "+
+//			"where campaigngames.campaignseq = ?";
 			"select distinct games.*, "+
 			"questions.seq as questionseq "+
 			"from games "+
@@ -88,6 +107,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			"left join campaigngames on campaigngames.gameseq = games.seq "+
 			"where campaigngames.campaignseq = ?";
 	
+	private static String REMOVE_QUESTION_FROM_GAME ="delete from gamequestions where gameseq = ? and questionseq=?";
 	
 	public GameDataStore(PersistenceMgr psmgr) {
 		this.persistenceMgr = psmgr;
@@ -169,10 +189,16 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 	}
 
 	@Override
-	public Game findBySeq(long seq) {
+	public Game findBySeq(long seq) {//with game template details
 		Object[] params = new Object[] { seq };
 		return (Game) persistenceMgr.executeSingleObjectQuery(SELECT_BY_SEQ,
-				params, this);
+				params, new RowMapper() {
+					
+					@Override
+					public Object mapRow(ResultSet rs) throws SQLException {
+						return populateObjectFromResultSet(rs, true);
+					}
+				});
 	}
 
 	@Override
@@ -195,7 +221,8 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 		return (List<Game>) persistenceMgr.executePSQuery(
 				FIND_GAMES_SELECTED_IN_SET, params, this);
 	}
-
+	
+	//get games with total questions and no answers
 	@Override
 	public List<Game> findSelectedForCampaign(long campaignSeq) {
 		Object[] params = new Object[] { campaignSeq };
@@ -207,17 +234,23 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 				FIND_GAMES_BY_CAMPAIGN, params, new RowMapper(){
 					@Override
 					public Object mapRow(ResultSet rs) throws SQLException {
-						game = (Game)populateObjectFromResultSet(rs);
-						Questions question = game.getQuestions().get(0);
-						
-						if(!gamesMap.containsKey(game.getSeq())){
-							gamesMap.put(game.getSeq(),game);
-						}else{
-							if(question != null){
-								game = (Game)gamesMap.get(game.getSeq());
-								game.getQuestions().add(question);
-								gamesMap.put(game.getSeq(),game);
+						try{
+							game = (Game)populateFullObjectFromResultSet(rs,false);
+							Questions question = null;
+							if(game.getQuestions() != null){
+								question = game.getQuestions().get(0);
 							}
+							if(!gamesMap.containsKey(game.getSeq())){
+								gamesMap.put(game.getSeq(),game);
+							}else{
+								if(question != null){
+									Game mapGame = (Game)gamesMap.get(game.getSeq());
+									mapGame.getQuestions().add(question);
+									gamesMap.put(mapGame.getSeq(),mapGame);
+								}
+							}
+						}catch(Exception e){
+							logger.error(e);
 						}
 						
 						return null;
@@ -244,7 +277,17 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 		}
 		return false;
 	}
-
+	// Method used to make sure if game is for this user alloted
+		@Override
+		public boolean isGameByCampaignGameUser(long campaignSeq, long gameSeq, long userSeq) {
+			Object[] params = new Object[] { campaignSeq, gameSeq, userSeq };
+			List<Game> games = (List<Game>) persistenceMgr.executePSQuery(
+					FIND_GAME_BY_GAMESEQ_CAMPSEQ_USERSEQ, params, this);
+			if (games != null && games.size()!=0){
+				return true;
+			}
+			return false;
+		}
 	
 	//Method used to get a Games Questions with Answers also
 	Game game = null;
@@ -258,14 +301,15 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 			
 			@Override
 			public Object mapRow(ResultSet rs) throws SQLException {
-				game = (Game)populateObjectFromResultSet(rs);
+				game = (Game)populateFullObjectFromResultSet(rs,true);
 				Questions question = game.getQuestions().get(0);
-				
-				if(questionsMap.get(question.getSeq()) == null){
-					questionsMap.put(question.getSeq(), question);
-				}else{
-					Questions mapQuestion = (Questions) questionsMap.get(question.getSeq());
-					mapQuestion.getQuestionAnswers().add(question.getQuestionAnswers().get(0));
+				if(question != null){
+					if(questionsMap.get(question.getSeq()) == null){
+						questionsMap.put(question.getSeq(), question);
+					}else{
+						Questions mapQuestion = (Questions) questionsMap.get(question.getSeq());
+						mapQuestion.getQuestionAnswers().add(question.getQuestionAnswers().get(0));
+					}
 				}
 				return null;
 			}
@@ -286,10 +330,65 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 	}
 	
 	public Object mapRow(ResultSet rs) throws SQLException {
-		return populateObjectFromResultSet(rs);
+		return populateObjectFromResultSet(rs,false);
 	}
 
-	protected Object populateObjectFromResultSet(ResultSet rs)
+	protected Object populateObjectFromResultSet(ResultSet rs,boolean isWithTemplateDetails)
+			throws SQLException {
+		Game game = null;
+		try {
+			long seq = rs.getLong("seq");
+			String title = rs.getString("title");
+			String description = rs.getString("description");
+			boolean isEnable = rs.getBoolean("isenabled");
+			Date lastModifiedDate = rs.getDate("lastmodifieddate");
+			int maxSecondsAllowed = rs.getInt("maxsecondsallowed");
+			boolean isPublished = rs.getBoolean("ispublished");
+			int maxQuestions = rs.getInt("maxquestions");
+			String imagePath = rs.getString("imagepath");
+			game = new Game();
+			game.setSeq(seq);
+			game.setTitle(title);
+			game.setDescription(description);
+			game.setEnable(isEnable);
+			game.setLastModifiedDate(lastModifiedDate);
+			game.setMaxSecondsAllowed(maxSecondsAllowed);
+			game.setPublished(isPublished);
+			game.setMaxQuestions(maxQuestions);
+			game.setImagePath(imagePath);
+		} catch (Exception e) {
+			logger.error("GameDataStore populate method error", e);
+		}
+		GameTemplates gameTemplate = new GameTemplates();
+		if(isWithTemplateDetails){
+			//Capture Game Template
+			try {
+				long templateSeq = rs.getLong("gameTemplateSeq");
+				if(templateSeq != 0){
+					gameTemplate = new GameTemplates(templateSeq);
+					String gameTemplateName = rs.getString("gameTemplateName");
+					String path = rs.getString("gameTemplatePath");
+					String templateImagePath = rs.getString("gameTemplateImagePath");
+					String templateDescription = rs.getString("gameTemplateDescriotion");
+					
+					gameTemplate.setName(gameTemplateName);
+					gameTemplate.setImagePath(templateImagePath);
+					gameTemplate.setPath(path);
+					gameTemplate.setDescription(templateDescription);
+				}
+				
+			} catch (Exception e) {
+				logger.error("Error occured while grabbing game template details",e);
+			}finally{
+				if(gameTemplate != null){
+					game.setGameTemplate(gameTemplate);
+				}
+			}
+		}
+		return game;
+
+	}
+	protected Object populateFullObjectFromResultSet(ResultSet rs,boolean isWithQuestionAnswers)
 			throws SQLException {
 		Game game = null;
 		try {
@@ -318,7 +417,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 				long templateSeq = rs.getLong("gameTemplateSeq");
 				if(templateSeq != 0){
 					gameTemplates = new GameTemplates(templateSeq);
-					String gameTemplateName = rs.getString("gameTemplateName");
+					/*String gameTemplateName = rs.getString("gameTemplateName");
 					String path = rs.getString("gameTemplatePath");
 					String templateImagePath = rs.getString("gameTemplateImagePath");
 					String templateDescription = rs.getString("gameTemplateDescriotion");
@@ -327,7 +426,7 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 					gameTemplates.setImagePath(templateImagePath);
 					gameTemplates.setPath(path);
 					gameTemplates.setDescription(templateDescription);
-					game.setGameTemplate(gameTemplates);
+					game.setGameTemplate(gameTemplates);*/
 				}
 				
 			} catch (Exception e) {
@@ -337,49 +436,55 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 					game.setGameTemplate(gameTemplates);
 				}
 			}
-			Questions question = null;
-			//Capture Question
-			try {
-				long questionSeq = rs.getLong("questionseq");
-				if(questionSeq != 0){
-					question = new Questions();
-					question.setSeq(questionSeq);
-					String quesTitle = rs.getString("questiontitle");
-					question.setTitle(quesTitle);
-					String quesDescription = rs.getString("questiondescription");
-					question.setDescription(quesDescription);
-					int negativePoints = rs.getInt("negativepoints");
-					question.setNegativePoints(negativePoints);
-					int quesMaxSecondsAllowed= rs.getInt("questionmaxsecondsallowed");
-					question.setMaxSecondsAllowed(quesMaxSecondsAllowed);
+			
+				Questions question = null;
+				//Capture Question
+				try {
+					long questionSeq = rs.getLong("questionseq");
+					if(questionSeq != 0){
+						question = new Questions();
+						question.setSeq(questionSeq);
+						if(isWithQuestionAnswers){//if its QA mode, then will fetch complete q and ans
+							String quesTitle = rs.getString("questiontitle");
+							question.setTitle(quesTitle);
+							String quesDescription = rs.getString("questiondescription");
+							question.setDescription(quesDescription);
+							int negativePoints = rs.getInt("negativepoints");
+							question.setNegativePoints(negativePoints);
+							int quesMaxSecondsAllowed= rs.getInt("questionmaxsecondsallowed");
+							question.setMaxSecondsAllowed(quesMaxSecondsAllowed);
+						}
+					}
+				} catch (Exception e) {
+					logger.error("Error Occured while grabbing question for game",e);
 				}
-				
-			} catch (Exception e) {
-				logger.error("Error Occured while grabbing question for game",e);
-			}
-			finally{
-				game.setQuestions(new ArrayList<Questions>());
-				game.getQuestions().add(question);
-			}
-			QuestionAnswers answer = null;
-			//Capture QuestionAnswer
-			try {
-				long answerSeq = rs.getLong("answerseq");
-				if(answerSeq != 0){
-					answer = new QuestionAnswers();
-					String answerTitle = rs.getString("answertitle");
-					boolean isCorrect = rs.getBoolean("iscorrect");
-					
-					answer.setSeq(answerSeq);
-					answer.setAnswerTitle(answerTitle);
-					answer.setCorrect(isCorrect);
-					question.setQuestionAnswers(new ArrayList<QuestionAnswers>());
-					question.getQuestionAnswers().add(answer);
+				finally{
+					if(question != null){
+						game.setQuestions(new ArrayList<Questions>());
+						game.getQuestions().add(question);
+					}
 				}
-				
-			} catch (Exception e) {
-
-			}
+				if(isWithQuestionAnswers){
+					QuestionAnswers answer = null;
+					//Capture QuestionAnswer
+					try {
+						long answerSeq = rs.getLong("answerseq");
+						if(answerSeq != 0){
+							answer = new QuestionAnswers();
+							String answerTitle = rs.getString("answertitle");
+							boolean isCorrect = rs.getBoolean("iscorrect");
+							
+							answer.setSeq(answerSeq);
+							answer.setAnswerTitle(answerTitle);
+							answer.setCorrect(isCorrect);
+							question.setQuestionAnswers(new ArrayList<QuestionAnswers>());
+							question.getQuestionAnswers().add(answer);
+						}
+						
+					} catch (Exception e) {
+		
+					}
+				}
 
 		} catch (Exception e) {
 			logger.error("GameDataStore populate method error", e);
@@ -387,7 +492,6 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 		return game;
 
 	}
-
 	@Override
 	public List<Game> findBySeqs(boolean isEnable, Long[] gameSeqs) {
 		StringBuilder seqsStr = new StringBuilder();
@@ -408,6 +512,12 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 	public void saveGameDetails(Game game) {
 		Object[] params = new Object[] { game.getSeq() };
 		persistenceMgr.excecuteUpdate(UPDATE_GAME_DETAILS,  params);
+	}
+
+	@Override
+	public void deleteGameQuestion(long gameSeq, long questionSeq) {
+		Object[] params = new Object[] { gameSeq, questionSeq };
+		persistenceMgr.excecuteUpdate(REMOVE_QUESTION_FROM_GAME,  params);
 	}
 
 }

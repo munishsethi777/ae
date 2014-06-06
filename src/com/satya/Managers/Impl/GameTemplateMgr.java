@@ -35,6 +35,7 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 	@Override
 	public JSONArray getAllGameTemplateJson(HttpServletRequest request)
 			throws ServletException, IOException {
+		//Method will fetch all the game Templates AND campaignGames if campaignSeq provided in API
 		String campaignSeqStr = (String)request.getParameter("campaignSeq");
 		List<GameTemplates> gameTemplates = getAllGameTemplates();
 		List<Game> campaignGames = null;
@@ -50,20 +51,23 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 			for(GameTemplates gameTemplate: gameTemplates){
 				templateObject = toJson(gameTemplate);
 				templateObject.put("gameSeq", 0);
-				if(campaignGames != null){
-					for(Game game : campaignGames){
-						if(game.getGameTemplate().getSeq() == gameTemplate.getSeq() && game.isPublished()==false){
-							templateObject.put(IConstants.NAME,game.getTitle());
-							templateObject.put(IConstants.DESCRIPTION,game.getDescription());
-							templateObject.put("gameSeq", game.getSeq());
-							if(game.getQuestions()!=null){
-								templateObject.put("totalQuestions", game.getQuestions().size());
-							}
-							
+				jsonArr.put(templateObject);
+			}
+			if(campaignGames != null){
+				for(Game game : campaignGames){
+					if(game.isPublished()==false){
+						templateObject = toJson(game.getGameTemplate());
+						templateObject.put(IConstants.NAME,game.getTitle());
+						templateObject.put(IConstants.DESCRIPTION,game.getDescription());
+						templateObject.put(IMAGE_PATH,game.getImagePath());
+						templateObject.put(MAX_QUESTIONS,game.getMaxQuestions());
+						templateObject.put("gameSeq", game.getSeq());
+						if(game.getQuestions()!=null){
+							templateObject.put("totalQuestions", game.getQuestions().size());
 						}
+						jsonArr.put(templateObject);
 					}
 				}
-				jsonArr.put(templateObject);
 			}
 		
 			mainJsonObject.put("jsonArr", jsonArr);

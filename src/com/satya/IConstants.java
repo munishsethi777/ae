@@ -40,6 +40,8 @@ public  class IConstants {
 	public static final String ERROR = "Error: ";
 	public static final String NAME = "name";
 	public static final String SEQ = "seq";
+	public static final String CAMP_SEQ = "campSeq";
+	
 	public static final String CREATED_ON = "createdOn";
 	public final static String LAST_MODIFIED_DATE = "lastmodifieddate";
 	public final static String TITLE = "title";

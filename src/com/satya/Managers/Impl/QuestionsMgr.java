@@ -37,6 +37,9 @@ public class QuestionsMgr implements QuestionsMgrI {
 	private static final String NEGATIVE_POINTS = "negativePoints";
 	private static final String QUES_TITLE = "quesTitle";
 	private static final String POINTS = "points";
+	private static final String GAME_NAME = "gameName";
+	private static final String GAME_DESCRIPTION = "gameDescription";
+	
 
 	@Override
 	public JSONArray getAvailableOnGameJson(HttpServletRequest request,
@@ -162,6 +165,8 @@ public class QuestionsMgr implements QuestionsMgrI {
 		String gameSeqStr = request.getParameter("gameSeq");
 		String campaignSeqStr = request.getParameter("campaignSeq");
 		String hintStr = request.getParameter("hint");
+		String gameName = request.getParameter(GAME_NAME);
+		String gameDescription = request.getParameter(GAME_DESCRIPTION);
 
 		Questions questions = new Questions();
 		long questionsSeq = 0;
@@ -251,8 +256,8 @@ public class QuestionsMgr implements QuestionsMgrI {
 								.parseLong(gameTemplateSeqStr));
 						List<Questions> questionsList = new ArrayList<Questions>();
 						questionsList.add(questions);
-						game.setTitle(GT.getName());
-						game.setDescription(GT.getDescription());
+						game.setTitle(gameName);
+						game.setDescription(gameDescription);
 						game.setImagePath(GT.getImagePath());
 						game.setEnable(true);
 						game.setGameTemplate(GT);

@@ -31,4 +31,5 @@ public interface UserGroupMgrI {
 	public JSONObject updateUserGroup(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException,
 			Exception ;
+	public JSONObject removeUsersFromUserGroup(HttpServletRequest request);
 }

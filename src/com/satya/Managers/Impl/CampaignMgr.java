@@ -27,6 +27,10 @@ import com.satya.Persistence.CampaignDataStoreI;
 import com.satya.Persistence.GameDataStoreI;
 import com.satya.Persistence.UserGroupDataStoreI;
 import com.satya.Utils.DateUtils;
+import com.satya.Utils.FileUtils;
+import com.satya.Utils.SecurityUtil;
+import com.satya.Utils.XstreamUtil;
+import com.satya.mail.Mailer;
 import com.satya.mail.MailerI;
 
 public class CampaignMgr implements CampaignMgrI {
@@ -51,104 +55,12 @@ public class CampaignMgr implements CampaignMgrI {
 		return Campaign.toJsonArray(campaigns);
 	}
 
-	// public JSONObject addCampaign(HttpServletRequest request,
-	// HttpServletResponse response)
-	// throws ServletException, IOException,Exception{
-	// JSONObject json = new JSONObject();
-	// String id = request.getParameter(IConstants.SEQ);
-	// String name = request.getParameter(IConstants.NAME);
-	// String description = request.getParameter(IConstants.DESCRIPTION);
-	// String validityDays = request.getParameter(IConstants.VALIDITY_DAYS);
-	// String isEnableStr = request.getParameter(IConstants.IS_ENABLED);
-	//
-	//
-	// Campaign campaign = new Campaign();
-	// long campaignSeq = 0;
-	// if(id != null && !id.equals("")){
-	// campaignSeq = Long.parseLong(id);
-	// }
-	// boolean isEnable = false;
-	// if(isEnableStr != null && !isEnableStr.equals("")){
-	// isEnable = Boolean.parseBoolean(isEnableStr);
-	// }
-	// campaign.setSeq(campaignSeq);
-	// campaign.setName(name);
-	// campaign.setDescription(description);
-	// campaign.setValidityDays(validityDays);
-	// campaign.setEnabled(isEnable);
-	// campaign.setCreatedOn(new Date());
-	// campaign.setLastModifiedDate(new Date());
-	// campaign.setProject(ApplicationContext.getApplicationContext().getAdminWorkspaceProject(request));
-	//
-	// //Set Selected userGroups on Campaign
-	// String selectedUsersGroupsString =
-	// request.getParameter("selectedUserGroups");
-	// String[] selectedUserGroupsSeqsStrArray =
-	// selectedUsersGroupsString.split(",");
-	//
-	// for (String userGroupSeqStr : selectedUserGroupsSeqsStrArray) {
-	// try {
-	// int ugseq = Integer.valueOf(userGroupSeqStr);
-	// UserGroup userGroup = new UserGroup();
-	// userGroup.setSeq(ugseq);
-	// if (campaign.getUserGroups() == null) {
-	// List<UserGroup> userGroupList = new ArrayList<UserGroup>();
-	// campaign.setUserGroups(userGroupList);
-	// }
-	// campaign.getUserGroups().add(userGroup);
-	// } catch (Exception e) {
-	// logger.error("Error converting useqStr to useq" + e.getMessage());
-	// }
-	// }
-	//
-	// //Set Selected sets on Campaign
-	// String selectedSetsString = request.getParameter("selectedSets");
-	// String[] selectedSetSeqsStrArray = selectedSetsString.split(",");
-	//
-	// for (String setSeqStr : selectedSetSeqsStrArray) {
-	// try {
-	// int setseq = Integer.valueOf(setSeqStr);
-	// Set set = new Set();
-	// set.setSeq(setseq);
-	// if (campaign.getSets() == null) {
-	// List<Set> setList = new ArrayList<Set>();
-	// campaign.setSets(setList);
-	// }
-	// campaign.getSets().add(set);
-	// } catch (Exception e) {
-	//
-	// }
-	// }
-	//
-	//
-	//
-	// CampaignDataStoreI CDS =
-	// ApplicationContext.getApplicationContext().getDataStoreMgr().getCampaignDataStore();
-	// String status = IConstants.SUCCESS;
-	// String message = IConstants.SAVED_SUCCESSFULLY;
-	// try{
-	// CDS.Save(campaign);
-	// sendCampaignNotification(campaign);
-	// json.put(IConstants.LAST_MODIFIED,
-	// DateUtils.getGridDateFormat(campaign.getLastModifiedDate()));
-	// json.put(IConstants.CREATED_ON,
-	// DateUtils.getGridDateFormat(campaign.getCreatedOn()));
-	// }catch(Exception e){
-	// status = IConstants.FAILURE;
-	// message = IConstants.ERROR + " : " + e.getMessage();
-	// }
-	// json.put(IConstants.STATUS, status);
-	// json.put(IConstants.MESSAGE, message);
-	// json.put(IConstants.SEQ, campaign.getSeq());
-	//
-	// return json;
-	// }
 
 	public JSONObject addCampaign(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException,
 			Exception {
 		JSONObject json = new JSONObject();
-		String id = request.getParameter(IConstants.SEQ);
+		String id = request.getParameter(IConstants.CAMP_SEQ);
 		String name = request.getParameter(IConstants.NAME);
 		String description = request.getParameter(IConstants.DESCRIPTION);
 		String validityDays = request.getParameter(IConstants.VALIDITY_DAYS);
@@ -183,13 +95,15 @@ public class CampaignMgr implements CampaignMgrI {
 		String status = IConstants.SUCCESS;
 		String message = IConstants.SAVED_SUCCESSFULLY;
 		try {
+			boolean isAlreadyExist = false;
 			if (campaign.getSeq() > 0) {
-				boolean isAlreadyExist = CDS.isAlreadyExist(campaign);
-				if (isAlreadyExist) {
-					status = IConstants.FAILURE;
-					message = "Campaign is already exist with this name : - "
-							+ campaign.getName();
-				}
+				isAlreadyExist = CDS.isAlreadyExist(campaign);
+			}
+			
+			if (isAlreadyExist) {
+				status = IConstants.FAILURE;
+				message = "Campaign is already exist with this name : - "
+						+ campaign.getName();
 			} else {
 				CDS.Save(campaign);
 				sendCampaignNotification(campaign);
@@ -414,7 +328,30 @@ public class CampaignMgr implements CampaignMgrI {
 		CampaignDataStoreI CDS = ApplicationContext.getApplicationContext()
 				.getDataStoreMgr().getCampaignDataStore();
 		CDS.publishCampaign(Long.parseLong(campaignSeqStr));
+		Campaign campaign = CDS.findBySeq(Long.parseLong(campaignSeqStr));
+		generateGamesXML(campaign);
+		sendCampaignLaunchMessages(campaign);
 		return json;
+	}
+	
+	private void generateGamesXML(Campaign campaign){
+		XstreamUtil xstreamUtil= new XstreamUtil();
+		SecurityUtil su = new SecurityUtil();
+		su.init();
+		FileUtils fu = new FileUtils();
+		GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
+		for(Game game : campaign.getGames()){
+			Game fullGame = GDS.findBySeqWithQuesAnswers(game.getSeq());
+			String gameXML = xstreamUtil.generateQuestionsXML(fullGame);
+			String decryptedGameXML = su.getEncryptedString(gameXML);
+			fu.saveTextFile(decryptedGameXML, "h:/"+ campaign.getSeq() +"_"+ game.getSeq()  +".txt");
+		}
+		
+	}
+	
+	private void sendCampaignLaunchMessages(Campaign campaign){
+		MailerI mailer = ApplicationContext.getApplicationContext().getMailer();
+		
 	}
 
 }

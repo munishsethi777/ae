@@ -95,8 +95,8 @@ public class GameMgr implements GameMgrI {
 			HttpServletResponse response, boolean isPublished)
 			throws ServletException, IOException {
 		List<Game> games = getAllGames(request, response);
-		List<Game> campaignGames = null;
-		if (request.getParameter("campaignSeq") != null) {
+		List<Game> campaignGames = new ArrayList<Game>();
+		if (request.getParameter("campaignSeq") != "") {
 			CampaignDataStoreI CDS = ApplicationContext.getApplicationContext()
 					.getDataStoreMgr().getCampaignDataStore();
 			Campaign campaign = CDS.findBySeq(Long.parseLong(request
@@ -119,7 +119,7 @@ public class GameMgr implements GameMgrI {
 				}
 			}
 		} catch (Exception e) {
-
+			logger.error(e);
 		}
 		return jsonArr;
 	}
@@ -129,55 +129,51 @@ public class GameMgr implements GameMgrI {
 			HttpServletResponse response) throws ServletException, IOException {
 		String gameIdStr = request.getParameter("gid");
 		String campaignIdStr = request.getParameter("cid");
-		String setIdStr = request.getParameter("sid");
-
+		
 		long gameSeq = 0;
 		long campaignSeq = 0;
-		long setSeq = 0;
 		User user = ApplicationContext.getApplicationContext().getLoggedinUser(
 				request);
 		long userSeq = user.getSeq();
 		try {
 			gameSeq = Long.parseLong(gameIdStr);
 			campaignSeq = Long.parseLong(campaignIdStr);
-			setSeq = Long.parseLong(setIdStr);
-
+			
 			GameDataStoreI GDS = ApplicationContext.getApplicationContext()
 					.getDataStoreMgr().getGameDataStore();
-			boolean isGameAlloted = GDS.isGameByCampaignSetGameUser(
-					campaignSeq, setSeq, gameSeq, userSeq);
+			boolean isGameAlloted = GDS.isGameByCampaignGameUser(campaignSeq, gameSeq, userSeq);
 			int campaignSetSeq = 0;
 			boolean isAllow = true;
 			if (isGameAlloted) {
 
-				CampaignDataStoreI CDS = ApplicationContext
-						.getApplicationContext().getDataStoreMgr()
-						.getCampaignDataStore();
-				campaignSetSeq = CDS.getCampaignSetSeq(campaignSeq, setSeq);
-
-				ResultsDataStoreI RDS = ApplicationContext
-						.getApplicationContext().getDataStoreMgr()
-						.getResultsDataStore();
-				List<Result> results = RDS.findByCampaign(campaignSeq);
-
-				for (Result result : results) {
-					if (result.getCampaign().getSeq() == campaignSeq) {
-						if (result.getSet().getSeq() == setSeq) {
-							if (result.getGame().getSeq() == gameSeq) {
-								if (result.getCreatedOn() != null) {
-									isAllow = false;
-								}
-							}
-						}
-					}
-				}
+//				CampaignDataStoreI CDS = ApplicationContext
+//						.getApplicationContext().getDataStoreMgr()
+//						.getCampaignDataStore();
+//				campaignSetSeq = CDS.getCampaignSetSeq(campaignSeq, setSeq);
+//
+//				ResultsDataStoreI RDS = ApplicationContext
+//						.getApplicationContext().getDataStoreMgr()
+//						.getResultsDataStore();
+//				List<Result> results = RDS.findByCampaign(campaignSeq);
+//
+//				for (Result result : results) {
+//					if (result.getCampaign().getSeq() == campaignSeq) {
+//						if (result.getSet().getSeq() == setSeq) {
+//							if (result.getGame().getSeq() == gameSeq) {
+//								if (result.getCreatedOn() != null) {
+//									isAllow = false;
+//								}
+//							}
+//						}
+//					}
+//				}
 			} else {
 				isAllow = false;
 			}
 			if (isAllow) {
-				request.setAttribute("campaignSetSeq",
-						String.valueOf(campaignSetSeq));
-				request.getRequestDispatcher("player.jsp").forward(request,
+				request.setAttribute("campaignSeq",
+						String.valueOf(campaignSeq));
+				request.getRequestDispatcher("userGamePage.jsp").forward(request,
 						response);
 			}
 
@@ -357,10 +353,8 @@ public class GameMgr implements GameMgrI {
 			json.put(IConstants.IS_ENABLED, game.isEnable());
 			json.put("isPublished", game.isPublished());
 			json.put("gameMaxSecondsAllowed", game.getMaxSecondsAllowed());
-			json.put(IConstants.CREATED_ON,
-					DateUtils.getGridDateFormat(game.getCreatedOn()));
-			json.put(IConstants.LAST_MODIFIED_DATE,
-					DateUtils.getGridDateFormat(game.getLastModifiedDate()));
+			json.put(IConstants.CREATED_ON,	DateUtils.getGridDateFormat(game.getCreatedOn()));
+			json.put(IConstants.LAST_MODIFIED_DATE,	DateUtils.getGridDateFormat(game.getLastModifiedDate()));
 			json.put("imagePath", game.getImagePath());
 			if (game.getGameTemplate() != null) {
 				json.put("gameTemplate", game.getGameTemplate().getSeq());
@@ -373,6 +367,13 @@ public class GameMgr implements GameMgrI {
 			json.put("totalQuestions", totalQuestions);
 			if(totalQuestions < game.getMaxQuestions()){
 				json.put("status","incompleted");
+			}
+			if(game.getGameResult()!= null){
+				JSONObject resultJSON = new JSONObject();
+				resultJSON.put("scoreEarned",game.getGameResult().getTotalScore());
+				resultJSON.put("timeTook",game.getGameResult().getTotalTime());
+				resultJSON.put("playedOn",game.getGameResult().getCreatedOn());
+				json.put("result", resultJSON);
 			}
 		} catch (Exception e) {
 
@@ -499,6 +500,52 @@ public class GameMgr implements GameMgrI {
 			}
 		}
 		
+		return json;
+	}
+	//Used in User UI
+	@Override
+	public JSONArray getGamesByCampaign(HttpServletRequest request) {
+		String campaignSeqStr = request.getParameter("campaignSeq");
+		GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
+		List<Game> games  = GDS.findSelectedForCampaign(Long.parseLong(campaignSeqStr));
+		JSONArray jsonArray = new JSONArray();
+		ResultsDataStoreI RDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getResultsDataStore();
+		for(Game game : games){
+			Result result = RDS.findByCampaignAndGameAndUser(Long.parseLong(campaignSeqStr),
+					game.getSeq(),
+					ApplicationContext.getApplicationContext().getLoggedinUser(request).getSeq());
+			game.setGameResult(result);
+			JSONObject json = toJson(game);
+			jsonArray.put(json);
+		}
+		return jsonArray;
+	}
+
+	@Override
+	public JSONObject removeQuestionFromGame(HttpServletRequest request) {
+		String gameSeqStr = request.getParameter("gameSeq");
+		String idsStr = request.getParameter("ids");
+		JSONObject json = new JSONObject();
+		if(idsStr != null && !idsStr.equals("")){
+			long gameSeq = Long.parseLong(gameSeqStr);
+			String[] ids = idsStr.split(",");
+			if(ids.length>0){
+				for(String id : ids){
+					try{
+						long questionSeq = Long.parseLong(id);
+						GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
+						GDS.deleteGameQuestion(gameSeq, questionSeq);
+	
+						json.put(IConstants.STATUS, IConstants.SUCCESS);
+						json.put(IConstants.MESSAGE, IConstants.msg_DeletedSuccessfully);
+						json.put(IConstants.SEQ, questionSeq);
+						
+					}catch(Exception e){
+					}
+				}
+			}
+			
+		}
 		return json;
 	}
 

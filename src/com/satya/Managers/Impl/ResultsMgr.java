@@ -105,7 +105,6 @@ public class ResultsMgr implements ResultsMgrI{
 			json.put("totalScore", result.getTotalScore());
 			json.put("timeTaken", result.getTotalTime());
 			json.put("campaignName", result.getCampaign().getName());
-			json.put("setName", result.getSet().getName());
 			json.put("userGroupName", result.getUserGroup().getName());
 			json.put("gameName", result.getGame().getTitle());
 		}catch( Exception e){

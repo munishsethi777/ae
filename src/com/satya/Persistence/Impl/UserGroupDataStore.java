@@ -32,6 +32,7 @@ public class UserGroupDataStore implements UserGroupDataStoreI,RowMapper {
 	
 	private final static String SAVE_USERGROUPUSERS = "insert into usergroupusers(userseq, usergroupseq) values (?,?)";
 	private final static String DELETE_USERGROUPUSERS = "delete from usergroupusers where usergroupseq = ?";
+	private final static String REMOVE_USER_FROM_USERGROUP = "delete from usergroupusers where usergroupseq=? and userseq =?";
 	
 	private final static String FIND_USERGROUPS_SELECTED_IN_CAMPAIGN = "select usergroups.* from usergroups left join campaignusergroups on " +
 			"campaignusergroups.usergroupseq = usergroups.seq left join campaigns on campaigns.seq = campaignusergroups.campaignseq where campaigns.seq = ?";
@@ -166,4 +167,10 @@ public class UserGroupDataStore implements UserGroupDataStoreI,RowMapper {
 		return userGroup;
 
 }
+
+	@Override
+	public void RemoveUserFromUserGroup(long userGroupSeq, long userSeq) {
+		Object [] params = new Object [] {userGroupSeq,userSeq};
+		persistenceMgr.excecuteUpdate(REMOVE_USER_FROM_USERGROUP, params);		
+	}
 }
