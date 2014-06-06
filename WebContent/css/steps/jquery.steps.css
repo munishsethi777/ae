@@ -164,9 +164,9 @@
 {
     float: left;
     /*position: absolute;*/
-    width: 95%;
-    height: 95%;
-    padding: 2.5%;
+    width: 99%;
+    height: 99%;
+    padding: 5px;
 }
 
 .wizard > .content > .body ul
