@@ -49,10 +49,20 @@
 		
 		
 		$(document).ready(function () {
-				var editorWidth= "550px";
-				var editorHeight = "500px";
-				renderGrid("jqxGrid","jqxCreateBeanWindow",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
-				$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
+			var editorWidth= "550px";
+			var editorHeight = "500px";
+			renderGrid("jqxGrid","jqxCreateBeanWindow",beanName,dataUrl,deleteUrl,addUrl,validatorRules,columns,dataFields,true,editorHeight,editorWidth);
+			$("#isEnabledInput").jqxCheckBox({ width: 120, height: 25, theme: theme });
+			
+			$("#nameInput").jqxInput({	placeHolder : "Enter Project Name", height : 25, width :200,	minLength : 1, maxLength : 250});
+			$("#descriptionInput").jqxInput({	placeHolder : "Enter Porject Description", height : 25, width : 200, maxLength : 500});
+			$("#emailInput").jqxInput({	placeHolder : "Enter Your Email", height : 25, width : 200,	minLength : 1, maxLength : 100});
+			$("#phoneInput").jqxInput({	placeHolder : "Enter Your Phone", height : 25, width : 200,	minLength : 1, maxLength : 50});
+			$("#mobileInput").jqxInput({	placeHolder : "Enter Your Mobile", height : 25, width : 200,	minLength : 1, maxLength : 20});
+			$("#cityInput").jqxInput({	placeHolder : "Enter Your City", height : 25, width : 200,	minLength : 1, maxLength : 50});
+			$("#countryInput").jqxInput({	placeHolder : "Enter Your Country", height : 25, width : 200,	minLength : 1, maxLength : 50});
+			$("#contactPersonInput").jqxInput({	placeHolder : "Enter Contact Person", height : 25, width : 200,	minLength : 1, maxLength : 250});
+			$("#addressInput").jqxInput({	placeHolder : "Enter Your Address", height : 25, width : 200,	minLength : 1, maxLength : 500});
 		});//end document ready	
 
 	

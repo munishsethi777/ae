@@ -124,7 +124,15 @@ input.marginTop{
 	border:red solid 1px;
 	margin-bottom:10px;
 }
-
+.editorSuccessDiv{
+	width:80%;
+	padding:20px;
+	background-color:white;
+	color:green;
+	font-size:12px;
+	border:green solid 1px;
+	margin-bottom:10px;
+}
 
 
 /* new styles in use ends*/

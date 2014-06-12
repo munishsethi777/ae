@@ -64,7 +64,7 @@ function renderGrid(gridId,createWindowId,beansName,dataUrl,deleteUrl,addUrl,val
 					reloadButton.jqxButton({ theme: theme, width: 65, height: 17 });
 					
 					addButton.click(function (event) {
-						showHideErrorMessageEditorDiv(false,".editorErrorDiv");
+						clearErrorMessageDivs();
 						if(typeof $('#'+createWindowId+' #createBeanForm')[0] != 'undefined'){
 							$('#'+createWindowId+' #createBeanForm')[0].reset();
 						}
@@ -93,6 +93,8 @@ function renderGrid(gridId,createWindowId,beansName,dataUrl,deleteUrl,addUrl,val
 					reloadButton.click(function (event) {
 						$("#"+gridId).jqxGrid({ source: getAdapter() });
 					});
+					
+					$("#"+gridId).jqxGrid('enablehover', true);
 				}
 			},
 								   
@@ -194,6 +196,7 @@ function renderGrid(gridId,createWindowId,beansName,dataUrl,deleteUrl,addUrl,val
 	}//redner grid function
 
 function submitAddRecord(saveUrl,gridId,createWindowId,gridDataFields){
+	clearErrorMessageDivs();
 	dataRow = {};
 	dataRow['rowId'] = $("#"+createWindowId+" #rowIdInput").val();
 	$.each(gridDataFields,function(index,value){
@@ -205,9 +208,9 @@ function submitAddRecord(saveUrl,gridId,createWindowId,gridDataFields){
 	if(isSelectionGrid == true){
 		dataRow =  getSelectedRowsData(dataRow);
 	}
-	submitAddRecordAction(saveUrl,gridId,dataRow,"editorErrorDiv");
+	submitAddRecordAction(saveUrl,gridId,dataRow,"editorErrorDiv","editorSuccessDiv");
 }
-function submitAddRecordAction(saveUrl,gridId,dataRow,errDivClass){
+function submitAddRecordAction(saveUrl,gridId,dataRow,errDivClass,editorSuccessDiv){
 	$.getJSON(saveUrl,dataRow,function(json){
 		if(json['status'] == 'success'){
 			dataRow['lastmodifieddate'] = json['lastModified'];	
@@ -219,10 +222,11 @@ function submitAddRecordAction(saveUrl,gridId,dataRow,errDivClass){
 					}
 				}
 				dataRow['createdOn'] = json['createdOn'];
-				var commit = $("#"+gridId).jqxGrid('addrow', null, dataRow,null,true);
+				var commit = $("#"+gridId).jqxGrid('addrow', null, dataRow,null,true);				
 			}else{
 				var commit = $("#"+gridId).jqxGrid('updaterow', dataRow['rowId'], dataRow,true);
 			}
+			displaySaveErrors(json['message'],"." + editorSuccessDiv);
 			$("#"+gridId).jqxGrid('ensurerowvisible', dataRow['rowId']);
 		}else{
 			displaySaveErrors(json['message'],"."+errDivClass);
@@ -246,7 +250,9 @@ function showHideErrorMessageEditorDiv(bool,errorDivName){
 }
 function clearErrorMessageDivs(){
 	showHideErrorMessageEditorDiv(false,".editorErrorDiv");
+	showHideErrorMessageEditorDiv(false,".editorSuccessDiv");
 	$(".editorErrorDiv").text("");
+	$(".editorSuccessDiv").text("");
 	
 }
 function doubleClickEditRow(windowId,dataRow,rowIndex,gridDataFields){
@@ -263,12 +269,10 @@ function doubleClickEditRow(windowId,dataRow,rowIndex,gridDataFields){
 					 rowColVal="";
 				 }
 			 }
-			 if (value.type == "date"){
-				 //$("#jqxCreateBeanWindow #"+ value.name +"Input").jqxDateTimeInput('setDate', rowColVal);
-			 }else{
-				 $("#"+windowId+" #"+ value.name +"Input").val(rowColVal);
-			 }
 			
+				 $("#"+windowId+" #"+ value.name +"Input").val(rowColVal);
+			
+		
 			 if(value.type=="bool"){
 				 if(dataRow[value.name] == true || dataRow[value.name] == "true"){						 
 					$("#" + value.name +"Input").prop('checked', true);
