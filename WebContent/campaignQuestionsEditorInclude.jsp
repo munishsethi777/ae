@@ -4,6 +4,7 @@
 var isCampaignUI = true;
 //updateSelectedQuestionGrid is used in importQuestion.jsp for add the imported row in selectedQuestion grid.
 $(document).ready(function () {
+	//set new id as this form is being reused
     $(".saveQuestionButton").attr("id", "saveQuestionButtonClick");
 	$(".saveQuestionButton").jqxButton({ width: 70, theme: theme });
 	//generate add Question jqxWindow
@@ -27,12 +28,12 @@ $(document).ready(function () {
 			];
 	
 	$("#saveQuestionButtonClick").click(function (event) {
-		var validationResult = function (isValid) {
-			if (isValid) {
+		//var validationResult = function (isValid) {
+			//if (isValid) {
 				addQuestionAndGame();
-			}
-		};
-		$('#createQuestionForm').jqxValidator('validate', validationResult);
+			//}
+		//};
+		//$('#createQuestionForm').jqxValidator('validate', validationResult);
 	});
 	$('#createQuestionForm').jqxValidator({
 		animationDuration:5,
@@ -72,12 +73,12 @@ $(document).ready(function () {
 				{ input: '#gameNameInput', message: 'Game Name is required!', action: 'keyup, blur', rule: 'required' }
 			];
 	
-    $("#saveGameDetails").jqxButton({ width: 70, theme: theme });
-	$("#saveGameDetails").unbind();
-	$("#saveGameDetails").click(function (event) {
+    $("#saveGameDetails1").jqxButton({ width: 70, theme: theme });
+	$("#saveGameDetails1").unbind();
+	$("#saveGameDetails1").click(function (event) {
 		var validationResult = function (isValid) {
 			if (isValid) {
-				//saveGameDetails(gameTemplateSeq);
+				saveGameDetails(gameTemplateSeq);
 			}
 		};
 		$('#gameDetailsForm').jqxValidator('validate', validationResult);
@@ -91,22 +92,8 @@ $(document).ready(function () {
 	$("#gameDetailsForm").on('validationSuccess', function () {
 		$("#gameDetailsForm-iframe").fadeIn('fast');
 	});
-
-	$("#closeGameDetails").jqxButton({ width: 70, theme: theme });
-	$("#closeGameDetails").unbind();
-	$("#closeGameDetails").on('click', function(event) {
-		//$("#editGameEditor").jqxWindow("close");
-	});
 	
-	function saveGameDetails(gameTemplateSeq){
-		dataRow = $("#editGameDetailsForms").serializeArray();
-		var url = "AdminUser?action=saveGameDetails";
-		$.getJSON(url,dataRow,function(json){
-			$("#selectedTemplateDivId"+gameTemplateSeq+" #gameTitle"+gameTemplateSeq).html(dataRow[1].value);
-			$("#selectedTemplateDivId"+gameTemplateSeq+" #gameDescription"+gameTemplateSeq).html(dataRow[2].value);
-			$("#editGameEditor").jqxWindow("close");
-		});
-	}
+
 	
 });//end document ready
 
@@ -118,10 +105,11 @@ $(document).ready(function () {
 	  		   		<div class="splitter-panel selectQuestionsDiv"><!-- Selected Questions Area -->
 	  		   			<div style="padding:2px;">
 	  		   				<form id="gameDetailsForm">
+	  		   					<input type="hidden" name="gameSeq" id="gameSeq"/>
+	  		   					<input type="hidden" name="gameTemplateSeq" id="gameTemplateSeq"/>
 			  		   			Name:<input type="text" name="gameName" id="gameNameInput" class="gameNameInput"/>&nbsp;
 			  		   			Description:<input type="text" name="gameDescription" id="gameDescriptionInput" class="gameDescriptionInput"/>
-			  		   			<input value='Save Game' type='button' id='saveGameDetails'/>
-			  		   			<input value='Close' type='button' id='closeGameDetails'/>
+			  		   			<input value='Save Game' type='button' id='saveGameDetails1'/>
 			  		   			<label style="color:red;margin-left:10px" class="questionEditorErrorDiv"></label>
 		  		   			</form>
 	  		   			</div>

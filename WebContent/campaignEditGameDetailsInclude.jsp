@@ -1,6 +1,6 @@
 <script>
 //passing gameTemplateSeq because the hidden inputs names are using templateIds
-function editGameDetails(gameTemplateSeq){
+//function editGameDetails(gameTemplateSeq){
 	/* var gameSeq = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameSeq"+gameTemplateSeq).val();
 	$("#editGameEditor #gameEditorSeq").val(gameSeq);
 	var gameName = $("#selectedTemplateDivId"+gameTemplateSeq+" #gameTitle"+gameTemplateSeq).html();
@@ -28,7 +28,7 @@ function editGameDetails(gameTemplateSeq){
 	$("#gameEditorDescription").jqxInput({height : 25, width : 300, minLength : 1, maxLength : 256});
 	
 	$("#editGameEditor").jqxWindow("open"); */	
-}
+//}
 function saveGameDetails(gameTemplateSeq){
 	dataRow = $("#editGameDetailsForms").serializeArray();
 	var url = "AdminUser?action=saveGameDetails";
@@ -39,7 +39,7 @@ function saveGameDetails(gameTemplateSeq){
 	});
 }
 </script>
-<div id="editGameEditor" style="display:none">
+<!-- <div id="editGameEditor" style="display:none">
 	<div class="title" style="font-weight:bold">Edit Game Details</div>
 	<div>
 		<form name="editGameDetailsForms" id="editGameDetailsForms">
@@ -60,4 +60,4 @@ function saveGameDetails(gameTemplateSeq){
 			</table>
 		</form>
 	</div>
-</div>
+</div> -->

@@ -5,7 +5,9 @@ var isSelectionGrid = false;
 var editingBeanRow = null;
 
 var gId = "";
-function renderGrid(gridId,createWindowId,beansName,dataUrl,deleteUrl,addUrl,validatorRules,gridColumns,gridDataFields,isShowButtons,editorHeight,editorWidth){
+function renderGrid(gridId,createWindowId,beansName,dataUrl,
+		deleteUrl,addUrl,validatorRules,gridColumns,gridDataFields,
+		isShowButtons,editorHeight,editorWidth,addRowCustomMethod,deleteRowCustomMethod){
 	gId = gridId;
 	
 		$("#"+createWindowId).jqxWindow({
@@ -24,10 +26,16 @@ function renderGrid(gridId,createWindowId,beansName,dataUrl,deleteUrl,addUrl,val
 				},
 				addrow: function (rowid, rowdata, position, commit) {
 					commit(true);
+					if(typeof addRowCustomMethod != 'undefined'){
+						addRowCustomMethod(rowdata);
+					}
 					//$("#jqxCreateBeanWindow").jqxWindow('close');
 				},
 				deleterow: function (selectedIndexes, commit) {
 					commit(true);
+					if(typeof deleteRowCustomMethod != 'undefined'){
+						deleteRowCustomMethod(selectedIndexes);
+					}
 					$('#deleteBeanConfirmation').jqxWindow('close');	
 				}
 				
@@ -222,6 +230,9 @@ function submitAddRecordAction(saveUrl,gridId,dataRow,errDivClass,editorSuccessD
 					}
 				}
 				dataRow['createdOn'] = json['createdOn'];
+				if(json['gameSeq']!= null){
+					dataRow['gameSeq'] = json['gameSeq'];
+				}
 				var commit = $("#"+gridId).jqxGrid('addrow', null, dataRow,null,true);				
 			}else{
 				var commit = $("#"+gridId).jqxGrid('updaterow', dataRow['rowId'], dataRow,true);

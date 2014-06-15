@@ -1,25 +1,46 @@
-function openAddQuestionsUI(gameSeq){
+//to know when grid gets row added
+function addRowCustomQuestionGrid(rowdata){
+	$("#gameDetailsForm #gameSeq").val(rowdata.gameSeq);
+	newQuestionAdded(rowdata.gameSeq,rowdata.gameTempSeq);
+	$('#createQuestionForm')[0].reset();
+}
+//to know when grid gets row removed
+function deleteRowCustomQuestionGrid(selectedIds){
+	var gameSeq = $("#gameDetailsForm #gameSeq").val();
+	var questionCount = $("#gameDiv"+gameSeq +" #gameTemplateTotalQuestions").val();
+	if(questionCount == undefined){
+		questionCount = 0;
+	}
+	questionCount = parseInt(questionCount,10);
+	questionCount = questionCount - selectedIds.length;
+	$("#quesCount"+gameSeq).html(questionCount);
+	$("#gameDiv"+gameSeq +" #gameTemplateTotalQuestions").val(questionCount);
+}
+function openAddQuestionsUI(gameSeq,templateSeq){
 	$("#addQuestionsWindow").jqxWindow('open');
 	loadGameDetails(gameSeq);
 	loadSelectedQuestionsGrid(gameSeq);
 	resetQuestionsEditor();
 	$(".selectQuestionsDiv .gameNameInput").val("");
 	$(".selectQuestionsDiv .gameDescriptionInput").val("");
+	$("#gameDetailsForm #gameSeq").val(gameSeq);
+	$("#gameDetailsForm #gameTemplateSeq").val(templateSeq);
+	
 }
 function loadGameDetails(gameSeq){
-	if(gameSeq != null){
+	if(gameSeq != null && gameSeq != 0){
 		var getGameDetailsURL = "AdminUser?action=getGamesBySeqs&gameSeqs=" + gameSeq; 	
 		$.getJSON(getGameDetailsURL,function(json){
 			if(json[0].status != "failure"){
 				//$('#userJqxGrid').jqxGrid('selectrow', json[0]["seq"]);
 				$(".selectQuestionsDiv .gameNameInput").val(json[0]["gameTitle"]);
 				$(".selectQuestionsDiv .gameDescriptionInput").val(json[0]["gameDescription"]);
+				$("#gameDetailsForm #gameSeq").val(gameSeq);
 			}
 		});
 	}
 }
 function loadSelectedQuestionsGrid(gameSeq){
-
 	var selectedQuestionsEditorWidth= "90%";
 	var selectedQuestionsEditorHeight = "100%";
 	var selQuesdataUrl = "AdminUser?action=getQuestionsSelectedOnGame&gameSeq="+gameSeq;
@@ -38,9 +59,9 @@ function loadSelectedQuestionsGrid(gameSeq){
 			{ text: 'Enabled', datafield: 'isEnabledQuestion',columntype: 'checkbox',editable:false,width:60}
 			];
 
-	
 	renderGrid("selectedQuestionsGrid","addQuestionsWindow",beanName,selQuesdataUrl,deleteQuesUrl,addUrl,validatorRules,
-			columns,questionsDataFields,true,selectedQuestionsEditorHeight,selectedQuestionsEditorWidth);
+			columns,questionsDataFields,true,selectedQuestionsEditorHeight,selectedQuestionsEditorWidth,
+			addRowCustomQuestionGrid,deleteRowCustomQuestionGrid);
 	bindNewClickOnSelectedQuestionsGrid();
 	bindDoubleClickOnSelectedQuestionsGrid();
 	//unbinding close button of add question form to prevent it from closing the main screen
@@ -48,8 +69,8 @@ function loadSelectedQuestionsGrid(gameSeq){
 	$("#closeButton").click(function () {
 		$("#addQuestionsWindow").jqxWindow('close');
 	});
-	
 }
+
 function updateSelectedQuestionGrid(dataRowJson){
 	$("#selectedQuestionsGrid").jqxGrid('addrow', null, dataRowJson,null,true);
 }
@@ -58,12 +79,12 @@ function getFormData(isImport){
 	var gameDescription = $(".selectQuestionsDiv .gameDescriptionInput").val();
 
 	
-	var gameSeq = $("#gameSeq" + tempSeq).val();
+	var gameSeq = $("#gameDetailsForm #gameSeq").val();
 	dataRow = [];
 	
 	var obj = new Object();
     if(gameSeq ==0){
-		var gameTemplateSeq = tempSeq;
+		var gameTemplateSeq = $("#gameDetailsForm #gameTemplateSeq").val();;
 		obj.name = "gameTempSeq";
 		obj.value = gameTemplateSeq;
 	}else{
@@ -122,37 +143,55 @@ function addQuestionAndGame(){
 		dataRowJson[this.name] = this.value || '';
 	});
 	submitAddRecordAction("AdminUser?action=addQuestions","selectedQuestionsGrid",dataRowJson,"questionEditorErrorDiv");
-	var gameSeq = $("#gameSeq" + tempSeq).val();
-	newQuestionAdded(gameSeq,tempSeq);
-	$('#createQuestionForm')[0].reset();
+	
 }
-function newQuestionAdded(gameSeq, templateSeq){
-	if(gameSeq != 0){
-		
-	}
-	var questionCount = $("#gamesDiv"+templateSeq +" #gameTemplateTotalQuestions").val();
-	if(questionCount == ""){
+//Method called with top save button
+function saveGameDetails(gameTemplateSeq){
+	dataRow = $("#gameDetailsForm").serializeArray();
+	var campaignSeq = getCampaignSeqFromForm();
+	var templateSeq = $("#gameDetailsForm #gameTemplateSeq").val();
+	
+	var url = "AdminUser?action=saveGameDetails&campaignSeq="+campaignSeq;
+	url += "&templateSeq="+templateSeq;
+	$.getJSON(url,dataRow,function(json){
+		if(json['status'] == 'success'){
+			var gameSeq = json['gameSeq'];
+			var templateSeq = $("#gameDetailsForm #gameTemplateSeq").val();
+			$("#gameDetailsForm #gameSeq").val(gameSeq);
+			if($('#gameDiv'+gameSeq).length==0){
+				createNewGameBlockDiv(gameSeq,templateSeq);
+			}
+		}
+	});
+}
+function newQuestionAdded(gameSeq,templateSeq){
+	var questionCount = $("#gameDiv"+gameSeq +" #gameTemplateTotalQuestions").val();
+	if(questionCount == undefined){
 		questionCount = 0;
 	}
 	questionCount = parseInt(questionCount,10);
 	questionCount = questionCount + 1;
-	$("#quesCount" + templateSeq).html(questionCount);
-	$("#templateDiv"+templateSeq +" #gameTemplateTotalQuestions").val(questionCount);
 	if(questionCount == 1){
-		var gameSeq =  $("#gameDiv"+blockId+" #gameSeq"+blockId).val();
-		createNewGameBlockDiv(gameSeq,templateSeq);
+		if($('#gameDiv'+gameSeq).length==0){
+			createNewGameBlockDiv(gameSeq,templateSeq);
+		}
 	}
+	$("#quesCount"+gameSeq).html(questionCount);
+	$("#gameDiv"+gameSeq +" #gameTemplateTotalQuestions").val(questionCount);
+	
 }
 function createNewGameBlockDiv(gameSeq, tempSeq){
 	var json = {};
 	json['seq'] = tempSeq;
 	json['gameSeq'] = gameSeq;
-	json['name'] = 'Name';
-	json['description'] = 'desc';
-	json['maxQuestions'] = 10;
+	json['name'] = $("#gameDetailsForm #gameNameInput").val();
+	json['description'] = $("#gameDetailsForm #gameDescriptionInput").val();
+	json['maxQuestions'] = $("#templateDiv"+ tempSeq +" #maxQuestions").val();
 	json['totQuest'] = 1;
+	json['imagePath'] = $("#templateDiv"+ tempSeq +" #imgPath").prop("src");
 	addGameBlock(json);
 }
+//load templates and games of this campaign seq only
 function loadGameTemplates(campaignSeq){
 	var getTemplatesUrl = "AdminUser?action=getAllGameTemplates&campaignSeq="+campaignSeq;
 	$(".selectPendingGamesBlock").html("");
@@ -167,102 +206,115 @@ function loadGameTemplates(campaignSeq){
 
 function addGameBlock(json){
 	content = getGameTemplateDiv(json);
-	var templateSeqRadioId = "templateSeqRadio"+json.seq;
+	var gameCheckboxId = "gameCheckbox"+json.seq;
 	if(json.gameSeq != ""){
 		$(content).appendTo(".selectPendingGamesBlock");
-		templateSeqRadioId = "templateSeqRadio"+json.gameSeq;
+		gameCheckboxId = "gameCheckbox"+json.gameSeq;
+		$("#demo"+json.gameSeq).jqxButton({ width: 70, theme: theme });
+		$("#demo"+json.gameSeq).on('click', function(event) {
+			alert("demo");
+		});
 	}else{
 		$(content).appendTo(".selectGameTemplatesBlock");
+		$("#demo"+json.seq).jqxButton({ width: 70, theme: theme });
+		$("#demo"+json.seq).on('click', function(event) {
+			alert("demo");
+		});
 	}
 	
-	$("#"+templateSeqRadioId).jqxCheckBox({ width: 20, height: 25, theme: theme });
-	$("#"+templateSeqRadioId).on('change', function(event) {
+	$("#"+gameCheckboxId).jqxCheckBox({ width: 20, height: 25, theme: theme });
+	$("#"+gameCheckboxId).on('change', function(event) {
 		var checked = event.args.checked;
         if (checked){
         	if(json.gameSeq != ""){
-            	$(".selectPendingGamesBlock #editGameLink"+json.gameSeq).show();
-            	$(".selectPendingGamesBlock #gameDiv"+json.gameSeq).addClass('backColoredWhite');
-        	}else{
-        		$(".selectGameTemplatesBlock #createGameLink"+json.seq).show();
-            	$(".selectGameTemplatesBlock #templateDiv"+json.seq).addClass('backColoredWhite');
+            	$("#editGameLink"+json.gameSeq).show();
+            	$("#gameDiv"+json.gameSeq).addClass('backColoredWhite');
         	}
         }else{
         	if(json.gameSeq != ""){
-            	$(".selectPendingGamesBlock #editGameLink"+json.gameSeq).hide();
-            	$(".selectPendingGamesBlock #gameDiv"+json.gameSeq).removeClass('backColoredWhite');
-        	}else{
-        		$(".selectGameTemplatesBlock #createGameLink"+json.seq).hide();
-            	$(".selectGameTemplatesBlock #templateDiv"+json.seq).removeClass('backColoredWhite');
+            	$("#editGameLink"+json.gameSeq).hide();
+            	$("#gameDiv"+json.gameSeq).removeClass('backColoredWhite');
         	}
         }
 	});
 	if(json.gameSeq != 0){
-		$("#templateSeqRadio"+json.gameSeq).jqxCheckBox('check');
+		$("#gameCheckbox"+json.gameSeq).jqxCheckBox('check');
 	}
 
-	$("#demo"+json.seq).jqxButton({ width: 70, theme: theme });
-	$("#demo"+json.seq).on('click', function(event) {
-		alert("demo");
-	});
+	
 	$("#editGameLink"+json.gameSeq).jqxButton({ width: 120, theme: theme });
 	$("#editGameLink"+json.gameSeq).on('click', function(event){
 		blockId = event.currentTarget.id;
 		blockId = blockId.replace('editGameLink','');
 		gameSeq = blockId;
-		openAddQuestionsUI(gameSeq);							
+		openAddQuestionsUI(gameSeq,0);							
 	});
 	
-	$("#createGameLink"+json.seq).jqxButton({ width: 120, theme: theme });
+	//$("#createGameLink"+json.seq).jqxButton({ width: 120, theme: theme });
 	$("#createGameLink"+json.seq).on('click', function(event){
 		blockId = event.currentTarget.id;
 		blockId = blockId.replace('createGameLink','');
-		openAddQuestionsUI(0);							
+		openAddQuestionsUI(0,blockId);							
 	});
 }
 function getGameTemplateDiv(json){
+	if(json.gameSeq != ""){
+		return getGameDiv(json);
+	}
 	var totQuest = 0;
 	if(json.totalQuestions != undefined){
 		totQuest = json.totalQuestions;
 	}
-	var divId = "templateDiv"+json.seq;
-	var templateSeqRadioId = "templateSeqRadio"+ json.seq;
-	if(json.gameSeq != ""){
-		divId = "gameDiv"+json.gameSeq;
-		templateSeqRadioId =  "templateSeqRadio"+ json.gameSeq;
-	}
 	var content= "";
-	content += "<div class='selectGameTemplatesDiv' id='"+divId+"'>";
+	content += "<div class='selectGameTemplatesDiv' id='templateDiv"+json.seq+"'>";
 	content += "<input type='hidden' id='gameTemplateTotalQuestions' value='"+ totQuest +"'/>";
 	content += "<input type='hidden' id='gameTemplateSeq' value='" + json.seq + "'/>";
-	content += "<input type='hidden' id='gameSeq"+json.seq +"' value='"+json.gameSeq +"'/>";
-		content += "<div class='gameIcon'>";
-		content += "<img id='imgPath' src='" + json.imagePath +"'/>";
-		content += "</div>";
-		content += "<div class='gameTemplateDetailsDiv'>";
-		content += "<div style='float:right' id='"+ templateSeqRadioId +"'></div>";
-		content += '<label style="font-size:20px;" id="gameTitle'+ json.seq +'">' + json.name + '</label>';
-		content += " <label id='quesCount" + json.seq + "'>"+ totQuest +"</label>";
-		content += "<label> /"+ json.maxQuestions +' Questions</label>';
-	   	content += '<div class="smallFonts" style="height:70px;" id="gameDescription'+ json.seq +'">' + json.description + '</div>';
-	content += '<div style="margin-top:10px;">';
-
-	content += "<input style='display:inline-table' value='Demo' type='button' id='demo"+json.seq+"'/>";
-	//if its template block
-	var createGameBtnTitle = "Create Game";
-	var linkId = "createGameLink"+json.seq;
-	if(json.gameSeq != ""){
-		//if its game block
-		createGameBtnTitle = "Edit Game";
-		linkId = "editGameLink"+json.gameSeq;
-	}
-	content += "<input value='"+ createGameBtnTitle +"' type='button' id='"+linkId+"' class='marL10' style='display:none;margin-left:10px;float:right'/>";
-	content += '</div>';
+	content += "<input type='hidden' id='maxQuestions' value='"+json.maxQuestions +"'/>";
+	content += "<div class='gameIcon'>";
+	content += "<img id='imgPath' src='" + json.imagePath +"'/>";
+	content += "</div>";
+	content += "<div class='gameTemplateDetailsDiv'>";
+	content += '<label style="font-size:13px;" id="gameTitle'+ json.seq +'">' + json.name + '</label>';
+	content += " <label>("+ json.maxQuestions +' Ques)</label><br>';
+   	//content += "<br><a href='#' id='demo"+json.seq+"'>demo</a> ";
+   	content += "<a href='#' id='createGameLink"+json.seq+"'>create new game</a>";
 	content += "</div>";
 	content += "<br class='clr'>";
 	content += '</div>';
 	return content;
 }
 
+function getGameDiv(json){
+	var totQuest = 0;
+	if(json.totalQuestions != undefined){
+		totQuest = json.totalQuestions;
+	}
+	var gameCheckboxId =  "gameCheckbox"+ json.gameSeq;
+	var questionCountId = "quesCount" + json.gameSeq;
+	var content= "";
+	content += "<div class='pendingGameDiv' id='gameDiv"+json.gameSeq+"'>";
+	content += "<input type='hidden' id='gameTemplateTotalQuestions' value='"+ totQuest +"'/>";
+	content += "<input type='hidden' id='gameTemplateSeq' value='" + json.seq + "'/>";
+	content += "<input type='hidden' id='gameSeq"+json.seq +"' value='"+json.gameSeq +"'/>";
+	content += "<input type='hidden' id='maxQuestions' value='"+json.maxQuestions +"'/>";
+	content += "<div class='gameIcon'>";
+	content += "<img id='imgPath' src='" + json.imagePath +"'/>";
+	content += "</div>";
+	content += "<div class='gameTemplateDetailsDiv'>";
+	content += "<div style='float:right' id='"+ gameCheckboxId +"'></div>";
+	content += '<label style="font-size:12px;" id="gameTitle'+ json.gameSeq +'">' + json.name + '</label>';
+	content += "<br><label id='" + questionCountId + "'>"+ totQuest +"</label>";
+	content += "<label> /"+ json.maxQuestions +' Questions</label>';
+   	content += '<div class="smallFonts" id="gameDescription'+ json.gameSeq +'">' + json.description + '</div>';
+	content += '<div style="margin-top:10px;">';
+	content += "<input style='display:inline-table' value='Demo' type='button' id='demo"+json.gameSeq+"'/>";
+	content += "<input value='Edit Game' type='button' id='editGameLink"+json.gameSeq+"' class='marL10' style='margin-left:10px;float:right'/>";
+	content += '</div>';
+	content += "</div>";
+	content += "<br class='clr'>";
+	content += '</div>';
+	return content;
+}
 
 var questionsDataFields = [
     { name: 'seq', type: 'integer' },
@@ -354,12 +406,11 @@ function getAllSelectedGamesSeqs(){
 			gameSeqs.push(gameSeq);
 		}
 	});
-	var $allUnpublishedGamesRadios = $( "input[name^='templateSeqRadio']" );
+	var $allUnpublishedGamesRadios = $( "input[name^='gameCheckbox']" );
 	$($allUnpublishedGamesRadios).each(function() {
 		if(this.value == "true"){
 			inputName = this.name;
-			gameTemplateSeq = this.name.substr(16);
-			gameSeq = $("#templateDiv"+gameTemplateSeq +" #gameSeq"+ gameTemplateSeq).val();
+			gameSeq = this.name.substring(12);
 			gameSeqs.push(gameSeq);
 		}
 	});
@@ -377,6 +428,68 @@ function saveCampaignGames(){
 	});
 }
 
+
+//load earlier games not having this campaign seq
+function loadEarlierGames(campaignSeq){
+	var dataUrl = "AdminUser?action=getAllGames&campaignSeq="+campaignSeq;
+	$(".gamesBlock").html("");
+	$.getJSON(dataUrl,function(JSON){
+		$.each(JSON, function(index,val){
+			//display games which are not already on this campaign
+			if(val['isSelectedOnCampaign'] == undefined){
+				content = getEarlierGameDiv(index,val);
+	    		$(content).appendTo(".gamesBlock");
+	    		$(".gamesBlock #earlierGameSeqRadio"+val.seq).jqxCheckBox({ width: 20, height: 25, theme: theme });
+				$(".gamesBlock  #earlierGameSeqRadio"+val.seq).on('change', function(event) {
+					var checked = event.args.checked;
+		            if (checked){
+		            	$(".gamesBlock #addQuestionLink"+val.seq).show();
+		            	$(".gamesBlock #selectedTemplateDivId"+val.seq).addClass('backColoredWhite');
+		            }else{
+		            	$(".gamesBlock #addQuestionLink"+val.seq).hide();
+		            	$(".gamesBlock #selectedTemplateDivId"+val.seq).removeClass('backColoredWhite');
+		            }
+				});
+				//if(val.isSelectedOnCampaign == "true"){
+					//$(".gamesBlock #earlierGameSeqRadio"+val.seq).jqxCheckBox('check');
+				//}
+				
+				
+				$(".gamesBlock #demo"+val.seq).jqxButton({ width: 70, theme: theme });
+				$(".gamesBlock #demo"+val.seq).on('click', function(event) {
+					alert("demo");
+				});
+				$(".gamesBlock #addQuestionLink"+val.seq).jqxButton({ width: 120, theme: theme });
+				$(".gamesBlock #addQuestionLink"+val.seq).on('click', function(event){
+					gameSeq = $(".gamesBlock #earlierGameSeq"+val.seq).val();
+					showGameQuestions(gameSeq);							
+				});
+			}
+    	});
+     });
+}
+//generate the div for each game
+function getEarlierGameDiv(index,json){
+	var content= "";
+	content += "<div style='height:120px;width:18%' class='pendingGameDiv' id='earlierGameDiv"+json.seq+"'>";
+	/* content += "<input type='hidden' id='gameTemplateSeq' value='" + json.seq + "'/>"; */
+	content += "<input type='hidden' id='earlierGameSeq"+json.seq +"' value='"+json.seq +"'/>";
+		content += "<div class='gameIcon'>";
+			content += "<img src='" + json.imagePath +"'/>";
+		content += "</div>";
+		content += "<div class='gameTemplateDetailsDiv'>";
+		content += "<div style='float:right' id='earlierGameSeqRadio"+ json.seq +"'></div>";
+		content += '<h3>' + json.gameTitle + '</h3>';
+	   	content += '<div class="smallFonts" style="height:70px;">' + json.gameDescription + '</div>';
+	content += '<div style="margin-top:10px;">';
+	content += "<input style='display:inline-table' value='Demo' type='button' id='demo"+json.seq+"'/>";
+	content += "<input value='Questions' type='button' id='addQuestionLink"+json.seq+"' class='marL10' style='display:none;margin-left:10px;float:right'/>";
+	content += '</div>';
+	content += "</div>";
+   	content += "<br class='clr'>";
+		content += '</div>';
+		return content;
+}
 //function submitAction(action,dataRow){
 //$.getJSON(action,dataRow,function(json){
 //	if(json['status'] == 'success'){

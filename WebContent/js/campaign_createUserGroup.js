@@ -4,6 +4,8 @@ var deleteUserUrl = "AdminUser?action=deleteUser";
 var addUserUrl  = "AdminUser?action=addUser";
 var userGroupDataUrl = "AdminUser?action=getAllUserGroups";
 var deleteUserGroupUrl = "AdminUser?action=deleteUserGroup";
+userGridId = "#userJqxGrid";
+
 var userValidatorRules = [
         { input: '#userGroupNameInput', message: 'Usergroup Name is required!', action: 'keyup, blur', rule: 'required' },
 		{ input: '#nameUserInput', message: 'Name is required!', action: 'keyup, blur', rule: 'required' },
@@ -12,12 +14,10 @@ var userValidatorRules = [
 		{ input: '#emailInput', message: 'Enter valid email!', action: 'keyup, blur', rule: 'email' },
 		{ input: '#mobileInput', message: 'Mobile is required!', action: 'keyup, blur', rule: 'required' }];
 var userColumns = [
-		{ text: 'First Name', datafield: 'nameUser' ,editable:false,width:"20%"},
+		{ text: 'Name', datafield: 'nameUser' ,editable:false,width:"20%"},
 		{ text: 'Email Id', datafield: 'email' ,editable:false,width: "20%"},
 		{ text: 'UserName', datafield: 'username',editable:false,width: "20%"},
-		{ text: 'Location', datafield: 'location' ,editable:false},
-		{ text: 'Signup Date', datafield: 'createdOn',editable:false,width: 150,cellsformat: 'dd-MM-yy hh.mm tt'},
-		{ text: 'Enabled', datafield: 'isEnabled',columntype: 'checkbox',editable:false,width: 80}];
+		{ text: 'Signup Date', datafield: 'createdOn',editable:false,width: 150,cellsformat: 'dd-MM-yy hh.mm tt'}];
 var userDataFields = [
 		{ name: 'seq', type: 'integer' },
 		{ name: 'userGroupSeq', type: 'integer'},
@@ -50,7 +50,7 @@ var  userGroupDataFields = [
 		{ name: 'createdOn', type: 'date' },
 		{ name: 'isEnabled', type: 'bool' },
 		{ name: 'lastmodifieddate', type: 'date'}];
-userGridId = "#userJqxGrid";
+
 
 
 function loadControls(){
@@ -102,7 +102,8 @@ function loadControls(){
 //				$("#createUserForm-iframe").fadeIn('fast');
 //			});
 
-	$('#mainUserSplitter').jqxSplitter({ width: "100%", height: "100%", orientation: 'horizontal', theme: theme, panels: [{ size: "60%" }, { size: "40%"}] });
+	$('#mainUserSplitter').jqxSplitter({ width: "100%", height: "100%", 
+		orientation: 'vertical', theme: theme, panels: [{ size: "60%" }, { size: "40%"}] });
    	$(".userEditorArea").jqxPanel({width : "100%",height : "100%",theme : theme	});
 
 }//load controls ends
@@ -206,7 +207,7 @@ function renderUserGrid(){
 		addUserUrl = "";	
 	}
 	renderGrid("userJqxGrid","jqxCreateUserBeanEditor","User",dataUserUrl,deleteUserUrl,addUserUrl,
-			userValidatorRules,userColumns,userDataFields,true,"300","98%");
+			userValidatorRules,userColumns,userDataFields,true,"280","95%");
 	$('#userJqxGrid').on('initialized', function () {
 		loadUserGroupDetails();
 	});

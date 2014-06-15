@@ -36,12 +36,7 @@ function saveCampaignDetails(){
 			dataRow = {};
 			dataRow['rowId'] = $("#createCampaignForm #rowIdInput").val();
 			$.each(dataFieldsCampaign,function(index,value){
-				if(value.name == "startDate" || value.name=="validTillDate"){
-					dataRow[value.name] = $("#createCampaignForm #"+ value.name +"Input")[0].val;
-				}else{
-					dataRow[value.name] = $("#createCampaignForm #"+ value.name +"Input").val();
-				}
-				
+				dataRow[value.name] = $("#createCampaignForm #"+ value.name +"Input").val();
 				if(value.type == "radio"){
 					dataRow[value.name] = $('input[name='+ value.name +']:radio:checked').val();
 				}

@@ -111,11 +111,17 @@
 					<button style="padding:4px 16px;" id="isCreateNewGame">Create new Games</button>
 					<button style="padding:4px 16px;" id="isUseEarlierGame">Use earlier Games</button>
 				</div>
-				<div id="createNewGameDiv" style="height:520px;overflow:scroll">
-					<div class="selectPendingGamesBlock"></div>
-					<div class="selectGameTemplatesBlock"></div>
+				<div id="createNewGameDiv" style="height:520px">
+					<div style="width:78%;float:right;height:100%;overflow:scroll">
+						Games Created from Templates
+						<div class="selectPendingGamesBlock"></div>
+					</div>
+					<div style="width:22%;float:left;height:100%;overflow:scroll">
+						Create Games from Templates
+						<div class="selectGameTemplatesBlock"></div>
+					</div>
 				</div>
-				<div id="useEarlierGameDiv" style="height:520px;display:none">
+				<div id="useEarlierGameDiv" style="height:520px;display:none;overflow:scroll;">
 					<%@ include file="campaignUseEarlierGames.jsp" %>
 				</div>
 				
