@@ -37,7 +37,6 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 	private final static String UPDATE = "update games set title=?, description=?, gametemplateseq=?, "
 			+ " projectseq=?, isenabled=?,lastmodifieddate=?,maxsecondsallowed=?,ispublished=?,maxquestions=?,imagepath=? where seq=?";
 
-	private final static String UPDATE_GAME_DETAILS = "update games set title=?, description=? where seq=?";
 	private final static String SAVE_QUESTIONS = "insert into gamequestions(gameseq, questionseq) values (?,?)";
 
 	private final static String DELETE_QUESTIONS = "delete from gamequestions where gameseq = ?";
@@ -501,18 +500,13 @@ public class GameDataStore implements GameDataStoreI, RowMapper {
 				seqsStr.append(",");
 			}
 		}
-		String sql = "select * from games where isenabled = 1 and seq in ("+ seqsStr +")";
+		String sql = "select * from games where isenabled = 0 and seq in ("+ seqsStr +")";
 		if(isEnable){
 			sql = "select * from games where isenabled = 1 and seq in ("+ seqsStr +")";
 		}
 		return (List<Game>) persistenceMgr.executePSQuery(sql, this);
 	}
 
-	@Override
-	public void saveGameDetails(Game game) {
-		Object[] params = new Object[] { game.getSeq() };
-		persistenceMgr.excecuteUpdate(UPDATE_GAME_DETAILS,  params);
-	}
 
 	@Override
 	public void deleteGameQuestion(long gameSeq, long questionSeq) {

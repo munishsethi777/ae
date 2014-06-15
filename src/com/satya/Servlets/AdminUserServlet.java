@@ -366,8 +366,8 @@ public class AdminUserServlet extends BaseServletClass {
 						JSONObject json = campaignMgr.publishCampaign(request);
 						response.getWriter().write(json.toString());
 					}else if(action.equals("removeQuestionFromGame")){
-						JSONObject json = gameMgr.removeQuestionFromGame(request);
-						response.getWriter().write(json.toString());
+						JSONArray jsonarr = gameMgr.removeQuestionFromGame(request);
+						response.getWriter().write(jsonarr.toString());
 					}
 				}
 

@@ -55,7 +55,7 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 			}
 			if(campaignGames != null){
 				for(Game game : campaignGames){
-					if(game.isPublished()==false){
+					//if(game.isPublished()==false){
 						templateObject = toJson(game.getGameTemplate());
 						templateObject.put(IConstants.NAME,game.getTitle());
 						templateObject.put(IConstants.DESCRIPTION,game.getDescription());
@@ -66,7 +66,7 @@ public class GameTemplateMgr implements GameTemplatesMgrI {
 							templateObject.put("totalQuestions", game.getQuestions().size());
 						}
 						jsonArr.put(templateObject);
-					}
+					//}
 				}
 			}
 		

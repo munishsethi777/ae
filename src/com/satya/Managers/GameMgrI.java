@@ -26,7 +26,7 @@ public interface GameMgrI {
 	public JSONObject updateGameDetails(HttpServletRequest request);
 
 	public JSONArray getGameQuestionAnswersJSONByGameSeq(HttpServletRequest request);
-	public JSONObject removeQuestionFromGame(HttpServletRequest request);
+	public JSONArray removeQuestionFromGame(HttpServletRequest request);
 	//USER METHODS
 	public void loadPlayer(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException;
 	public List<Game> getGames(HttpServletRequest request);

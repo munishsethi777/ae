@@ -476,18 +476,42 @@ public class GameMgr implements GameMgrI {
 
 	@Override
 	public JSONObject updateGameDetails(HttpServletRequest request) {
+		GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
+		GameTemplatesDataStoreI GTDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameTemplateDataStore();
+		
 		JSONObject json = new JSONObject();
 		try{
 			String gameSeqStr = request.getParameter("gameSeq");
-			String gameTitle = request.getParameter("gameTitle");
+			String gameTitle = request.getParameter("gameName");
 			String gameDescription = request.getParameter("gameDescription");
-			
-			GameDataStoreI GDS = ApplicationContext.getApplicationContext().getDataStoreMgr().getGameDataStore();
-			Game game = GDS.findBySeq(Long.parseLong(gameSeqStr));
+			String campaignSeqStr = request.getParameter("campaignSeq");
+			String templateSeqStr = request.getParameter("templateSeq");
+			boolean isSetOnCampaign = true;
+			Game game = new Game();
+			if(gameSeqStr!=null && !gameSeqStr.equals("0")){
+				game = GDS.findBySeq(Long.parseLong(gameSeqStr));
+				isSetOnCampaign = false;
+			}else{
+				GameTemplates template = GTDS.findBySeq(Long.parseLong(templateSeqStr));
+				game.setGameTemplate(template);
+				game.setImagePath(template.getImagePath());
+				game.setMaxQuestions(template.getMaxQuestions());
+				Project project = ApplicationContext.getApplicationContext().getAdminWorkspaceProject(request);
+				game.setProject(project);
+				game.setEnable(true);
+			}
 			game.setTitle(gameTitle);
 			game.setDescription(gameDescription);
-			GDS.saveGameDetails(game);
-			
+			GDS.Save(game);
+			if(isSetOnCampaign){
+				CampaignMgrI campaignMgr = ApplicationContext
+						.getApplicationContext().getCampaiMgr();
+				Long campaignSeq = Long.parseLong(campaignSeqStr);
+				List<Game> games = new ArrayList<Game>();
+				games.add(game);
+				campaignMgr.saveCampaignGames(campaignSeq, games,false);
+			}
+			json.put("gameSeq", game.getSeq());
 			json.put(IConstants.STATUS, IConstants.SUCCESS);
 			json.put(IConstants.MESSAGE, "Game updated Successfully");
 		}catch(Exception e){
@@ -522,10 +546,11 @@ public class GameMgr implements GameMgrI {
 	}
 
 	@Override
-	public JSONObject removeQuestionFromGame(HttpServletRequest request) {
+	public JSONArray removeQuestionFromGame(HttpServletRequest request) {
 		String gameSeqStr = request.getParameter("gameSeq");
 		String idsStr = request.getParameter("ids");
 		JSONObject json = new JSONObject();
+		JSONArray jsonArr = new JSONArray();
 		if(idsStr != null && !idsStr.equals("")){
 			long gameSeq = Long.parseLong(gameSeqStr);
 			String[] ids = idsStr.split(",");
@@ -539,14 +564,14 @@ public class GameMgr implements GameMgrI {
 						json.put(IConstants.STATUS, IConstants.SUCCESS);
 						json.put(IConstants.MESSAGE, IConstants.msg_DeletedSuccessfully);
 						json.put(IConstants.SEQ, questionSeq);
-						
+						jsonArr.put(json);
 					}catch(Exception e){
 					}
 				}
 			}
 			
 		}
-		return json;
+		return jsonArr;
 	}
 
 
